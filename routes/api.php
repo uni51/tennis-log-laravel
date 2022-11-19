@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('test', static function () {
+Route::get('test', function () {
     return \App\Models\Sample::first();
 });
 
-Route::post('test', static function(Request $request) {
+Route::post('test', function(Request $request) {
     $request->validate(['text' => 'required|string']);
     return \App\Models\Sample::create(['text' => $request->input('text')]);
 });
