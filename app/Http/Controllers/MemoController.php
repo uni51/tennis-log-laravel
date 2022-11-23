@@ -25,7 +25,9 @@ class MemoController extends Controller
         }
 
         try {
-            $memos = Memo::where('user_id', $id)->get();
+            $memos = Memo::where('user_id', $id)
+                ->latest()
+                ->get();
         } catch (Exception $e) {
             throw $e;
         }
