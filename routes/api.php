@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\CommentController;
+use App\Http\Controllers\API\MessagesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,16 @@ use App\Http\Controllers\API\CommentController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::group(['prefix' => 'messages', 'middleware' => ['insert-metadata']], function () {
+    Route::get('public', [MessagesController::class, 'showPublicMessage']);
+
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::get('protected', [MessagesController::class, 'showProtectedMessage']);
+        Route::get('admin', [MessagesController::class, 'showAdminMessage'])->middleware('can:read:admin-messages');
+    });
+});
+
 
 Route::apiResource('comments', CommentController::class);
 
