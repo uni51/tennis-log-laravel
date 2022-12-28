@@ -21,12 +21,17 @@ Route::group(['prefix' => 'messages', 'middleware' => ['insert-metadata']], func
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('protected', [MessagesController::class, 'showProtectedMessage']);
-        Route::get('admin', [MessagesController::class, 'showAdminMessage'])->middleware('can:read:admin-messages');
+
+        Route::get('admin', [MessagesController::class, 'showAdminMessage'])->middleware('admin');
     });
 });
 
+//Route::apiResource('comments', CommentController::class);
 
-Route::apiResource('comments', CommentController::class);
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::post('comments', [CommentController::class, 'store']);
+});
+
 
 Route::get('test', function () {
     return \App\Models\Sample::first();

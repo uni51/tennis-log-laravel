@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Services\MessageService;
 use Illuminate\Http\JsonResponse;
+use App\Services\JWTService;
+use Illuminate\Http\Request;
 
 class MessagesController extends Controller
 {
@@ -18,8 +20,12 @@ class MessagesController extends Controller
         return response()->json($messageService->getAdminMessage()->toArray());
     }
 
-    public function showProtectedMessage(MessageService $messageService): JsonResponse
+    public function showProtectedMessage(JWTService $jwtService, Request $request): JsonResponse
     {
-        return response()->json($messageService->getProtectedMessage()->toArray());
+        $token = $jwtService->extractBearerTokenFromRequest($request);
+        $user = $jwtService->decodeBearerToken($token);
+        dd($user);
+
+        // return response()->json($messageService->getProtectedMessage()->toArray());
     }
 }

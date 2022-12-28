@@ -6,7 +6,7 @@ use App\Exceptions\ApiException;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 
-class Authenticate
+class Authorize
 {
     /**
      * The authentication guard factory instance.
@@ -31,13 +31,26 @@ class Authenticate
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next, ...$permissions)
     {
-        if ($this->auth->guard($guard)->guest()) {
+        $user = $this->auth->guard('api')->user();
+
+        if (empty($user)) {
             throw new ApiException('Requires authentication', 401);
+        }
+
+        $userPermissions = $user->permissions ?? [];
+
+        foreach ($permissions as $permission) {
+            if (!in_array($permission, $userPermissions)) {
+                throw ApiException::withDetails([
+                    'error'=> 'insufficient_permissions',
+                    'error_description' => 'Insufficient permissions to access resource',
+                    'message' => "Permission denied"
+                ], 403);
+            }
         }
 
         return $next($request);

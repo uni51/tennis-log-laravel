@@ -43,6 +43,9 @@ return [
 
     'debug' => (bool) env('APP_DEBUG', false),
 
+    'branch' => env('APP_BRANCH', 'basic-role-based-access-control'),
+    'api' => env('APP_API', 'tennis-log-api-laravel'),
+
     /*
     |--------------------------------------------------------------------------
     | Application URL
