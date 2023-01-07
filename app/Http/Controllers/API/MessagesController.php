@@ -7,6 +7,7 @@ use App\Services\MessageService;
 use Illuminate\Http\JsonResponse;
 use App\Services\JWTService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MessagesController extends Controller
 {
@@ -22,10 +23,14 @@ class MessagesController extends Controller
 
     public function showProtectedMessage(JWTService $jwtService, Request $request): JsonResponse
     {
-        $token = $jwtService->extractBearerTokenFromRequest($request);
-        $user = $jwtService->decodeBearerToken($token);
+//        $token = $jwtService->extractBearerTokenFromRequest($request);
+//        $user = $jwtService->decodeBearerToken($token);
+        $user = Auth::guard('api')->user();
         dd($user);
-
-        // return response()->json($messageService->getProtectedMessage()->toArray());
     }
+
+//    public function showProtectedMessage(MessageService $messageService): JsonResponse
+//    {
+//        return response()->json($messageService->getProtectedMessage()->toArray());
+//    }
 }
