@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\MessagesController;
+use App\Http\Controllers\API\MemoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,11 @@ Route::group(['prefix' => 'messages', 'middleware' => ['insert-metadata']], func
         Route::get('admin', [MessagesController::class, 'showAdminMessage'])->middleware('admin');
     });
 });
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('/memos', [MemoController::class, 'fetch']);
+});
+
 
 //Route::apiResource('comments', CommentController::class);
 

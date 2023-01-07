@@ -43,10 +43,10 @@ class Authenticate
             throw new ApiException('Requires authentication', 401);
         }
 
-        $user = $this->auth->guard('api')->user();
+        $auth0User = $this->auth->guard('api')->user();
 
         // ユーザーテーブルに、同一のAuth0のIDがないかチェック
-        $existUser = User::where('auth0_id', $user->sub)->first();
+        $existUser = User::where('auth0_id', $auth0User->sub)->first();
 
         // ユーザーテーブルに、同一のAuth0のIDがない場合は、新規にユーザーテーブルにAuth0のIDとGoogleに登録しているnameを登録
         if (!$existUser) {
@@ -61,7 +61,7 @@ class Authenticate
                 $response = json_decode($response->getBody());
 
                 User::create([
-                    'auth0_id'   => $user->sub,
+                    'auth0_id'   => $auth0User->sub,
                     'name'       => $response->name,
                 ]);
             }
