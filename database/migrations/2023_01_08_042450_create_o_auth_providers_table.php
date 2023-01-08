@@ -15,7 +15,14 @@ return new class extends Migration
     {
         Schema::create('o_auth_providers', function (Blueprint $table) {
             $table->id();
+            $table->string('provider');
+            $table->string('provider_id');
             $table->timestamps();
+
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 
@@ -26,6 +33,10 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::table('o_auth_providers', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+        });
+
         Schema::dropIfExists('o_auth_providers');
     }
 };
