@@ -8,6 +8,7 @@ use Closure;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Support\Facades\Cache;
 
 class Authenticate
 {
@@ -46,10 +47,19 @@ class Authenticate
         $auth0User = $this->auth->guard('api')->user();
 
         // ユーザーテーブルに、同一のAuth0のIDがないかチェック
-        $existUser = User::where('auth0_id', $auth0User->sub)->first();
+        $seconds = 3600;
+
+        $cachedExistUser = Cache::get('auth0_id'.$auth0User->sub);
+
+        if (!$cachedExistUser) {
+            $dbExistUser = User::where('auth0_id', $auth0User->sub)->first();
+            if ($dbExistUser) Cache::put('auth0_id'.$auth0User->sub, $dbExistUser, $seconds = 3600);
+        } else {
+            $dbExistUser = $cachedExistUser;
+        }
 
         // ユーザーテーブルに、同一のAuth0のIDがない場合は、新規にユーザーテーブルにAuth0のIDとGoogleに登録しているnameを登録
-        if (!$existUser) {
+        if (!$dbExistUser) {
             $url = env('AUTH0_DOMAIN')."/userinfo";
             //接続
             try {
@@ -60,10 +70,11 @@ class Authenticate
                 ]]);
                 $response = json_decode($response->getBody());
 
-                User::create([
+                $newUser = User::create([
                     'auth0_id'   => $auth0User->sub,
                     'name'       => $response->name,
                 ]);
+                Cache::put('auth0_id'.$auth0User->sub, $newUser, $seconds = 3600);
             }
             catch (ClientException $e) {
                 // TODO: Guzzleの接続エラー用の例外を投げる
@@ -71,6 +82,16 @@ class Authenticate
             }
         }
 
+        $userId = $dbExistUser ? $dbExistUser->id : $newUser->id;
+
+        $request->merge([
+            'userId' => $userId
+        ]);
+
         return $next($request);
+    }
+
+    private function getExistUser($auth0User) {
+        return User::where('auth0_id', $auth0User->sub)->first();
     }
 }
