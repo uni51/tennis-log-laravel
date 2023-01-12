@@ -36,4 +36,7 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/userAuth.php';
-require __DIR__.'/adminAuth.php';
+
+Route::prefix('admin')->name('admin.')->group(function(){
+    require __DIR__.'/adminAuth.php';
+});
