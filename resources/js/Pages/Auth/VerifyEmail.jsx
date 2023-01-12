@@ -8,7 +8,7 @@ export default function VerifyEmail({ status }) {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('verification.send'));
+        post(route('admin.verification.send'));
     };
 
     return (
@@ -31,7 +31,7 @@ export default function VerifyEmail({ status }) {
                     <PrimaryButton processing={processing}>Resend Verification Email</PrimaryButton>
 
                     <Link
-                        href={route('logout')}
+                        href={route('admin.logout')}
                         method="post"
                         as="button"
                         className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
