@@ -25,10 +25,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/admin/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('admin.dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('admin.profile.edit');
     Route::patch('/admin/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
@@ -38,5 +34,10 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/userAuth.php';
 
 Route::prefix('admin')->name('admin.')->group(function(){
+
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->middleware(['auth:admin', 'verified'])->name('dashboard');
+
     require __DIR__.'/adminAuth.php';
 });
