@@ -31,8 +31,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/admin/profile', [ProfileController::class, 'destroy'])->name('admin.profile.destroy');
 });
 
-require __DIR__.'/userAuth.php';
-
 Route::prefix('admin')->name('admin.')->group(function(){
 
     Route::get('/dashboard', function () {
@@ -41,3 +39,5 @@ Route::prefix('admin')->name('admin.')->group(function(){
 
     require __DIR__.'/adminAuth.php';
 });
+
+require __DIR__.'/userAuth.php';
