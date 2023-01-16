@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MemoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,15 +15,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('test', function () {
-    return \App\Models\Sample::first();
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::get('/memos', [MemoController::class, 'fetch']);
 });
 
-Route::post('test', function(Request $request) {
-    $request->validate(['text' => 'required|string']);
-    return \App\Models\Sample::create(['text' => $request->input('text')]);
-});
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => 'auth:admin'], function () {
+    Route::get('/admin', function (Request $request) {
+        return $request->user();
+    });
 });
