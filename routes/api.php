@@ -23,3 +23,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/memos', [MemoController::class, 'fetch']);
 });
 
+Route::group(['middleware' => 'auth:admin'], function () {
+    Route::get('/admin', function (Request $request) {
+        return $request->user();
+    });
+});
