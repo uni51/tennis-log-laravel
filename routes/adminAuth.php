@@ -4,11 +4,11 @@ use App\Http\Controllers\AdminAuth\AuthenticatedSessionController;
 use App\Http\Controllers\AdminAuth\EmailVerificationNotificationController;
 use App\Http\Controllers\AdminAuth\NewPasswordController;
 use App\Http\Controllers\AdminAuth\PasswordResetLinkController;
-use App\Http\Controllers\AdminAuth\RegisteredUserController;
+use App\Http\Controllers\AdminAuth\RegisteredAdminController;
 use App\Http\Controllers\AdminAuth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/admin/register', [RegisteredUserController::class, 'store'])
+Route::post('/admin/register', [RegisteredAdminController::class, 'store'])
                 ->middleware('guest')
                 ->name('register');
 
