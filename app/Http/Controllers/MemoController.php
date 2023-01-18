@@ -14,10 +14,21 @@ use Illuminate\Support\Facades\Auth;
 class MemoController extends Controller
 {
 
+    /**
+     * @param Request $request
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
     public function fetch(Request $request)
     {
+        // ログインユーザーのID取得
+        $userId = Auth::id();
+        if (!$userId) {
+            throw new Exception('未ログインです。');
+        }
+
         try {
-            $memos = Memo::all();
+            $memos = Memo::where('user_id', $userId)->get();
         } catch (Exception $e) {
             throw $e;
         }
