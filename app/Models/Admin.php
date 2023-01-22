@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+/*
+  Illuminate\Auth\Notifications\AdminResetPassword は、Illuminate\Auth\Notifications\ResetPassword
+  を自分でコピーして作成したファイル
+  See: https://omokaji.atlassian.net/wiki/spaces/PRODUCT/pages/1965817898/Laravel+Breeze+Multi+Authentification
+*/
 use Illuminate\Auth\Notifications\AdminResetPassword as ResetPasswordNotification;
 
 class Admin extends Authenticatable
