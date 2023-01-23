@@ -21,6 +21,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     Route::get('/memos', [MemoController::class, 'fetch']);
+    Route::post('/memos', [MemoController::class, 'create']);
 });
 
 Route::group(['middleware' => 'auth:admin'], function () {
