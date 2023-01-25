@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MemoController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\UserResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,8 +18,14 @@ use App\Http\Controllers\MemoController;
 */
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
+//    Route::get('/user', function (Request $request) {
+//        return $request->user();
+//    });
+
+    // ログインユーザー取得
+    Route::get('/user', function() {
+        $user = Auth::user();
+        return $user ? new UserResource($user) : null;
     });
 
     Route::get('/memos', [MemoController::class, 'fetch']);
