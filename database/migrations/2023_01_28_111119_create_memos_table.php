@@ -20,7 +20,7 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade')
                 ->comment('ユーザーID');
-            $table->foreignId('category_id')
+            $table->foreignId('category_id')->default(8)
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade')

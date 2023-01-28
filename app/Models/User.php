@@ -47,4 +47,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(OAuthProvider::class);
     }
+
+    public function memos()
+    {
+        return $this->hasMany(Memo::class);
+    }
 }
