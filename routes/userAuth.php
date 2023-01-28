@@ -20,7 +20,7 @@ Route::post('/register', [RegisteredUserController::class, 'store'])
 //                ->name('login');
 
 
-// ログイン
+// Recoilでのログイン
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
                 ->middleware('guest')
