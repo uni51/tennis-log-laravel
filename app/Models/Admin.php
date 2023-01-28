@@ -7,7 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+/*
+  Illuminate\Auth\Notifications\AdminResetPassword は、Illuminate\Auth\Notifications\ResetPassword
+  を自分でコピーして作成したファイル
+  See: https://omokaji.atlassian.net/wiki/spaces/PRODUCT/pages/1965817898/Laravel+Breeze+Multi+Authentification
+*/
+use Illuminate\Auth\Notifications\AdminResetPassword as ResetPasswordNotification;
 
 class Admin extends Authenticatable
 {
@@ -43,8 +48,8 @@ class Admin extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function providers(): HasMany
-    {
-        return $this->hasMany(OAuthProvider::class);
+    public function sendPasswordResetNotification($token){
+
+        $this->notify(new ResetPasswordNotification($token));
     }
 }
