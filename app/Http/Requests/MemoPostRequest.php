@@ -24,9 +24,9 @@ class MemoPostRequest extends FormRequest
     public function rules()
     {
         return [
-            'category_id' => ['nullable', 'int'],
             'title' => ['required'],
             'body' => ['required'],
+            'category_id' => ['required', 'int'],
             'tags' => ['nullable', 'array']
         ];
     }
