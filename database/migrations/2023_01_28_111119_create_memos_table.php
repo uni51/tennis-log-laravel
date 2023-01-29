@@ -20,6 +20,10 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade')
                 ->comment('ユーザーID');
+            $table->foreignId('category_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->comment('カテゴリーID');
             $table->string('title', 100)->comment('タイトル');
             $table->string('body', 3000)->comment('メモの内容');
             $table->timestamps();

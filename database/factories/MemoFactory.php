@@ -20,6 +20,7 @@ class MemoFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id,
+            'category_id' => Category::inRandomOrder()->first()->id,
             'title' => fake()->realTextBetween(5,50),
             'body' => fake()->realText(),
         ];

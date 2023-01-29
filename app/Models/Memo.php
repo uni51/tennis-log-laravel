@@ -16,6 +16,7 @@ class Memo extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
+        'user_id',
         'category_id',
         'title',
         'body',
@@ -24,10 +25,5 @@ class Memo extends Model
     public function users(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function categories(): BelongsToMany
-    {
-        return $this->belongsToMany(Category::class)->withTimestamps();
     }
 }
