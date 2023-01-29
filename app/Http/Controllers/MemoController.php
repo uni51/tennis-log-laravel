@@ -17,11 +17,10 @@ class MemoController extends Controller
 {
 
     /**
-     * @param Request $request
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function fetch(Request $request)
+    public function fetch()
     {
         // ログインユーザーのID取得
         $userId = Auth::id();
@@ -62,7 +61,7 @@ class MemoController extends Controller
             $memo->save();
 
             // メモとタグの紐付け
-            $memo->retag($request->tags);
+            // $memo->retag($request->tags);
 
             DB::commit();
 

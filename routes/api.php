@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MemoController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\UserResource;
 
@@ -16,6 +17,8 @@ use App\Http\Resources\UserResource;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('/categories', [CategoryController::class, 'list']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
 //    Route::get('/user', function (Request $request) {
