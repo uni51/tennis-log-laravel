@@ -9,12 +9,16 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Askedio\SoftCascade\Traits\SoftCascadeTrait;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, SoftCascadeTrait;
 
     protected $dates = ['deleted_at'];
+    // ユーザーが削除（論理削除された時に、合わせて論理削除するリレーションを設定）
+    // TODO: 実際にユーザーを削除して、要確認
+    protected $softCascade = ['memos'];
 
     /**
      * The attributes that are mass assignable.
