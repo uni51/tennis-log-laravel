@@ -13,13 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('category_memo', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password')->nullable();
-            $table->rememberToken();
+            $table->unsignedBigInteger('memo_id')->comment('メモID');
+            $table->foreign('memo_id')->references('id')->on('memos')->onDelete('cascade');
+            $table->unsignedBigInteger('category_id')->comment('カテゴリーID');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->timestamps();
 
             $table->softDeletes();
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('category_memo');
     }
 };

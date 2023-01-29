@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MemoPostRequest extends FormRequest
+class MemoEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,8 @@ class MemoPostRequest extends FormRequest
     public function rules()
     {
         return [
-            'category_id' => ['nullable', 'int'],
+            // 'id' => ['required', 'int'],
+            'category_id' => ['required', 'int'],
             'title' => ['required'],
             'body' => ['required'],
             'tags' => ['nullable', 'array']
