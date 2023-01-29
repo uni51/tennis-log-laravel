@@ -29,8 +29,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     Route::get('/memos', [MemoController::class, 'fetch']);
+    Route::get('/memos/{id}', [MemoController::class, 'show']);
     Route::post('/memos', [MemoController::class, 'create']);
     Route::post('/memos/{id}', [MemoController::class, 'edit']);
+    Route::post('/memos/{id}/delete', [MemoController::class, 'destroy']);
 });
 
 Route::group(['middleware' => 'auth:admin'], function () {

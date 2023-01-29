@@ -55,13 +55,11 @@ class MemoController extends Controller
             $memo = new Memo();
             // パラメータのセット
             $memo->user_id = Auth::id();
+            $memo->category_id = $request->category_id;
             $memo->title = $request->title;
             $memo->body = $request->body;
             // モデルの保存
             $memo->save();
-
-            // メモとカテゴリーの紐付け
-            $memo->categories()->attach($request->category_id);
 
             // メモとタグの紐付け
             $memo->retag($request->tags);
@@ -78,6 +76,13 @@ class MemoController extends Controller
         ], 201);
     }
 
+    public function show($id)
+    {
+        $memo = Memo::findOrFail($id);
+
+        return new MemoResource($memo);
+    }
+
     public function edit(MemoEditRequest $request, $id)
     {
         try {
@@ -90,7 +95,8 @@ class MemoController extends Controller
                 $memo->title = $request->title,
                 $memo->body = $request->body,
             ]);
-            // apply the tags
+
+            // メモとタグの紐付け
             $memo->retag($request->tags);
 
             DB::commit();
@@ -102,5 +108,12 @@ class MemoController extends Controller
         return response()->json([
             'message' => 'メモの編集に成功しました。'
         ], 201);
+    }
+
+    public function destroy($id)
+    {
+        $memo = Memo::findOrFail($id);
+        $memo->delete();
+        return response()->json(['message' => 'Memo deleted'], 200);
     }
 }
