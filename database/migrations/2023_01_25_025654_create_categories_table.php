@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
+        // See. https://fuminori14.hatenablog.com/entry/20120920/1348147599
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->integer('parent_id')->nullable(); // 親カテゴリID
             $table->string('name');
+            $table->boolean('state')->default(true);
             $table->timestamps();
         });
     }
