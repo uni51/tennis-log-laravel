@@ -31,6 +31,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         return $user ? new UserResource($user) : null;
     });
 
+    Route::get('/user/delete', function() {
+        $user = Auth::user();
+        \App\Models\Memo::where('user_id', $user->id)->delete();
+        return $user->delete();
+    });
+
     Route::get('/memos', [MemoController::class, 'fetch']);
     Route::get('/memos/{id}', [MemoController::class, 'show']);
     Route::post('/memos', [MemoController::class, 'create']);

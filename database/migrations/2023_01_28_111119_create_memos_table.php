@@ -18,11 +18,12 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrained()
                 ->onUpdate('cascade')
-                ->onDelete('cascade')
+                ->onDelete('restrict')
                 ->comment('ユーザーID');
             $table->foreignId('category_id')
                 ->constrained()
                 ->onUpdate('cascade')
+                ->onDelete('restrict')
                 ->comment('カテゴリーID');
             $table->string('title', 100)->comment('タイトル');
             $table->string('body', 3000)->comment('メモの内容');

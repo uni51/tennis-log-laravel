@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentTaggable\Taggable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Memo extends Model
 {
-    use HasFactory, Taggable, SoftDeletes;
+    use HasFactory, Taggable;
 
     protected $dates = ['deleted_at'];
 
