@@ -21,7 +21,7 @@ Route::post('/register', [RegisteredUserController::class, 'store'])
 
 
 // Recoilでのログイン
-Route::post('/login', [LoginController::class, 'login']);
+Route::post('/login', [LoginController::class, 'login'])->name('user.login');
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
                 ->middleware('guest')
                 ->name('password.email');
