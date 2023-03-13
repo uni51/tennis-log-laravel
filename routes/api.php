@@ -19,6 +19,7 @@ use App\Http\Resources\UserResource;
 */
 
 Route::get('/categories', [CategoryController::class, 'list']);
+Route::get('/categories/{id}', [CategoryController::class, 'show']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
 //    Route::get('/user', function (Request $request) {

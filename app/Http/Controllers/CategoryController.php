@@ -24,4 +24,11 @@ class CategoryController extends Controller
 
         return CategoryResource::collection($categories);
     }
+
+    public function show($id)
+    {
+        $category = Category::findOrFail($id);
+
+        return new CategoryResource($category);
+    }
 }
