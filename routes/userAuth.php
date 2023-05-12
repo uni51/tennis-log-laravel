@@ -15,13 +15,13 @@ Route::post('/register', [RegisteredUserController::class, 'store'])
                 ->name('register');
 
 // SWR認証でのログイン
-//Route::post('/login', [AuthenticatedSessionController::class, 'store'])
-//                ->middleware('guest')
-//                ->name('login');
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+                ->middleware('guest')
+                ->name('login');
 
 
 // Recoilでのログイン
-Route::post('/login', [LoginController::class, 'login'])->name('user.login');
+//Route::post('/login', [LoginController::class, 'login'])->name('user.login');
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
                 ->middleware('guest')
                 ->name('password.email');
