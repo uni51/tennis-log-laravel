@@ -51,3 +51,4 @@ Route::group(['middleware' => 'auth:admin'], function () {
     });
 });
 
+require __DIR__.'/userAuth.php';

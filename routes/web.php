@@ -18,5 +18,4 @@ Route::get('/', function () {
      return ['Laravel' => app()->version()];
 });
 
-require __DIR__.'/userAuth.php';
 require __DIR__.'/adminAuth.php';
