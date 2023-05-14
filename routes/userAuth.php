@@ -21,7 +21,7 @@ Route::post('/register', [RegisteredUserController::class, 'store'])
 
 
 // Recoilでのログイン
-Route::post('/login', [LoginController::class, 'login'])->name('user.login');
+Route::post('/login', [LoginController::class, 'login'])->prefix('api')->name('user.login');
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
                 ->middleware('guest')
                 ->name('password.email');
@@ -40,6 +40,7 @@ Route::post('/email/verification-notification', [EmailVerificationNotificationCo
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->middleware('auth')
+                ->prefix('api')
                 ->name('logout');
 
 Route::middleware(['guest'])
