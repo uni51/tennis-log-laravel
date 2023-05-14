@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +19,7 @@ Route::get('/', function () {
      return ['Laravel' => app()->version()];
 });
 
+Route::get('/categories', [CategoryController::class, 'list']);
 
 require __DIR__.'/userAuth.php';
 require __DIR__.'/adminAuth.php';
