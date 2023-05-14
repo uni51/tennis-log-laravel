@@ -34,4 +34,5 @@ return [
     // 'supports_credentials' => false, // default
     'supports_credentials' => true,
 
+    'prefix' => 'api/sanctum',
 ];
