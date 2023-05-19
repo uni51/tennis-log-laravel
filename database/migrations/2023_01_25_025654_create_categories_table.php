@@ -13,9 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('samples', function (Blueprint $table) {
+        // See. https://fuminori14.hatenablog.com/entry/20120920/1348147599
+        //      https://thinkit.co.jp/free/tech/31/5?page=0%2C1
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('text');
+            // $table->integer('parent_id')->nullable(); // 親カテゴリID
+            $table->string('name');
+            $table->boolean('state')->default(true);
             $table->timestamps();
         });
     }
@@ -27,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('samples');
+        Schema::dropIfExists('categories');
     }
 };

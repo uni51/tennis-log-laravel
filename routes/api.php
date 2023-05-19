@@ -2,6 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MemoController;
+use App\Http\Controllers\CategoryController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\UserResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,15 +18,35 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('test', function () {
-    return \App\Models\Sample::first();
+Route::get('/categories', [CategoryController::class, 'list']);
+Route::get('/categories/{id}', [CategoryController::class, 'show']);
+
+Route::group(['middleware' => 'auth:sanctum'], function () {
+//    Route::get('/user', function (Request $request) {
+//        return $request->user();
+//    });
+
+    // ログインユーザー取得
+    Route::get('/user', function() {
+        $user = Auth::user();
+        return $user ? new UserResource($user) : null;
+    });
+
+    Route::get('/user/delete', function() {
+        $user = Auth::user();
+        \App\Models\Memo::where('user_id', $user->id)->delete();
+        return $user->delete();
+    });
+
+    Route::get('/memos', [MemoController::class, 'fetch']);
+    Route::get('/memos/{id}', [MemoController::class, 'show']);
+    Route::post('/memos', [MemoController::class, 'create']);
+    Route::post('/memos/{id}', [MemoController::class, 'edit']);
+    Route::post('/memos/{id}/delete', [MemoController::class, 'destroy']);
 });
 
-Route::post('test', function(Request $request) {
-    $request->validate(['text' => 'required|string']);
-    return \App\Models\Sample::create(['text' => $request->input('text')]);
-});
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => 'auth:admin'], function () {
+    Route::get('/admin', function (Request $request) {
+        return $request->user();
+    });
 });
