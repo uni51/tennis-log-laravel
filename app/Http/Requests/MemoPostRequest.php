@@ -24,17 +24,18 @@ class MemoPostRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => ['required'],
-            'body' => ['required'],
-            'category_id' => ['required', 'int'],
-            'tags' => ['nullable', 'array']
+            'title'       => ['required', 'max:100'],
+            'body'        => ['required', 'max:3000'],
+            'category_id' => ['required', 'int', 'between:1,8'],
+            'tags'        => ['nullable', 'array']
         ];
     }
 
-    public function messages()
+    public function attributes()
     {
         return [
-            'required' => '必須入力です。',
+            'title' => 'タイトル',
+            'body' => '内容',
         ];
     }
 }

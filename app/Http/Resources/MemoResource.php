@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MemoResource extends JsonResource
@@ -24,6 +25,8 @@ class MemoResource extends JsonResource
                 'tags' => $this->tagArray,
                 'normalized' => $this->tagArrayNormalized,
             ],
+            'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('Y年m月d日 H時i分'),
+            'updated_at' => Carbon::createFromFormat('Y-m-d H:i:s', $this->updated_at)->format('Y年m月d日 H時i分'),
         ];
     }
 }
