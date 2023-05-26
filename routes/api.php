@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MemoController;
+use App\Http\Controllers\PrivateMemoController;
+use App\Http\Controllers\PublicMemoController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\UserResource;
@@ -21,6 +23,9 @@ use App\Http\Resources\UserResource;
 Route::get('/categories', [CategoryController::class, 'list']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']);
 
+// 全ユーザーの全ての公開中の記事一覧を取得するAPI
+Route::get('/public/memos', [PublicMemoController::class, 'list']);
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
 //    Route::get('/user', function (Request $request) {
 //        return $request->user();
@@ -38,11 +43,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         return $user->delete();
     });
 
-    Route::get('/memos', [MemoController::class, 'fetch']);
+    // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
+    Route::get('/memos', [MemoController::class, 'list']);
     Route::get('/memos/{id}', [MemoController::class, 'show']);
     Route::post('/memos', [MemoController::class, 'create']);
     Route::post('/memos/{id}', [MemoController::class, 'edit']);
     Route::post('/memos/{id}/delete', [MemoController::class, 'destroy']);
+
+    // ユーザーに紐づく非公開の記事一覧を取得するAPI
+    Route::get('/private/memos', [PrivateMemoController::class, 'list']);
 });
 
 Route::group(['middleware' => 'auth:admin'], function () {
