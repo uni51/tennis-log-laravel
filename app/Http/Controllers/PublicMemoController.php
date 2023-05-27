@@ -15,8 +15,11 @@ class PublicMemoController extends Controller
      */
     public function list(PublicMemoService $service): AnonymousResourceCollection
     {
-        return $service->listPublicMemo();
+        return $service->publicListMemo();
     }
 
-
+    public function listBelongsUser($userId , PublicMemoService $service): AnonymousResourceCollection
+    {
+        return $service->publicListMemoBelongsUser($userId);
+    }
 }
