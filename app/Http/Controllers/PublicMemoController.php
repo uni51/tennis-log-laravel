@@ -13,13 +13,24 @@ class PublicMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function list(PublicMemoService $service): AnonymousResourceCollection
+    public function allList(PublicMemoService $service): AnonymousResourceCollection
     {
-        return $service->publicListMemo();
+        return $service->allList();
     }
 
-    public function listBelongsUser($userId , PublicMemoService $service): AnonymousResourceCollection
+    /**
+     * @param PublicMemoService $service
+     * @param $nickName
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function userMemoList(PublicMemoService $service, $nickName)
     {
-        return $service->publicListMemoBelongsUser($userId);
+        return $service->userMemoList($nickName);
+    }
+
+    public function userMemoDetail(PublicMemoService $service, $nickName, $memoId)
+    {
+        return $service->userMemoDetail($nickName, $memoId);
     }
 }

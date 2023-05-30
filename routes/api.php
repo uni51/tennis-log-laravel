@@ -24,8 +24,9 @@ Route::get('/categories', [CategoryController::class, 'list']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']);
 
 // 全ユーザーの全ての公開中の記事一覧を取得するAPI
-Route::get('/public/memos', [PublicMemoController::class, 'list']);
-Route::get('/public/memos/{userId}', [PublicMemoController::class, 'listBelongsUser']);
+Route::get('/public/memos', [PublicMemoController::class, 'allList']);
+Route::get('/public/{nickName}/memos/', [PublicMemoController::class, 'userMemoList']);
+Route::get('/public/{nickName}/memos/{memoId}', [PublicMemoController::class, 'userMemoDetail']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
 //    Route::get('/user', function (Request $request) {
