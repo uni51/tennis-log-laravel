@@ -6,6 +6,7 @@ use App\Http\Requests\MemoPostRequest;
 use App\Http\Requests\MemoEditRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
+use App\Services\MemoService;
 use Exception;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Http\JsonResponse;
@@ -17,27 +18,21 @@ class MemoController extends Controller
 {
 
     /**
+     * メモの公開・非公開を問わずに、そのユーザーに紐づく記事一覧を取得するAPI
+     *
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function fetch()
+    public function list(MemoService $service)
     {
+        // return Auth::guard('sanctum')->user();
+        // return Auth::user();
         // ログインユーザーのID取得
         $userId = Auth::id();
         if (!$userId) {
             throw new Exception('未ログインです。');
         }
-
-        try {
-            $memos = Memo::with(['category:name,id'])->where('user_id', $userId)->get();
-        } catch (Exception $e) {
-            throw $e;
-        }
-
-        return MemoResource::collection($memos);
-
-        // return Auth::guard('sanctum')->user();
-        // return Auth::user();
+        return $service->listMemoLinkedToUser($userId);
     }
 
     /**

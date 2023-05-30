@@ -27,8 +27,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'email' => ['required', 'string', 'email:rfc'],
+            'password' => ['required', 'string', 'regex:/\A([a-zA-Z0-9]{8,})+\z/u'],
         ];
     }
 
@@ -45,7 +45,8 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
+                // 'email' => __('auth.failed'),
+                'email' => 'IDまたはパスワードが間違っています。'
             ]);
         }
 
@@ -81,5 +82,13 @@ class LoginRequest extends FormRequest
     public function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
+    }
+
+    public function messages()
+    {
+        return [
+            'email.email' => '有効なメールアドレスを入力してください。',
+            'password.regex' => '8文字以上の半角英数字で入力してください',
+        ];
     }
 }
