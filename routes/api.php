@@ -46,7 +46,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
-    Route::get('/memos', [MemoController::class, 'list']);
+    Route::get('/dashboard/memos', [MemoController::class, 'list']);
 //    Route::get('/memos/{id}', [MemoController::class, 'show']);
     Route::post('/memos', [MemoController::class, 'create']);
     Route::post('/memos/{id}', [MemoController::class, 'edit']);

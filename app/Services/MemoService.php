@@ -18,7 +18,7 @@ class MemoService
         try {
             $memos = Memo::with(['category:name,id'])
                     ->where('user_id', $userId)
-                    ->get();
+                    ->paginate(6);
         } catch (Exception $e) {
             throw $e;
         }
