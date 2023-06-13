@@ -14,9 +14,14 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class MemoController extends Controller
+/**
+ * Class DashBoardMemoController
+ * ログインユーザーの作成した記事を取得するコントローラー
+ *
+ * @package App\Http\Controllers
+ */
+class DashBoardMemoController extends Controller
 {
-
     /**
      * メモの公開・非公開を問わずに、そのユーザーに紐づく記事一覧を取得するAPI
      *

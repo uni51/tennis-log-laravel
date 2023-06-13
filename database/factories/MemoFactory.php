@@ -22,7 +22,7 @@ class MemoFactory extends Factory
             'user_id' => User::inRandomOrder()->first()->id,
             'category_id' => Category::inRandomOrder()->first()->id,
             'title' => fake()->realTextBetween(5,50),
-            'status' => fake()->numberBetween(0, 2),
+            'status' => fake()->numberBetween(0, 3),
             'body' => fake()->realText(),
         ];
     }
