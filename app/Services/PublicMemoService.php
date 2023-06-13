@@ -20,7 +20,7 @@ class PublicMemoService
         try {
             $memos = Memo::with(['category:name,id'])
                         ->where('status', 1)
-                        ->paginate(5);
+                        ->paginate(6);
         } catch (Exception $e) {
             throw $e;
         }
