@@ -23,7 +23,7 @@ use App\Http\Resources\UserResource;
 Route::get('/categories', [CategoryController::class, 'list']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']);
 
-// 全ユーザーの全ての公開中の記事一覧を取得するAPI
+// 公開中の記事一覧を取得するAPI
 Route::get('/public/memos', [PublicMemoController::class, 'allList']);
 Route::get('/public/memos/{id}', [PublicMemoController::class, 'show']);
 Route::get('/public/{nickName}/memos/', [PublicMemoController::class, 'userMemoList']);

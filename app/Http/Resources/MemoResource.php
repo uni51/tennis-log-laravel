@@ -19,6 +19,7 @@ class MemoResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'user_name' => $this->user->name,
+            'user_nickname' => $this->user->nickname,
             'title' => $this->title,
             'body' => $this->body,
             'category_id' => $this->category_id,

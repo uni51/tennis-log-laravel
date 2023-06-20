@@ -43,7 +43,7 @@ class PublicMemoService
             $memos = Memo::with(['category:name,id'])
                 ->where('user_id', $user->id)
                 ->where('status', 1)
-                ->paginate(5);
+                ->paginate(6);
 
             DB::commit();
         } catch (Exception $e) {
