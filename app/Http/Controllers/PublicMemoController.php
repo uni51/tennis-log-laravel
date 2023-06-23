@@ -42,4 +42,9 @@ class PublicMemoController extends Controller
     {
         return $service->userMemoDetail($nickName, $memoId);
     }
+
+    public function memoListByCategory(PublicMemoService $service, $categoryId)
+    {
+        return $service->memoListByCategory($categoryId);
+    }
 }
