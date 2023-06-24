@@ -29,6 +29,8 @@ Route::get('/public/memos/{id}', [PublicMemoController::class, 'show']);
 Route::get('/public/{nickName}/memos/', [PublicMemoController::class, 'userMemoList']);
 Route::get('/public/{nickName}/memos/{memoId}', [PublicMemoController::class, 'userMemoDetail']);
 Route::get('/public/memos/category/{categoryId}', [PublicMemoController::class, 'memoListByCategory']);
+Route::get('/public/{nickName}/memos/category/{categoryId}',
+    [PublicMemoController::class, 'userMemoListByCategory']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
 //    Route::get('/user', function (Request $request) {
