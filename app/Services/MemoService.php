@@ -3,8 +3,11 @@ namespace App\Services;
 
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MemoService
 {
@@ -20,6 +23,22 @@ class MemoService
                     ->where('user_id', $userId)
                     ->paginate(6);
         } catch (Exception $e) {
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+    public function memoListByCategory($userId, $categoryId)
+    {
+        try {
+            $memos = Memo::with(['category:name,id'])
+                ->where('user_id', $userId)
+                ->where('category_id', $categoryId)
+                ->paginate(6);
+
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
             throw $e;
         }
 
