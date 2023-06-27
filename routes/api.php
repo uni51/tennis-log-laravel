@@ -24,12 +24,12 @@ Route::get('/categories', [CategoryController::class, 'list']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']);
 
 // 公開中の記事一覧を取得するAPI
-Route::get('/publicmemos/memos', [PublicMemoController::class, 'allList']);
-Route::get('/publicmemos/memos/{id}', [PublicMemoController::class, 'show']);
-Route::get('/publicmemos/{nickName}/memos', [PublicMemoController::class, 'userMemoList']);
-Route::get('/publicmemos/{nickName}/memos/{memoId}', [PublicMemoController::class, 'userMemoDetail']);
-Route::get('/publicmemos/memos/category/{categoryId}', [PublicMemoController::class, 'memoListByCategory']);
-Route::get('/publicmemos/{nickName}/memos/category/{categoryId}',
+Route::get('/public/memos', [PublicMemoController::class, 'allList']);
+Route::get('/public/memos/{id}', [PublicMemoController::class, 'show']);
+Route::get('/public/{nickname}/memos', [PublicMemoController::class, 'userMemoList']);
+Route::get('/public/{nickname}/memos/{memoId}', [PublicMemoController::class, 'userMemoDetail']);
+Route::get('/public/memos/category/{categoryId}', [PublicMemoController::class, 'memoListByCategory']);
+Route::get('/public/{nickname}/memos/category/{categoryId}',
     [PublicMemoController::class, 'userMemoListByCategory']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
