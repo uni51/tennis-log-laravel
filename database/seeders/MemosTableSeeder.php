@@ -14,6 +14,6 @@ class MemosTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Memo::factory(600)->create();
+        \App\Models\Memo::factory(10000)->create();
     }
 }

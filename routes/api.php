@@ -23,11 +23,14 @@ use App\Http\Resources\UserResource;
 Route::get('/categories', [CategoryController::class, 'list']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']);
 
-// 全ユーザーの全ての公開中の記事一覧を取得するAPI
+// 公開中の記事一覧を取得するAPI
 Route::get('/public/memos', [PublicMemoController::class, 'allList']);
 Route::get('/public/memos/{id}', [PublicMemoController::class, 'show']);
 Route::get('/public/{nickName}/memos/', [PublicMemoController::class, 'userMemoList']);
 Route::get('/public/{nickName}/memos/{memoId}', [PublicMemoController::class, 'userMemoDetail']);
+Route::get('/public/memos/category/{categoryId}', [PublicMemoController::class, 'memoListByCategory']);
+Route::get('/public/{nickName}/memos/category/{categoryId}',
+    [PublicMemoController::class, 'userMemoListByCategory']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
 //    Route::get('/user', function (Request $request) {
@@ -48,6 +51,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
     Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list']);
+    Route::get('/dashboard/memos/category/{categoryId}', [DashBoardMemoController::class, 'memoListByCategory']);
     Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'show']);
     Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create']);
     Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'edit']);

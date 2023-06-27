@@ -43,7 +43,7 @@ class PublicMemoService
             $memos = Memo::with(['category:name,id'])
                 ->where('user_id', $user->id)
                 ->where('status', 1)
-                ->paginate(5);
+                ->paginate(6);
 
             DB::commit();
         } catch (Exception $e) {
@@ -76,5 +76,43 @@ class PublicMemoService
         }
 
         return MemoResource::make($memos);
+    }
+
+    public function memoListByCategory($categoryId)
+    {
+        try {
+            $memos = Memo::where('category_id', $categoryId)
+                ->where('status', 1)
+                ->paginate(6);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            DB::rollBack();
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+    public function userMemoListByCategory($nickName, $categoryId)
+    {
+        try {
+            DB::beginTransaction();
+
+            $user = User::where('nickname', $nickName)->firstOrFail();
+
+            $memos = Memo::with(['category:name,id'])
+                ->where('user_id', $user->id)
+                ->where('category_id', $categoryId)
+                ->where('status', 1)
+                ->paginate(6);
+
+            DB::commit();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            DB::rollBack();
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
     }
 }
