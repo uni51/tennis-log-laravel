@@ -27,6 +27,7 @@ return new class extends Migration
                 ->comment('カテゴリーID');
             $table->string('title', 100)->comment('タイトル');
             $table->string('body', 3000)->comment('メモの内容');
+            $table->unsignedTinyInteger('status')->default(0)->comment('記事のステータス: 0:下書き, 1:公開中, 2:シェア, 3:非公開');
             $table->timestamps();
 
             $table->softDeletes();
