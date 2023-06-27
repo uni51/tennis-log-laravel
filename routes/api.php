@@ -26,7 +26,7 @@ Route::get('/categories/{id}', [CategoryController::class, 'show']);
 // 公開中の記事一覧を取得するAPI
 Route::get('/public/memos', [PublicMemoController::class, 'allList']);
 Route::get('/public/memos/{id}', [PublicMemoController::class, 'show']);
-Route::get('/public/{nickName}/memos/', [PublicMemoController::class, 'userMemoList']);
+Route::get('/public/{nickName}/memos', [PublicMemoController::class, 'userMemoList']);
 Route::get('/public/{nickName}/memos/{memoId}', [PublicMemoController::class, 'userMemoDetail']);
 Route::get('/public/memos/category/{categoryId}', [PublicMemoController::class, 'memoListByCategory']);
 Route::get('/public/{nickName}/memos/category/{categoryId}',
