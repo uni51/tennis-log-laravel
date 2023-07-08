@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashBoardMemoController;
 use App\Http\Controllers\PrivateMemoController;
 use App\Http\Controllers\PublicMemoController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\MemoController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\UserResource;
 
@@ -20,8 +20,9 @@ use App\Http\Resources\UserResource;
 |
 */
 
-Route::get('/categories', [CategoryController::class, 'list']);
-Route::get('/categories/{id}', [CategoryController::class, 'show']);
+Route::get('/memos/categories', [MemoController::class, 'getCategoryList']);
+
+Route::get('/memos/status', [MemoController::class, 'getStatusList']);
 
 // 公開中の記事一覧を取得するAPI
 Route::get('/public/memos', [PublicMemoController::class, 'allList']);
