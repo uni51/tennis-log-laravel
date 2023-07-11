@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\MemoStatusType;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class CategoryController extends Controller
+class MemoController extends Controller
 {
 
     /**
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function list()
+    public function getCategoryList()
     {
         try {
             $categories = Category::all();
@@ -25,10 +26,8 @@ class CategoryController extends Controller
         return CategoryResource::collection($categories);
     }
 
-    public function show($id)
+    public function getStatusList()
     {
-        $category = Category::findOrFail($id);
-
-        return new CategoryResource($category);
+        return response()->json(MemoStatusType::asSelectArray());
     }
 }

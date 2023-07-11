@@ -69,6 +69,7 @@ class DashBoardMemoController extends Controller
             // パラメータのセット
             $memo->user_id = Auth::id();
             $memo->category_id = $request->category_id;
+            $memo->status = $request->status_id;
             $memo->title = $request->title;
             $memo->body = $request->body;
             // モデルの保存
