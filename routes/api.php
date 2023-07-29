@@ -6,6 +6,7 @@ use App\Http\Controllers\DashBoardMemoController;
 use App\Http\Controllers\PrivateMemoController;
 use App\Http\Controllers\PublicMemoController;
 use App\Http\Controllers\MemoController;
+use App\Http\Controllers\FirebaseTestController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\UserResource;
 
@@ -19,6 +20,8 @@ use App\Http\Resources\UserResource;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('/firebasetest/login_anonymous', [FirebaseTestController::class, 'loginAnonymous']);
 
 Route::get('/memos/categories', [MemoController::class, 'getCategoryList']);
 
