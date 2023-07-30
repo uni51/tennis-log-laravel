@@ -9,13 +9,15 @@
         "bensampo/laravel-enum": "^6.4",
         "cviebrock/eloquent-taggable": "^9.0",
         "guzzlehttp/guzzle": "^7.2",
-        "kreait/firebase-php": "^7.5",
+        "kreait/firebase-php": "*",
         "kreait/laravel-firebase": "^5.3",
         "laravel/breeze": "^1.17",
         "laravel/framework": "^9.19",
+        "laravel/passport": "^11.8",
         "laravel/sanctum": "^3.0",
         "laravel/socialite": "^5.5",
-        "laravel/tinker": "^2.7"
+        "laravel/tinker": "^2.7",
+        "lcobucci/jwt": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

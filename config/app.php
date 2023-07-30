@@ -196,8 +196,6 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
-        Kreait\Laravel\Firebase\ServiceProvider::class,
     ],
 
     /*
@@ -213,6 +211,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'ServiceProvider' => Kreait\Laravel\Firebase\ServiceProvider::class,
     ])->toArray(),
 
 ];
