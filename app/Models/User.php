@@ -20,10 +20,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'firebase_uid',
         'name',
         'nickname',
         'email',
-        'password',
+        'access_token',
+        'expires_at',
     ];
 
     /**
