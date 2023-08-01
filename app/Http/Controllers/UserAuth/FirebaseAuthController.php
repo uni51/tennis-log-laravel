@@ -17,7 +17,6 @@ class  FirebaseAuthController extends Controller
 
     private $auth;
 
-
     public function __construct()
     {
         $factory = (new Factory())
@@ -34,7 +33,8 @@ class  FirebaseAuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $id_token = $request->input('idToken');
-//        $id_token = $request->headers->get('authorization');
+        // $id_token = $request->headers->get('authorization');
+        // $token = trim(str_replace('Bearer', '', $id_token));
 
         Log::debug($id_token);
 
@@ -53,7 +53,7 @@ class  FirebaseAuthController extends Controller
 
         $user = User::where('firebase_uid', $uid)->first();
 
-        Log::debug($user);
+//        Log::debug($user);
 
         if (is_null($user)) {
             $user = User::create([
@@ -68,15 +68,16 @@ class  FirebaseAuthController extends Controller
 
         $tokenResult = $user->createToken('Personal Access Token');
 
-        Log::debug($tokenResult);
+//        Log::debug($tokenResult);
         // トークンの期限
         $expires_at = Carbon::now()->addWeeks(1);
-        $user->update(['access_token' => $tokenResult->token->id, 'expires_at' => $expires_at]);
+        $user->update(['access_token' => $tokenResult->accessToken, 'expires_at' => $expires_at]);
 
         return response()->json([
             'uid' => $uid,
             'name' => $firebase_user->displayName,
-            'token' => $tokenResult->token->id // $tokenResult->accessToken に変更する必要があるかも？
+            //'token' => $tokenResult->token->id // $tokenResult->accessToken に変更する必要があるかも？
+            'token' => $tokenResult->accessToken
         ]);
     }
 }

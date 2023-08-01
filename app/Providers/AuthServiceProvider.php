@@ -25,14 +25,15 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Passport::ignoreRoutes();
-
-//        $this->registerPolicies();
-//
 //        ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
 //            return config('app.frontend_url')."/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}";
 //        });
 
         //
+    }
+
+    public function register()
+    {
+        Passport::ignoreRoutes();
     }
 }

@@ -23,7 +23,7 @@ use App\Http\Resources\UserResource;
 
 Route::get('/firebasetest/login_anonymous', [FirebaseTestController::class, 'loginAnonymous']);
 
-Route::get('/memos/categories', [MemoController::class, 'getCategoryList']);
+Route::get('/memos/categories', [MemoController::class, 'getCategoryList'])->middleware('client');
 
 Route::get('/memos/status', [MemoController::class, 'getStatusList']);
 
@@ -36,16 +36,24 @@ Route::get('/public/memos/category/{categoryId}', [PublicMemoController::class, 
 Route::get('/public/{nickname}/memos/category/{categoryId}',
     [PublicMemoController::class, 'userMemoListByCategory']);
 
+Route::group(['middleware' => 'auth:api'], function () {
+    // ログインユーザー取得
+    Route::get('/user', function(Request $request) {
+        $user = $request->user();
+        return $user ? new UserResource($user) : null;
+    });
+});
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
 //    Route::get('/user', function (Request $request) {
 //        return $request->user();
 //    });
 
     // ログインユーザー取得
-    Route::get('/user', function() {
-        $user = Auth::user();
-        return $user ? new UserResource($user) : null;
-    });
+//    Route::get('/user', function() {
+//        $user = Auth::user();
+//        return $user ? new UserResource($user) : null;
+//    });
 
     Route::get('/user/delete', function() {
         $user = Auth::user();

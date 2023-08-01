@@ -41,7 +41,9 @@ return [
             'provider' => 'users',
         ],
         'api' => [
-            'driver' => 'passport',
+            // 'driver' => 'sanctum',
+//            'driver' => 'passport',
+            'driver' => 'firebase',
             'provider' => 'users',
         ],
         'admin' => [

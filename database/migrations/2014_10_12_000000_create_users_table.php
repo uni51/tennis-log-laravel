@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->rememberToken();
-            $table->string('access_token')->nullable();
+            $table->text('access_token')->nullable();
             $table->dateTime('expires_at')->nullable();
             $table->timestamps();
 
