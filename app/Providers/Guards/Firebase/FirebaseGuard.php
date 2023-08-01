@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Factory;
 
@@ -48,7 +49,7 @@ class FirebaseGuard implements Guard
 
 //        Log::debug($token);
 
-        if (empty($token)) {
+        if (empty($token) || $token === 'undefined') {
             return null;
         }
 
@@ -69,7 +70,8 @@ class FirebaseGuard implements Guard
             return $this->user;
         }
 
-        if ($verifyTokenResponse->isExpired()) {
+
+        if ($verifyTokenResponse->isExpired(Carbon::now())) {
             Log::info('[Auth]トークンが期限切れのため401ステータスコードを返しました');
             throw new AuthenticationException('JWT token is expired.');
         }

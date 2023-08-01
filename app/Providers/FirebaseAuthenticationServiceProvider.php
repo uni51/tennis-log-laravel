@@ -9,6 +9,9 @@ use App\Providers\Guards\Firebase\VerifyIdTokenInterface;
 use Illuminate\Support\Facades\Auth;
 use Kreait\Firebase\JWT\IdTokenVerifier;
 
+/**
+ * @See.) https://zenn.dev/manalink_dev/articles/manalink-laravel-firebase-auth
+ */
 final class FirebaseAuthenticationServiceProvider extends \Illuminate\Foundation\Support\Providers\AuthServiceProvider
 {
     /**
@@ -18,19 +21,18 @@ final class FirebaseAuthenticationServiceProvider extends \Illuminate\Foundation
      */
     public function boot()
     {
-        /**
-         * Firebase PHP SDK(非公式)がEmulatorには対応していないので別途実装する必要があるので
-         * サービスコンテナで環境ごとに差し替えします。
-         */
         $this->app->bind(VerifyIdTokenInterface::class, LiveVerifyIdToken::class);
 
         /**
-         * @see https://laravel.com/docs/8.x/authentication#adding-custom-guards
+         * Auth::extendメソッドを実行することで、ドライバに対応したガード名でAuth::guard('api')などと使えるようになる。
          */
         Auth::extend('firebase', function ($app, $name, array $config) {
             return new FirebaseGuard(app()->make(VerifyIdTokenInterface::class));
         });
 
+        /**
+         * Auth::viaRequestメソッドを実行することで、middlewareメソッドにGuardを指定して、ルート単位での認証チェックが可能になる。
+         */
         Auth::viaRequest('firebase', function ($request) {
             return app(FirebaseGuard::class)->user();
         });
