@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Providers\Guards\Firebase;
 
+use Kreait\Firebase\JWT\IdTokenVerifier;
+
 final class LiveVerifyIdToken implements VerifyIdTokenInterface
 {
     public function verifyIdToken(string $token): VerifyTokenResponse
