@@ -32,11 +32,11 @@ class  FirebaseAuthController extends Controller
      */
     public function login(Request $request): JsonResponse
     {
-        $id_token = $request->input('idToken');
+         $id_token = $request->input('idToken');
         // $id_token = $request->headers->get('authorization');
         // $token = trim(str_replace('Bearer', '', $id_token));
 
-        Log::debug($id_token);
+//        Log::debug($id_token);
 
         try {
             $verifiedIdToken = $this->auth->verifyIdToken(json_decode($id_token));

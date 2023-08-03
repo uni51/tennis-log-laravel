@@ -15,17 +15,20 @@ final class LiveVerifyIdToken implements VerifyIdTokenInterface
             $firebaseToken = $client->verifyIdToken($token);
             $payload = $firebaseToken->payload();
             return new VerifyTokenResponse(
-                VerifyIdTokenStatus::SUCCEED,
+                // VerifyIdTokenStatus::SUCCEED,
+                new VerifyIdTokenStatus(VerifyIdTokenStatus::SUCCEED),
                 (int)$payload['sub']
             );
         } catch (\Throwable $e) {
             if (strpos($e->getMessage(), 'The token is expired.') !== false) {
                 return new VerifyTokenResponse(
-                    VerifyIdTokenStatus::EXPIRED,
+                    // VerifyIdTokenStatus::EXPIRED,
+                    new VerifyIdTokenStatus(VerifyIdTokenStatus::EXPIRED)
                 );
             }
             return new VerifyTokenResponse(
-                VerifyIdTokenStatus::OTHER_FAILURE,
+                // VerifyIdTokenStatus::OTHER_FAILURE,
+                new VerifyIdTokenStatus(VerifyIdTokenStatus::OTHER_FAILURE),
             );
         }
     }

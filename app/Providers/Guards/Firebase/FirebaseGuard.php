@@ -13,7 +13,6 @@ use Kreait\Firebase\Factory;
 
 class FirebaseGuard implements Guard
 {
-    protected VerifyIdTokenInterface $verifier;
 
     // くりかえし利用された場合のキャッシュ用
     private ?Authenticatable $user = null;
@@ -25,7 +24,6 @@ class FirebaseGuard implements Guard
      * ローカルのエミュレーターに繋がっているときで動作を変更しているため
      * Interfaceへの依存にして、実装クラスをそれぞれの環境ごとに実装している
      *
-     * @param VerifyIdTokenInterface $verifier
      *
      */
     public function __construct()
@@ -47,7 +45,7 @@ class FirebaseGuard implements Guard
     {
         $token = \Illuminate\Support\Facades\Request::bearerToken();
 
-//        Log::debug($token);
+        Log::debug($token);
 
         if (empty($token) || $token === 'undefined') {
             return null;

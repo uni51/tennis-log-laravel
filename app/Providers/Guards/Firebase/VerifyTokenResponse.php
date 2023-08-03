@@ -5,7 +5,8 @@ namespace App\Providers\Guards\Firebase;
 
 final class VerifyTokenResponse
 {
-    private int $status;
+//    private int $status;
+    private VerifyIdTokenStatus $status;
     private ?int $userId;
 
     /**
@@ -13,7 +14,8 @@ final class VerifyTokenResponse
      * @param VerifyIdTokenStatus $status
      * @param int|null $userId
      */
-    public function __construct(int $status, ?int $userId = null)
+//    public function __construct(int $status, ?int $userId = null)
+    public function __construct(VerifyIdTokenStatus $status, ?int $userId = null)
     {
         $this->status = $status;
         $this->userId = $userId;
@@ -21,12 +23,12 @@ final class VerifyTokenResponse
 
     public function isOK(): bool
     {
-        return $this->status === VerifyIdTokenStatus::SUCCEED;
+        return $this->status->value() === VerifyIdTokenStatus::SUCCEED;
     }
 
     public function isExpired(): bool
     {
-        return $this->status === VerifyIdTokenStatus::EXPIRED;
+        return $this->status->value() === VerifyIdTokenStatus::EXPIRED;
     }
 
     /**
