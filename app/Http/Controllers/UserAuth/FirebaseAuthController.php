@@ -48,19 +48,19 @@ class  FirebaseAuthController extends Controller
             ]);
         }
 
-        $uid = $verifiedIdToken->claims()->get('sub');
-        $firebase_user = $this->auth->getUser($uid);
+        $firebaseUid = $verifiedIdToken->claims()->get('sub');
+        $firebaseUser = $this->auth->getUser($firebaseUid);
 
-        $user = User::where('firebase_uid', $uid)->first();
+        $user = User::where('firebase_uid', $firebaseUid)->first();
 
 //        Log::debug($user);
 
         if (is_null($user)) {
             $user = User::create([
-                'firebase_uid' => $uid,
-                'name' => $firebase_user->displayName,
-                'nickname' => $firebase_user->displayName,
-                'email' => $firebase_user->email,
+                'firebase_uid' => $firebaseUid,
+                'name' => $firebaseUser->displayName,
+                'nickname' => $firebaseUser->displayName,
+                'email' => $firebaseUser->email,
             ]);
         }
 
@@ -74,8 +74,8 @@ class  FirebaseAuthController extends Controller
         $user->update(['access_token' => $tokenResult->accessToken, 'expires_at' => $expires_at]);
 
         return response()->json([
-            'uid' => $uid,
-            'name' => $firebase_user->displayName,
+            'uid' => $firebaseUid,
+            'name' => $firebaseUser->displayName,
             //'token' => $tokenResult->token->id // $tokenResult->accessToken に変更する必要があるかも？
             'token' => $tokenResult->accessToken
         ]);
