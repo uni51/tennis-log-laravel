@@ -187,9 +187,9 @@ return [
         /*
          * Package Service Providers...
          */
-//        Kreait\Laravel\Firebase\ServiceProvider::class,
+        Kreait\Laravel\Firebase\ServiceProvider::class,
 //        Laravel\Passport\PassportServiceProvider::class,
-        App\Providers\FirebaseAuthenticationServiceProvider::class,
+//        App\Providers\FirebaseAuthenticationServiceProvider::class,
 
         /*
          * Application Service Providers...

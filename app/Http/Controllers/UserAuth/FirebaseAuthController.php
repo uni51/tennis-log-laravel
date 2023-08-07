@@ -36,7 +36,7 @@ class  FirebaseAuthController extends Controller
         // $id_token = $request->headers->get('authorization');
         // $token = trim(str_replace('Bearer', '', $id_token));
 
-//        Log::debug($id_token);
+        Log::debug($id_token);
 
         try {
             $verifiedIdToken = $this->auth->verifyIdToken(json_decode($id_token));
@@ -53,7 +53,7 @@ class  FirebaseAuthController extends Controller
 
         $user = User::where('firebase_uid', $firebaseUid)->first();
 
-//        Log::debug($user);
+        Log::debug($user);
 
         if (is_null($user)) {
             $user = User::create([

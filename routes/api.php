@@ -8,7 +8,9 @@ use App\Http\Controllers\PublicMemoController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\FirebaseTestController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,10 +38,13 @@ Route::get('/public/memos/category/{categoryId}', [PublicMemoController::class, 
 Route::get('/public/{nickname}/memos/category/{categoryId}',
     [PublicMemoController::class, 'userMemoListByCategory']);
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => 'client'], function () {
     // ログインユーザー取得
     Route::get('/user', function(Request $request) {
-        $user = $request->user();
+        $id_token = $request->headers->get('authorization');
+        $token = trim(str_replace('Bearer', '', $id_token));
+        $user = User::where('access_token', $token)->first();
+        Log::debug('user:'.$user);
         return $user ? new UserResource($user) : null;
     });
 });
