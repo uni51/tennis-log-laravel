@@ -43,7 +43,6 @@ return [
         'api' => [
             // 'driver' => 'sanctum',
             'driver' => 'passport',
-//            'driver' => 'firebase',
             'provider' => 'users',
         ],
         'admin' => [
