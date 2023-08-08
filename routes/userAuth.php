@@ -38,8 +38,12 @@ Route::prefix('auth')->group(function () {
         ->middleware(['auth', 'throttle:6,1'])
         ->name('verification.send');
 
-    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->middleware('auth')
+//    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+//        ->middleware('auth')
+//        ->name('logout');
+
+    Route::post('/logout', [FirebaseAuthController::class, 'logout'])
+        ->middleware('client')
         ->name('logout');
 });
 

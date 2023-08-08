@@ -44,7 +44,7 @@ Route::group(['middleware' => 'client'], function () {
         $id_token = $request->headers->get('authorization');
         $token = trim(str_replace('Bearer', '', $id_token));
         $user = User::where('access_token', $token)->first();
-        Log::debug('user:'.$user);
+//        Log::debug('user:'.$user);
         return $user ? new UserResource($user) : null;
     });
 });

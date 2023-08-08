@@ -5,9 +5,11 @@ namespace App\Http\Controllers\UserAuth;
 use App\Http\Controllers\Controller;
 
 use App\Models\User;
+use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Kreait\Firebase\Factory;
@@ -79,5 +81,24 @@ class  FirebaseAuthController extends Controller
             //'token' => $tokenResult->token->id // $tokenResult->accessToken に変更する必要があるかも？
             'token' => $tokenResult->accessToken
         ]);
+    }
+
+    /**
+     * Destroy an authenticated session.
+     */
+    public function logout(Request $request): Response
+    {
+//        Auth::guard('auth:passport')->logout();
+
+        $id_token = $request->headers->get('authorization');
+        $token = trim(str_replace('Bearer', '', $id_token));
+        $user = User::where('access_token', $token)->first();
+        $user->access_token = null;
+        $user->save();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->noContent();
     }
 }
