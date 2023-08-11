@@ -92,6 +92,8 @@ class  FirebaseAuthController extends Controller
      */
     public function logout(Request $request): Response
     {
+        auth('front_api')->user()->tokens()->delete();
+
         $id_token = $request->headers->get('authorization');
         $token = trim(str_replace('Bearer', '', $id_token));
 
