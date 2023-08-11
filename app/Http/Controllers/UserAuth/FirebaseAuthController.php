@@ -76,6 +76,8 @@ class  FirebaseAuthController extends Controller
         $expires_at = Carbon::now()->addWeeks(1);
         $user->update(['access_token' => $tokenResult->accessToken, 'expires_at' => $expires_at]);
 
+        Auth::login($user);
+
         return response()->json([
             'uid' => $firebaseUid,
             'name' => $firebaseUser->displayName,
@@ -96,6 +98,8 @@ class  FirebaseAuthController extends Controller
         $user = User::where('access_token', $token)->first();
         $user->access_token = null;
         $user->save();
+
+        Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
