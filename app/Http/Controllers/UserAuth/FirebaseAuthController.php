@@ -38,11 +38,11 @@ class  FirebaseAuthController extends Controller
         // $id_token = $request->headers->get('authorization');
         // $token = trim(str_replace('Bearer', '', $id_token));
 
-        Log::debug($id_token);
+        Log::debug('Login idToken:'.$id_token);
 
         try {
-            $verifiedIdToken = $this->auth->verifyIdToken(json_decode($id_token));
-//            $verifiedIdToken = $this->auth->verifyIdToken($id_token);
+            // $verifiedIdToken = $this->auth->verifyIdToken(json_decode($id_token));
+            $verifiedIdToken = $this->auth->verifyIdToken($id_token);
         } catch (FailedToVerifyToken $e) {
             Log::debug($e->getMessage());
             return response()->json([
@@ -55,7 +55,7 @@ class  FirebaseAuthController extends Controller
 
         $user = User::where('firebase_uid', $firebaseUid)->first();
 
-        Log::debug($user);
+        Log::debug('Login User:'.$user);
 
         if (is_null($user)) {
             $user = User::create([
@@ -70,7 +70,8 @@ class  FirebaseAuthController extends Controller
 
         $tokenResult = $user->createToken('Personal Access Token');
 
-//        Log::debug($tokenResult);
+        Log::debug('Login accessToken:'.$tokenResult->accessToken);
+
         // トークンの期限
         $expires_at = Carbon::now()->addWeeks(1);
         $user->update(['access_token' => $tokenResult->accessToken, 'expires_at' => $expires_at]);
