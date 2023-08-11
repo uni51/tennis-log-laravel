@@ -41,8 +41,17 @@ return [
             'provider' => 'users',
         ],
         'api' => [
-            // 'driver' => 'sanctum',
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
+        // Firebase認証（Next.js）
+        'front_api' => [
             'driver' => 'passport',
+            'provider' => 'users',
+        ],
+        // Firebase認証したユーザーをAuthファサードで取得するためのガード
+        'front_auth' => [
+            'driver' => 'session',
             'provider' => 'users',
         ],
         'admin' => [

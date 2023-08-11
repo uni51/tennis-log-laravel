@@ -38,14 +38,16 @@ Route::get('/public/memos/category/{categoryId}', [PublicMemoController::class, 
 Route::get('/public/{nickname}/memos/category/{categoryId}',
     [PublicMemoController::class, 'userMemoListByCategory']);
 
-Route::group(['middleware' => 'client'], function () {
+// ['middleware' => 'client']の書き方でも良さそう
+ Route::group(['middleware' => 'auth:front_api'], function () {
+// Route::group(['middleware' => 'client'], function () {
     // ログインユーザー取得
     Route::get('/user', function(Request $request) {
         $id_token = $request->headers->get('authorization');
-        Log::debug('ルーティングapi id_token:'.$id_token);
+         Log::debug('ルーティングapi id_token:'.$id_token);
         $token = trim(str_replace('Bearer', '', $id_token));
         $user = User::where('access_token', $token)->first();
-        Log::debug('ルーティングapi auth_user:'.$user);
+        Log::debug('ルーティングapi auth_user:'.Auth::guard('front_auth')->user());
         return $user ? new UserResource($user) : null;
     });
 });
