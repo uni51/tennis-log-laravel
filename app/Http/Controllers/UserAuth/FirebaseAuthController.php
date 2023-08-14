@@ -69,6 +69,7 @@ class  FirebaseAuthController extends Controller
 
         $tokenResult = $user->createToken('Personal Access Token');
 
+        Log::debug('Login Token ID:'.$tokenResult->token->id);
         Log::debug('Login accessToken:'.$tokenResult->accessToken);
 
         // トークンの期限
