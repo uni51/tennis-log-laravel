@@ -55,7 +55,7 @@ class  FirebaseAuthController extends Controller
 
         $user = User::where('firebase_uid', $firebaseUid)->first();
 
-        Log::debug('Login User:'.$user);
+//        Log::debug('Login User:'. var_export($firebaseUser));
 
         if (is_null($user)) {
             $user = User::create([
@@ -76,13 +76,12 @@ class  FirebaseAuthController extends Controller
         $expires_at = Carbon::now()->addWeeks(1);
         $user->update(['access_token' => $tokenResult->accessToken, 'expires_at' => $expires_at]);
 
-//        Auth::login($user);
-        Auth::guard('front_auth')->login($user);
+        // Auth::guard('front_auth')->login($user);
 
         return response()->json([
             'uid' => $firebaseUid,
-            'name' => $firebaseUser->displayName,
-            //'token' => $tokenResult->token->id // $tokenResult->accessToken に変更する必要があるかも？
+            // ネームが設定されないことは基本的にはない筈だが、念の為の処理
+            'name' => $firebaseUser->displayName ?? $firebaseUser->email,
             'token' => $tokenResult->accessToken
         ]);
     }
@@ -101,7 +100,7 @@ class  FirebaseAuthController extends Controller
         $user->access_token = null;
         $user->save();
 
-        Auth::guard('front_auth')->logout();
+        // Auth::guard('front_auth')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

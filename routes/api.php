@@ -44,10 +44,9 @@ Route::get('/public/{nickname}/memos/category/{categoryId}',
     // ログインユーザー取得
     Route::get('/user', function(Request $request) {
         $id_token = $request->headers->get('authorization');
-         Log::debug('ルーティングapi id_token:'.$id_token);
+        Log::debug('ルーティングapi id_token:'.$id_token);
         $token = trim(str_replace('Bearer', '', $id_token));
         $user = User::where('access_token', $token)->first();
-        Log::debug('ルーティングapi auth_user:'.Auth::guard('front_auth')->user());
         return $user ? new UserResource($user) : null;
     });
 });
