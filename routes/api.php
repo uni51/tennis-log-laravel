@@ -38,11 +38,12 @@ Route::get('/public/memos/category/{categoryId}', [PublicMemoController::class, 
 Route::get('/public/{nickname}/memos/category/{categoryId}',
     [PublicMemoController::class, 'userMemoListByCategory']);
 
-// ['middleware' => 'client']の書き方でも良さそう
  Route::group(['middleware' => 'auth:front_api'], function () {
-// Route::group(['middleware' => 'client'], function () {
+// Route::group(['middleware' => 'client'], function () { // こちらの書き方も可能
     // ログインユーザー取得
     Route::get('/user', function(Request $request) {
+        // Log::debug('リクエスト User'.$request->user());
+        Log::debug('リクエスト Auth User'.Auth::guard('front_api')->user());
         $id_token = $request->headers->get('authorization');
         Log::debug('ルーティングapi id_token:'.$id_token);
         $token = trim(str_replace('Bearer', '', $id_token));
