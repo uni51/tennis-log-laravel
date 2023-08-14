@@ -20,7 +20,6 @@ class UserFactory extends Factory
         $enFaker = \Faker\Factory::create('en_US');
 
         return [
-            'firebase_uid' => Str::random(28),
             'name' => fake()->name(),
             'nickname' => $enFaker->toLower(Str::random(8)),
             'email' => fake()->unique()->safeEmail(),
