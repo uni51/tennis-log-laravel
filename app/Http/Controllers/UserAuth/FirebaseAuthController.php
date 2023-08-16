@@ -107,8 +107,6 @@ class  FirebaseAuthController extends Controller
      */
     public function logout(Request $request): Response
     {
-        //auth('front_api')->user()->tokens()->delete();
-
         $id_token = $request->headers->get('authorization');
         $token = trim(str_replace('Bearer', '', $id_token));
 
@@ -118,8 +116,15 @@ class  FirebaseAuthController extends Controller
                             ->where('user_id', $firebaseLoginUser->user_id)
                             ->first();
 
-        $firebaseLoginUser->delete();
-        $oauthAccessTokens->delete();
+        DB::beginTransaction();
+        try {
+            // 以下の書き方だと、oauth_access_tokensテーブル内の、同一ユーザーIDに紐づくデータが全部消えてしまうので、個別にデータを削除する
+            //auth('front_api')->user()->tokens()->delete();
+            $firebaseLoginUser->delete();
+            $oauthAccessTokens->delete();
+        } catch (\Exception $e) {
+            DB::rollback();
+        }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
