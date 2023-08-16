@@ -31,14 +31,13 @@ class  FirebaseAuthController extends Controller
     }
 
     /**
-     * @param  Request  $request
+     * @param Request $request
      * @return JsonResponse
      */
     public function login(Request $request): JsonResponse
     {
-         $id_token = $request->input('idToken');
-
-        Log::debug('Login idToken:'.$id_token);
+        $id_token = $request->input('idToken');
+        // Log::debug('Login idToken:' . $id_token);
 
         try {
             $verifiedIdToken = $this->auth->verifyIdToken($id_token);
@@ -53,14 +52,14 @@ class  FirebaseAuthController extends Controller
         $firebaseUser = $this->auth->getUser($firebaseUid);
 
         $user = User::select('users.*')
-                ->where('firebase_logins.firebase_uid', '=', $firebaseUid)
-                ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
-                ->first();
+            ->where('firebase_logins.firebase_uid', '=', $firebaseUid)
+            ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
+            ->first();
 
         if (is_null($user)) {
             $checkExistUser = User::where('email', $firebaseUser->email)->first();
 
-            if(is_null($checkExistUser)) {
+            if (is_null($checkExistUser)) {
                 $user = User::create([
                     'name' => $firebaseUser->displayName,
                     'nickname' => $firebaseUser->displayName,
@@ -70,14 +69,13 @@ class  FirebaseAuthController extends Controller
                 $user = $checkExistUser;
             }
 
-            Log::debug('user 02:'.$user);
-
+            // Log::debug('Login User:' . $user);
         }
 
         $tokenResult = $user->createToken('Personal Access Token');
 
-        Log::debug('Login Token ID:'.$tokenResult->token->id);
-        Log::debug('Login accessToken:'.$tokenResult->accessToken);
+        // Log::debug('Login Token ID:' . $tokenResult->token->id);
+        // Log::debug('Login accessToken:' . $tokenResult->accessToken);
 
         $expires_at = Carbon::now()->addWeeks(1);
 
@@ -91,8 +89,7 @@ class  FirebaseAuthController extends Controller
             )->toDateTimeString()
         ]);
 
-        Log::debug('firebaseLoginUser 03:'.$firebaseLoginUser);
-
+        // Log::debug('FirebaseLoginUser:' . $firebaseLoginUser);
 
         return response()->json([
             'uid' => $firebaseUid,
@@ -113,8 +110,8 @@ class  FirebaseAuthController extends Controller
         $firebaseLoginUser = FirebaseLogin::where('access_token', $token)->first();
 
         $oauthAccessTokens = OAuthAccessTokens::where('id', $firebaseLoginUser->token_id)
-                            ->where('user_id', $firebaseLoginUser->user_id)
-                            ->first();
+            ->where('user_id', $firebaseLoginUser->user_id)
+            ->first();
 
         DB::beginTransaction();
         try {
