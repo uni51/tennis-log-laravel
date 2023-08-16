@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashBoardMemoController;
 use App\Http\Controllers\PrivateMemoController;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Models\FirebaseLogin;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +49,12 @@ Route::get('/public/{nickname}/memos/category/{categoryId}',
         $id_token = $request->headers->get('authorization');
         Log::debug('ルーティングapi id_token:'.$id_token);
         $token = trim(str_replace('Bearer', '', $id_token));
-        $user = User::where('access_token', $token)->first();
+        // $user = User::where('access_token', $token)->first();
+        $user = DB::table('users')
+            ->select('users.id', 'users.nickname', 'users.name')
+            ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
+            ->where('firebase_logins.access_token', '=', $token)
+            ->first();
         return $user ? new UserResource($user) : null;
     });
 });
