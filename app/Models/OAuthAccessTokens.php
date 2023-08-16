@@ -21,8 +21,8 @@ class OAuthAccessTokens extends Model
         'updated_at',
     ];
 
-    public function user(): BelongsToMany
+    public function user(): BelongsTo
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsTo(User::class);
     }
 }
