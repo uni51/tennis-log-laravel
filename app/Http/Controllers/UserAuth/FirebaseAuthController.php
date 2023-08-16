@@ -52,12 +52,6 @@ class  FirebaseAuthController extends Controller
         $firebaseUid = $verifiedIdToken->claims()->get('sub');
         $firebaseUser = $this->auth->getUser($firebaseUid);
 
-//        $user = User::where('firebase_uid', $firebaseUid)->first();
-
-//        $user = DB::table('users')
-//                    ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
-//                    ->where('firebase_logins.firebase_uid', '=', $firebaseUid)
-//                    ->first();
         $user = User::select('users.*')
                 ->where('firebase_logins.firebase_uid', '=', $firebaseUid)
                 ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
@@ -126,8 +120,6 @@ class  FirebaseAuthController extends Controller
 
         $firebaseLoginUser->delete();
         $oauthAccessTokens->delete();
-
-        // Auth::guard('front_auth')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
