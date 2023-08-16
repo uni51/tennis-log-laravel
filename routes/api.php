@@ -44,12 +44,11 @@ Route::get('/public/{nickname}/memos/category/{categoryId}',
 // Route::group(['middleware' => 'client'], function () { // こちらの書き方も可能
     // ログインユーザー取得
     Route::get('/user', function(Request $request) {
-        // Log::debug('リクエスト User'.$request->user());
-        Log::debug('リクエスト Auth User'.Auth::guard('front_api')->user());
+        // Log::debug('リクエスト User:'.$request->user());
+        // Log::debug('リクエスト Auth User:'.Auth::guard('front_api')->user());
         $id_token = $request->headers->get('authorization');
-        Log::debug('ルーティングapi id_token:'.$id_token);
+        // Log::debug('ルーティングapi id_token:'.$id_token);
         $token = trim(str_replace('Bearer', '', $id_token));
-        // $user = User::where('access_token', $token)->first();
         $user = DB::table('users')
             ->select('users.id', 'users.nickname', 'users.name')
             ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
