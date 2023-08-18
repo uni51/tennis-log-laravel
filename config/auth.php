@@ -49,11 +49,6 @@ return [
             'driver' => 'passport',
             'provider' => 'users',
         ],
-        // Firebase認証したユーザーをAuthファサードで取得するためのガード
-        'front_auth' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',
