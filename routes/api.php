@@ -44,8 +44,8 @@ Route::get('/public/{nickname}/memos/category/{categoryId}',
 // Route::group(['middleware' => 'client'], function () { // こちらの書き方も可能
     // ログインユーザー取得
     Route::get('/user', function(Request $request) {
-        // Log::debug('リクエスト User:'.$request->user());
-        // Log::debug('リクエスト Auth User:'.Auth::guard('front_api')->user());
+        // Log::debug('ルーティングapi リクエスト User:'.$request->user());
+        // Log::debug('ルーティングapi リクエスト Auth User:'.Auth::guard('front_api')->user());
         $id_token = $request->headers->get('authorization');
         // Log::debug('ルーティングapi id_token:'.$id_token);
         $token = trim(str_replace('Bearer', '', $id_token));
@@ -56,6 +56,14 @@ Route::get('/public/{nickname}/memos/category/{categoryId}',
             ->first();
         return $user ? new UserResource($user) : null;
     });
+
+     // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
+     Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list']);
+     Route::get('/dashboard/memos/category/{categoryId}', [DashBoardMemoController::class, 'memoListByCategory']);
+     Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'show']);
+     Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create']);
+     Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'edit']);
+     Route::post('/dashboard/memos/{id}/delete', [DashBoardMemoController::class, 'destroy']);
 });
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
@@ -74,14 +82,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         \App\Models\Memo::where('user_id', $user->id)->delete();
         return $user->delete();
     });
-
-    // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
-    Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list']);
-    Route::get('/dashboard/memos/category/{categoryId}', [DashBoardMemoController::class, 'memoListByCategory']);
-    Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'show']);
-    Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create']);
-    Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'edit']);
-    Route::post('/dashboard/memos/{id}/delete', [DashBoardMemoController::class, 'destroy']);
 
     // ユーザーに紐づく非公開の記事一覧を取得するAPI
     Route::get('/private/memos', [PrivateMemoController::class, 'list']);
