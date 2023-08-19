@@ -80,9 +80,7 @@ class  FirebaseAuthController extends Controller
                 'firebase_uid' => $firebaseUid,
                 'token_id' => $tokenResult->token->id,
                 'access_token' => $tokenResult->accessToken,
-                'expires_at' => Carbon::parse(
-                    $expires_at
-                )->toDateTimeString()
+                'expires_at' => Carbon::parse($expires_at)->format('Y-m-d H:i:s'),
             ]);
 
             // Log::debug('FirebaseLoginUser:' . $firebaseLoginUser);

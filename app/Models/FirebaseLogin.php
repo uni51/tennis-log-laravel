@@ -17,6 +17,7 @@ class FirebaseLogin extends Model
         'firebase_uid',
         'token_id',
         'access_token',
+        'expires_at',
     ];
 
     public function user(): BelongsTo

@@ -9,10 +9,9 @@ use App\Http\Controllers\PublicMemoController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\FirebaseTestController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Http\Resources\UserResource;
-use App\Models\User;
-use App\Models\FirebaseLogin;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +52,7 @@ Route::get('/public/{nickname}/memos/category/{categoryId}',
             ->select('users.id', 'users.nickname', 'users.name')
             ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
             ->where('firebase_logins.access_token', '=', $token)
+            ->where('firebase_logins.expires_at', '>=', Carbon::now())
             ->first();
         return $user ? new UserResource($user) : null;
     });
