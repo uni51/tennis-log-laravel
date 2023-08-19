@@ -24,7 +24,7 @@ class  FirebaseAuthController extends Controller
     public function __construct()
     {
         $factory = (new Factory())
-            ->withServiceAccount(file_get_contents(base_path(env('FIREBASE_CREDENTIALS'))))
+            ->withServiceAccount(file_get_contents(storage_path(env('FIREBASE_CREDENTIALS'))))
             ->withProjectId(env('FIREBASE_PROJECT'));
 
         $this->auth = $factory->createAuth();

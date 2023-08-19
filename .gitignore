@@ -3,6 +3,7 @@
 /public/hot
 /public/storage
 /storage/*.key
+/storage/*.json
 /vendor
 .env
 .env.backup
@@ -17,4 +18,3 @@ yarn-error.log
 /.idea
 /.vscode
 /.vite
-local-tennis-log-firebase-adminsdk-6vncc-12b14b34e5.json
