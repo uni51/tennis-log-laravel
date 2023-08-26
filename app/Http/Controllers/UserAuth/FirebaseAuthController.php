@@ -40,7 +40,8 @@ class  FirebaseAuthController extends Controller
         // Log::debug('Login idToken:' . $id_token);
 
         try {
-            $verifiedIdToken = $this->auth->verifyIdToken($id_token);
+            // $verifiedIdToken = $this->auth->verifyIdToken($id_token);
+            $verifiedIdToken = $this->auth->verifyIdToken($id_token, false, 10000000);
 
              Log::debug('verifiedIdToken:' . $verifiedIdToken->toString());
 
