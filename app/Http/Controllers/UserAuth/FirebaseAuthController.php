@@ -24,7 +24,7 @@ class  FirebaseAuthController extends Controller
     public function __construct()
     {
         $factory = (new Factory())
-            ->withServiceAccount(file_get_contents(storage_path(env('FIREBASE_CREDENTIALS'))))
+            ->withServiceAccount(file_get_contents(base_path(env('FIREBASE_CREDENTIALS'))))
             ->withProjectId(env('FIREBASE_PROJECT'));
 
         $this->auth = $factory->createAuth();
@@ -41,6 +41,8 @@ class  FirebaseAuthController extends Controller
 
         try {
             $verifiedIdToken = $this->auth->verifyIdToken($id_token);
+
+             Log::debug('verifiedIdToken:' . $verifiedIdToken->toString());
 
             $firebaseUid = $verifiedIdToken->claims()->get('sub');
             $firebaseUser = $this->auth->getUser($firebaseUid);
@@ -80,6 +82,7 @@ class  FirebaseAuthController extends Controller
                 'firebase_uid' => $firebaseUid,
                 'token_id' => $tokenResult->token->id,
                 'access_token' => $tokenResult->accessToken,
+                // TODO: /api/userでの、firebase_logins.expires_atでのトークン期限チェックがまだ未実装
                 'expires_at' => Carbon::parse($expires_at)->format('Y-m-d H:i:s'),
             ]);
 
