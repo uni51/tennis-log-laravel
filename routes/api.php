@@ -48,12 +48,13 @@ Route::get('/public/{nickname}/memos/category/{categoryId}',
         $id_token = $request->headers->get('authorization');
         // Log::debug('ルーティングapi id_token:'.$id_token);
         $token = trim(str_replace('Bearer', '', $id_token));
+        // TODO: firebase_logins.expires_atでのトークン期限チェックがまだ未実装
         $user = DB::table('users')
             ->select('users.id', 'users.nickname', 'users.name')
             ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
             ->where('firebase_logins.access_token', '=', $token)
-            ->where('firebase_logins.expires_at', '>=', Carbon::now())
             ->first();
+
         return $user ? new UserResource($user) : null;
     });
 
