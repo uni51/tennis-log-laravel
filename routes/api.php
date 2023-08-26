@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/firebasetest/login_anonymous', [FirebaseTestController::class, 'loginAnonymous']);
 
-Route::get('/memos/categories', [MemoController::class, 'getCategoryList'])->middleware('client');
+Route::get('/memos/categories', [MemoController::class, 'getCategoryList']);
 
 Route::get('/memos/status', [MemoController::class, 'getStatusList']);
 
