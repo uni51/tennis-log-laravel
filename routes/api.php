@@ -9,9 +9,6 @@ use App\Http\Controllers\PublicMemoController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\FirebaseTestController;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
-use App\Http\Resources\UserResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,21 +39,7 @@ Route::get('/public/{nickname}/memos/category/{categoryId}',
  Route::group(['middleware' => 'auth:front_api'], function () {
 // Route::group(['middleware' => 'client'], function () { // こちらの書き方も可能
     // ログインユーザー取得
-    Route::get('/user', function(Request $request) {
-        // Log::debug('ルーティングapi リクエスト User:'.$request->user());
-        // Log::debug('ルーティングapi リクエスト Auth User:'.Auth::guard('front_api')->user());
-        $id_token = $request->headers->get('authorization');
-        // Log::debug('ルーティングapi id_token:'.$id_token);
-        $token = trim(str_replace('Bearer', '', $id_token));
-        // TODO: firebase_logins.expires_atでのトークン期限チェックがまだ未実装
-        $user = DB::table('users')
-            ->select('users.id', 'users.nickname', 'users.name')
-            ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
-            ->where('firebase_logins.access_token', '=', $token)
-            ->first();
-
-        return $user ? new UserResource($user) : null;
-    });
+    Route::get('/user', [\App\Http\Controllers\UserAuth\FirebaseAuthController::class, 'user']);
 
      // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
      Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list']);

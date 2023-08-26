@@ -4,19 +4,20 @@ namespace App\Http\Controllers\UserAuth;
 
 use App\Http\Controllers\Controller;
 
+use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
+use Kreait\Firebase\Factory;
 use App\Models\FirebaseLogin;
 use App\Models\OAuthAccessTokens;
 use App\Models\User;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
-use Kreait\Firebase\Factory;
 
-class  FirebaseAuthController extends Controller
+class FirebaseAuthController extends Controller
 {
 
     private $auth;
@@ -140,9 +141,41 @@ class  FirebaseAuthController extends Controller
             DB::rollback();
         }
 
+        // Log::debug('ログアウト');
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return response()->noContent();
+    }
+
+    public function user(Request $request)
+    {
+        // Log::debug('User:'.$request->user());
+        // Log::debug('Auth User:'.Auth::guard('front_api')->user());
+        $id_token = $request->headers->get('authorization');
+        // Log::debug('id_token:'.$id_token);
+        $token = trim(str_replace('Bearer', '', $id_token));
+        // TODO: firebase_logins.expires_atでのトークン期限チェックがまだ未実装
+        $user = DB::table('users')
+            ->select('users.id', 'users.nickname', 'users.name')
+            ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
+            ->where('firebase_logins.access_token', '=', $token)
+            ->first();
+
+        if ($user) {
+            $expiredUser = DB::table('users')
+                ->select('users.id', 'users.nickname', 'users.name')
+                ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
+                ->where('firebase_logins.access_token', '=', $token)
+                ->where('firebase_logins.expires_at', '<=', Carbon::now())
+                ->first();
+        }
+
+        // expires_atをチェックして、期限切れの場合は、ログアウトメソッドにリダイレクト
+        if ($expiredUser) {
+            return redirect()->route('logout');
+        }
+
+        return $user ? new UserResource($user) : null;
     }
 }

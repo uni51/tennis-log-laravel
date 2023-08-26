@@ -42,7 +42,7 @@ Route::prefix('auth')->group(function () {
 //        ->middleware('auth')
 //        ->name('logout');
 
-    Route::post('/logout', [FirebaseAuthController::class, 'logout'])
+    Route::get('/logout', [FirebaseAuthController::class, 'logout'])
         ->middleware('auth:front_api')
         ->name('logout');
 });
