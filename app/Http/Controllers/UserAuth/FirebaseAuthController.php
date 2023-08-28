@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
 
 class FirebaseAuthController extends Controller
@@ -93,11 +94,15 @@ class FirebaseAuthController extends Controller
             // コミット
             DB::commit();
 
+            $appToken = $tokenResult->accessToken ?? $user->access_token;
+
+            Cookie::queue('appToken', $appToken, 7*24*60, '/', env('SESSION_DOMAIN'), false, false);
+
             return response()->json([
                 'uid' => $firebaseUid,
                 // ネームが設定されないことは基本的にはない筈だが、念の為の処理
                 'name' => $firebaseUser->displayName ?? $firebaseUser->email,
-                'token' => $tokenResult->accessToken ?? $user->access_token,
+                'token' => $appToken,
             ]);
 
         } catch (FailedToVerifyToken $e) {
@@ -155,7 +160,6 @@ class FirebaseAuthController extends Controller
         $id_token = $request->headers->get('authorization');
         // Log::debug('id_token:'.$id_token);
         $token = trim(str_replace('Bearer', '', $id_token));
-        // TODO: firebase_logins.expires_atでのトークン期限チェックがまだ未実装
         $user = DB::table('users')
             ->select('users.id', 'users.nickname', 'users.name')
             ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
@@ -167,6 +171,7 @@ class FirebaseAuthController extends Controller
                 ->select('users.id', 'users.nickname', 'users.name')
                 ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
                 ->where('firebase_logins.access_token', '=', $token)
+                // TODO: expires_at の名称を original_expires_at に変更すること
                 ->where('firebase_logins.expires_at', '<=', Carbon::now())
                 ->first();
         }
