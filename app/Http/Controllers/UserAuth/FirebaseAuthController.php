@@ -45,7 +45,7 @@ class FirebaseAuthController extends Controller
             // $verifiedIdToken = $this->auth->verifyIdToken($id_token);
             $verifiedIdToken = $this->auth->verifyIdToken($id_token, false, 10000000);
 
-             Log::debug('verifiedIdToken:' . $verifiedIdToken->toString());
+            // Log::debug('verifiedIdToken:' . $verifiedIdToken->toString());
 
             $firebaseUid = $verifiedIdToken->claims()->get('sub');
             $firebaseUser = $this->auth->getUser($firebaseUid);
@@ -59,16 +59,16 @@ class FirebaseAuthController extends Controller
             DB::beginTransaction();
 
             if (is_null($user)) {
-                $checkExistUser = User::where('email', $firebaseUser->email)->first();
-
-                if (is_null($checkExistUser)) {
+                $existSameEmailUser = User::where('email', $firebaseUser->email)->first();
+                // 同一のEmailのユーザーが存在しない場合は、ユーザーを新規作成する
+                if (is_null($existSameEmailUser)) {
                     $user = User::create([
                         'name' => $firebaseUser->displayName,
                         'nickname' => $firebaseUser->displayName,
                         'email' => $firebaseUser->email,
                     ]);
                 } else {
-                    $user = $checkExistUser;
+                    $user = $existSameEmailUser;
                 }
                 // Log::debug('Login User:' . $user);
             }
