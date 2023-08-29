@@ -152,6 +152,8 @@ class FirebaseAuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        Cookie::queue(Cookie::forget('appToken'));
+
         return response()->noContent();
     }
 
