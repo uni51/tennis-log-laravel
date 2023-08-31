@@ -71,6 +71,16 @@ class FirebaseAuthController extends Controller
                     $user = $existSameEmailUser;
                 }
                 // Log::debug('Login User:' . $user);
+            } else {
+                // 期限切れTokenのユーザーデータがある場合は、firebase_loginテーブルとoauth_accessテーブルからレコードを削除する
+                $expiredTokenFirebaseLoginUsers = FirebaseLogin::where('user_id', $user->id)
+                                                            ->where('expires_at', '<', Carbon::now())
+                                                            ->get();
+                // Log::debug('expiredTokenFirebaseLoginUsers:' . $expiredTokenFirebaseLoginUsers);
+
+                $expiredTokenFirebaseLoginUsers->map(function ($expiredTokenFirebaseLoginUser){
+                    $expiredTokenFirebaseLoginUser->delete();
+                });
             }
 
             $tokenResult = $user->createToken('Personal Access Token');
@@ -176,7 +186,7 @@ class FirebaseAuthController extends Controller
                 ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
                 ->where('firebase_logins.access_token', '=', $token)
                 // TODO: expires_at の名称を original_expires_at に変更すること
-                ->where('firebase_logins.expires_at', '<=', Carbon::now())
+                ->where('firebase_logins.expires_at', '<', Carbon::now())
                 ->first();
         }
 
