@@ -16,8 +16,10 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'nickname' => $this->nickname,
-            'name' => $this->name,
+            // ニックネームが設定されないことは基本的にはない筈だが、念の為の処理
+            'nickname' => $this->nickname ?? $this->email,
+            // ネームが設定されないことは基本的にはない筈だが、念の為の処理
+            'name' => $this->name ?? $this->email,
         ];
     }
 }

@@ -40,6 +40,15 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
+        // Firebase認証（Next.js）
+        'front_api' => [
+            'driver' => 'passport',
+            'provider' => 'users',
+        ],
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',
