@@ -16,7 +16,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+
 
 class FirebaseAuthController extends Controller
 {
@@ -39,7 +41,6 @@ class FirebaseAuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $id_token = $request->input('idToken');
-        // Log::debug('Login idToken:' . $id_token);
 
         try {
             // $verifiedIdToken = $this->auth->verifyIdToken($id_token);
@@ -70,27 +71,25 @@ class FirebaseAuthController extends Controller
                 } else {
                     $user = $existSameEmailUser;
                 }
-                // Log::debug('Login User:' . $user);
             } else {
                 // 期限切れTokenのユーザーデータがある場合は、firebase_loginテーブルとoauth_accessテーブルからレコードを削除する
+                // (oauth_accessテーブルからレコードを削除する処理は、Firebaseモデルのbootedメソッドの方に記載）
                 $expiredTokenFirebaseLoginUsers = FirebaseLogin::where('user_id', $user->id)
-                                                            ->where('expires_at', '<', Carbon::now())
-                                                            ->get();
-                // Log::debug('expiredTokenFirebaseLoginUsers:' . $expiredTokenFirebaseLoginUsers);
+                    ->where('expires_at', '<', Carbon::now())
+                    ->get();
 
-                $expiredTokenFirebaseLoginUsers->map(function ($expiredTokenFirebaseLoginUser){
+                $expiredTokenFirebaseLoginUsers->map(function ($expiredTokenFirebaseLoginUser) {
                     $expiredTokenFirebaseLoginUser->delete();
                 });
             }
 
             $tokenResult = $user->createToken('Personal Access Token');
 
-            // Log::debug('Login Token ID:' . $tokenResult->token->id);
-            // Log::debug('Login accessToken:' . $tokenResult->accessToken);
-
             // Tokenの期限を1時間後に設定
-            $expiryMinutes = 45;
-            $expires_at = Carbon::now()->addMinutes($expiryMinutes);
+            $expiryMinutes = 3;
+            $expiresAt = Carbon::now()->addMinutes($expiryMinutes);
+            // Tokenのチェックを開始する時間を、Tokenの有効期限-1分 で設定
+            $startTimeToCheckExpiresAt = Carbon::now()->addMinutes($expiryMinutes - 1);
 
             $firebaseLoginUser = FirebaseLogin::create([
                 'user_id' => $user->id,
@@ -98,7 +97,7 @@ class FirebaseAuthController extends Controller
                 'token_id' => $tokenResult->token->id,
                 'access_token' => $tokenResult->accessToken,
                 // TODO: /api/userでの、firebase_logins.expires_atでのトークン期限チェックがまだ未実装
-                'expires_at' => Carbon::parse($expires_at)->format('Y-m-d H:i:s'),
+                'expires_at' => Carbon::parse($expiresAt)->format('Y-m-d H:i:s'),
             ]);
 
             // Log::debug('FirebaseLoginUser:' . $firebaseLoginUser);
@@ -109,7 +108,9 @@ class FirebaseAuthController extends Controller
             $appToken = $tokenResult->accessToken ?? $user->access_token;
 
             // CookieにappTokenの値を有効期限1時間で設定
+            // TODO: Http属性やセキュア属性の見直し
             Cookie::queue('appToken', $appToken, $expiryMinutes, '/', env('SESSION_DOMAIN'), false, false);
+            Cookie::queue('timeToCheck', $startTimeToCheckExpiresAt, $expiryMinutes - 1, '/', env('SESSION_DOMAIN'), false, false);
 
             return response()->json([
                 'uid' => $firebaseUid,
@@ -163,7 +164,11 @@ class FirebaseAuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        // Log::debug('user_' . $firebaseLoginUser->token_id);
+        Cache::forget('user_' . $firebaseLoginUser->token_id);
+        Cache::forget($token);
         Cookie::queue(Cookie::forget('appToken'));
+        Cookie::queue(Cookie::forget('timeToCheck'));
 
         return response()->noContent();
     }
@@ -175,25 +180,38 @@ class FirebaseAuthController extends Controller
         $id_token = $request->headers->get('authorization');
         // Log::debug('id_token:'.$id_token);
         $token = trim(str_replace('Bearer', '', $id_token));
-        $user = DB::table('users')
-            ->select('users.id', 'users.nickname', 'users.name')
-            ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
-            ->where('firebase_logins.access_token', '=', $token)
-            ->first();
+        $cacheExpiredSeconds = 120;
 
-        if ($user) {
+        $firebaseLoginUser = Cache::remember($token, $cacheExpiredSeconds, function () use ($token) {
+            return FirebaseLogin::where('access_token', $token)->first();
+        });
+
+        Log::debug('user_' . $firebaseLoginUser->token_id);
+
+        $user = Cache::remember('user_' . $firebaseLoginUser->token_id, $cacheExpiredSeconds, function () use ($token) {
+            return DB::table('users')
+                ->select('users.id', 'users.nickname', 'users.name')
+                ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
+                ->where('firebase_logins.access_token', '=', $token)
+                ->first();
+        });
+
+        // Tokenのチェックを開始する時間を経過したかどうかの判定
+        $isTimeToCheck = Cookie::get('timeToCheck') <= Carbon::now() ? true : false;
+
+        if ($user && $isTimeToCheck) {
             $expiredUser = DB::table('users')
                 ->select('users.id', 'users.nickname', 'users.name')
                 ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
                 ->where('firebase_logins.access_token', '=', $token)
-                // TODO: expires_at の名称を original_expires_at に変更すること
-                ->where('firebase_logins.expires_at', '<', Carbon::now())
+                // TODO: expires_at の名称を original_expires_at? に変更すること
+                ->where('firebase_logins.expires_at', '<=', Carbon::now())
                 ->first();
-        }
 
-        // expires_atをチェックして、期限切れの場合は、ログアウトメソッドにリダイレクト
-        if ($expiredUser) {
-            return redirect()->route('logout');
+            // expires_atをチェックして、期限切れの場合は、ログアウトメソッドにリダイレクト
+            if ($expiredUser) {
+                return redirect()->route('logout');
+            }
         }
 
         return $user ? new UserResource($user) : null;

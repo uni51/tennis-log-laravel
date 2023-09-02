@@ -36,8 +36,10 @@ Route::get('/public/memos/category/{categoryId}', [PublicMemoController::class, 
 Route::get('/public/{nickname}/memos/category/{categoryId}',
     [PublicMemoController::class, 'userMemoListByCategory']);
 
- Route::group(['middleware' => 'auth:front_api'], function () {
+
+Route::group(['middleware' => 'auth:front_api'], function () {
 // Route::group(['middleware' => 'client'], function () { // こちらの書き方も可能
+
     // ログインユーザー取得
     Route::get('/user', [\App\Http\Controllers\UserAuth\FirebaseAuthController::class, 'user']);
 
