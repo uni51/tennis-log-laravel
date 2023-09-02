@@ -89,7 +89,8 @@ class FirebaseAuthController extends Controller
             // Log::debug('Login accessToken:' . $tokenResult->accessToken);
 
             // Tokenの期限を1時間後に設定
-            $expires_at = Carbon::now()->addHour();
+            $expiryMinutes = 45;
+            $expires_at = Carbon::now()->addMinutes($expiryMinutes);
 
             $firebaseLoginUser = FirebaseLogin::create([
                 'user_id' => $user->id,
@@ -108,7 +109,7 @@ class FirebaseAuthController extends Controller
             $appToken = $tokenResult->accessToken ?? $user->access_token;
 
             // CookieにappTokenの値を有効期限1時間で設定
-            Cookie::queue('appToken', $appToken, 60, '/', env('SESSION_DOMAIN'), false, false);
+            Cookie::queue('appToken', $appToken, $expiryMinutes, '/', env('SESSION_DOMAIN'), false, false);
 
             return response()->json([
                 'uid' => $firebaseUid,
