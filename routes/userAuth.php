@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\UserAuth\AuthenticatedSessionController;
+//use App\Http\Controllers\UserAuth\AuthenticatedSessionController;
+use App\Http\Controllers\UserAuth\FirebaseAuthController;
 use App\Http\Controllers\UserAuth\EmailVerificationNotificationController;
 use App\Http\Controllers\UserAuth\NewPasswordController;
 use App\Http\Controllers\UserAuth\PasswordResetLinkController;
@@ -15,7 +16,10 @@ Route::prefix('auth')->group(function () {
         ->name('register');
 
 // SWR認証でのログイン
-    Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+//    Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+//        ->middleware('guest')
+//        ->name('user.login');
+    Route::post('/login', [FirebaseAuthController::class, 'login'])
         ->middleware('guest')
         ->name('user.login');
     Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
@@ -34,8 +38,12 @@ Route::prefix('auth')->group(function () {
         ->middleware(['auth', 'throttle:6,1'])
         ->name('verification.send');
 
-    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->middleware('auth')
+//    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+//        ->middleware('auth')
+//        ->name('logout');
+
+    Route::get('/logout', [FirebaseAuthController::class, 'logout'])
+        ->middleware('auth:front_api')
         ->name('logout');
 });
 

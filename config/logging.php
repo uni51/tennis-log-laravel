@@ -19,6 +19,10 @@ return [
 
     'default' => env('LOG_CHANNEL', 'stack'),
 
+    'sql' => [
+        'enable' => env('LOG_SQL_ENABLE', false),
+        'slow_query_time' => env('LOG_SQL_SLOW_QUERY_TIME', 2000), // ms
+    ],
     /*
     |--------------------------------------------------------------------------
     | Deprecations Log Channel
@@ -53,7 +57,9 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => [
+                'daily', 'sqllog'
+            ],
             'ignore_exceptions' => false,
         ],
 
@@ -117,6 +123,13 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'sqllog' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/sql.log'),
+            'level' => 'debug',
+        ],
+
     ],
 
 ];

@@ -23,8 +23,9 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                if($guard == 'admin') return redirect(RouteServiceProvider::ADMIN_HOME);
-                return redirect(RouteServiceProvider::HOME);
+                // 認証された場合に、Laravel側でリダイレクトされるのを拒否する
+                // if($guard == 'admin') return redirect(RouteServiceProvider::ADMIN_HOME);
+                // return redirect(RouteServiceProvider::HOME);
             }
         }
 
