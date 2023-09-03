@@ -73,7 +73,7 @@ class FirebaseAuthController extends Controller
                 }
             } else {
                 // 期限切れTokenのユーザーデータがある場合は、firebase_loginテーブルとoauth_accessテーブルからレコードを削除する
-                // (oauth_accessテーブルからレコードを削除する処理は、Firebaseモデルのbootedメソッドの方に記載）
+                // (oauth_accessテーブルからレコードを削除する処理は、Firebaseモデルのbootedメソッドの方で設定）
                 $expiredTokenFirebaseLoginUsers = FirebaseLogin::where('user_id', $user->id)
                     ->where('expires_at', '<', Carbon::now())
                     ->get();
@@ -89,7 +89,7 @@ class FirebaseAuthController extends Controller
             $expiryMinutes = 3;
             $expiresAt = Carbon::now()->addMinutes($expiryMinutes);
             // Tokenのチェックを開始する時間を、Tokenの有効期限-1分 で設定
-            $startTimeToCheckExpiresAt = Carbon::now()->addMinutes($expiryMinutes - 1);
+            $startTimeCheckExpiresAt = Carbon::now()->addMinutes($expiryMinutes - 1);
 
             $firebaseLoginUser = FirebaseLogin::create([
                 'user_id' => $user->id,
@@ -110,7 +110,7 @@ class FirebaseAuthController extends Controller
             // CookieにappTokenの値を有効期限1時間で設定
             // TODO: Http属性やセキュア属性の見直し
             Cookie::queue('appToken', $appToken, $expiryMinutes, '/', env('SESSION_DOMAIN'), false, false);
-            Cookie::queue('timeToCheck', $startTimeToCheckExpiresAt, $expiryMinutes - 1, '/', env('SESSION_DOMAIN'), false, false);
+            Cookie::queue('timeCheckStart', $startTimeCheckExpiresAt, $expiryMinutes - 1, '/', env('SESSION_DOMAIN'), false, false);
 
             return response()->json([
                 'uid' => $firebaseUid,
@@ -168,7 +168,7 @@ class FirebaseAuthController extends Controller
         Cache::forget('user_' . $firebaseLoginUser->token_id);
         Cache::forget($token);
         Cookie::queue(Cookie::forget('appToken'));
-        Cookie::queue(Cookie::forget('timeToCheck'));
+        Cookie::queue(Cookie::forget('timeCheckStart'));
 
         return response()->noContent();
     }
@@ -197,7 +197,7 @@ class FirebaseAuthController extends Controller
         });
 
         // Tokenのチェックを開始する時間を経過したかどうかの判定
-        $isTimeToCheck = Cookie::get('timeToCheck') <= Carbon::now() ? true : false;
+        $isTimeToCheck = Cookie::get('timeCheckStart') <= Carbon::now() ? true : false;
 
         if ($user && $isTimeToCheck) {
             $expiredUser = DB::table('users')
