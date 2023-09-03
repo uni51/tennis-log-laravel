@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Kreait\Firebase\Factory;
+use App\Consts\Token;
 use App\Models\FirebaseLogin;
 use App\Models\OAuthAccessTokens;
 use App\Models\User;
@@ -85,18 +86,16 @@ class FirebaseAuthController extends Controller
 
             $tokenResult = $user->createToken('Personal Access Token');
 
-            // Tokenの期限を1時間後に設定
-            $expiryMinutes = 3;
-            $expiresAt = Carbon::now()->addMinutes($expiryMinutes);
-            // Tokenのチェックを開始する時間を、Tokenの有効期限-1分 で設定
-            $startTimeCheckExpiresAt = Carbon::now()->addMinutes($expiryMinutes - 1);
+            // Tokenの期限を30分に設定
+            $expiresAt = Carbon::now()->addMinutes(Token::TokenValidMinutes);
+            // Tokenのチェックを開始する時間を、Tokenの有効期限-2分 で設定
+            $startTimeCheckExpiresAt = Carbon::now()->addMinutes(Token::WaitingUntilCheckMinutes);
 
             $firebaseLoginUser = FirebaseLogin::create([
                 'user_id' => $user->id,
                 'firebase_uid' => $firebaseUid,
                 'token_id' => $tokenResult->token->id,
                 'access_token' => $tokenResult->accessToken,
-                // TODO: /api/userでの、firebase_logins.expires_atでのトークン期限チェックがまだ未実装
                 'expires_at' => Carbon::parse($expiresAt)->format('Y-m-d H:i:s'),
             ]);
 
@@ -107,10 +106,10 @@ class FirebaseAuthController extends Controller
 
             $appToken = $tokenResult->accessToken ?? $user->access_token;
 
-            // CookieにappTokenの値を有効期限1時間で設定
+            // CookieにappTokenの値をセット（Cookieの有効期限は、Tokenのexpires_atよりも長く設定する必要がある）
             // TODO: Http属性やセキュア属性の見直し
-            Cookie::queue('appToken', $appToken, $expiryMinutes, '/', env('SESSION_DOMAIN'), false, false);
-            Cookie::queue('timeCheckStart', $startTimeCheckExpiresAt, $expiryMinutes - 1, '/', env('SESSION_DOMAIN'), false, false);
+            Cookie::queue('appToken', $appToken, Token::CookieTokenValidMinutes, '/', env('SESSION_DOMAIN'), false, false);
+            Cookie::queue('timeCheckStart', $startTimeCheckExpiresAt, Token::WaitingUntilCheckMinutes, '/', env('SESSION_DOMAIN'), false, false);
 
             return response()->json([
                 'uid' => $firebaseUid,
@@ -180,7 +179,7 @@ class FirebaseAuthController extends Controller
         $id_token = $request->headers->get('authorization');
         // Log::debug('id_token:'.$id_token);
         $token = trim(str_replace('Bearer', '', $id_token));
-        $cacheExpiredSeconds = 120;
+        $cacheExpiredSeconds = Token::CacheValidSeconds;
 
         $firebaseLoginUser = Cache::remember($token, $cacheExpiredSeconds, function () use ($token) {
             return FirebaseLogin::where('access_token', $token)->first();
