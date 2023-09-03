@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashBoardMemoController;
 use App\Http\Controllers\PrivateMemoController;
 use App\Http\Controllers\PublicMemoController;
 use App\Http\Controllers\MemoController;
+use App\Http\Controllers\UserAuth\FirebaseAuthController;
 use App\Http\Controllers\FirebaseTestController;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,7 +41,7 @@ Route::group(['middleware' => 'auth:front_api'], function () {
 // Route::group(['middleware' => 'client'], function () { // こちらの書き方も可能
 
     // ログインユーザー取得
-    Route::get('/user', [\App\Http\Controllers\UserAuth\FirebaseAuthController::class, 'user']);
+    Route::get('/user', [FirebaseAuthController::class, 'user']);
 
      // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
      Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list']);
