@@ -86,10 +86,9 @@ class FirebaseAuthController extends Controller
 
             $tokenResult = $user->createToken('Personal Access Token');
 
-            // Tokenの期限を30分に設定
             $expiresAt = Carbon::now()->addMinutes(Token::TokenValidMinutes);
-            // Tokenのチェックを開始する時間を、Tokenの有効期限-2分 で設定
-            $startTimeCheckExpiresAt = Carbon::now()->addMinutes(Token::WaitingUntilCheckMinutes);
+            // Tokenのチェックを開始する時間を、Tokenの有効期限 - 2分 で設定
+            $checkStartTime = Carbon::now()->addMinutes(Token::WaitingUntilCheckMinutes);
 
             $firebaseLoginUser = FirebaseLogin::create([
                 'user_id' => $user->id,
@@ -106,10 +105,9 @@ class FirebaseAuthController extends Controller
 
             $appToken = $tokenResult->accessToken ?? $user->access_token;
 
-            // CookieにappTokenの値をセット（Cookieの有効期限は、Tokenのexpires_atよりも長く設定する必要がある）
             // TODO: Http属性やセキュア属性の見直し
             Cookie::queue('appToken', $appToken, Token::CookieTokenValidMinutes, '/', env('SESSION_DOMAIN'), false, false);
-            Cookie::queue('timeCheckStart', $startTimeCheckExpiresAt, Token::WaitingUntilCheckMinutes, '/', env('SESSION_DOMAIN'), false, false);
+            Cookie::queue('checkStartTime', $checkStartTime, Token::WaitingUntilCheckMinutes, '/', env('SESSION_DOMAIN'), false, false);
 
             return response()->json([
                 'uid' => $firebaseUid,
@@ -167,7 +165,7 @@ class FirebaseAuthController extends Controller
         Cache::forget('user_' . $firebaseLoginUser->token_id);
         Cache::forget($token);
         Cookie::queue(Cookie::forget('appToken'));
-        Cookie::queue(Cookie::forget('timeCheckStart'));
+        Cookie::queue(Cookie::forget('checkStartTime'));
 
         return response()->noContent();
     }
@@ -196,7 +194,7 @@ class FirebaseAuthController extends Controller
         });
 
         // Tokenのチェックを開始する時間を経過したかどうかの判定
-        $isTimeToCheck = Cookie::get('timeCheckStart') <= Carbon::now() ? true : false;
+        $isTimeToCheck = Cookie::get('checkStartTime') <= Carbon::now() ? true : false;
 
         if ($user && $isTimeToCheck) {
             $expiredUser = DB::table('users')
