@@ -177,15 +177,15 @@ class FirebaseAuthController extends Controller
         $id_token = $request->headers->get('authorization');
         // Log::debug('id_token:'.$id_token);
         $token = trim(str_replace('Bearer', '', $id_token));
-        $cacheExpiredSeconds = Token::CacheValidSeconds;
+        $cacheValidSeconds = Token::CacheValidSeconds;
 
-        $firebaseLoginUser = Cache::remember($token, $cacheExpiredSeconds, function () use ($token) {
+        $firebaseLoginUser = Cache::remember($token, $cacheValidSeconds, function () use ($token) {
             return FirebaseLogin::where('access_token', $token)->first();
         });
 
         Log::debug('user_' . $firebaseLoginUser->token_id);
 
-        $user = Cache::remember('user_' . $firebaseLoginUser->token_id, $cacheExpiredSeconds, function () use ($token) {
+        $user = Cache::remember('user_' . $firebaseLoginUser->token_id, $cacheValidSeconds, function () use ($token) {
             return DB::table('users')
                 ->select('users.id', 'users.nickname', 'users.name')
                 ->leftJoin('firebase_logins', 'users.id', '=', 'firebase_logins.user_id')
