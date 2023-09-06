@@ -37,8 +37,8 @@ Route::get('/public/{nickname}/memos/category/{categoryId}',
     [PublicMemoController::class, 'userMemoListByCategory']);
 
 
-Route::group(['middleware' => 'auth:front_api'], function () {
-// Route::group(['middleware' => 'client'], function () { // こちらの書き方も可能
+Route::group(['middleware' => 'auth:front_api'], function () { // この書き方だと、検証用のSQLが常に3つ走る
+//Route::group(['middleware' => 'client'], function () { // こちらの書き方だと検証用のSQLが1つのみ走る
 
     // ログインユーザー取得
     Route::get('/user', [FirebaseAuthController::class, 'user']);
