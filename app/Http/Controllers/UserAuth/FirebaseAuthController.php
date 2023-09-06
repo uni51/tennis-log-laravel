@@ -154,6 +154,7 @@ class FirebaseAuthController extends Controller
             // コミット
             DB::commit();
         } catch (\Exception $e) {
+            Log::debug($e->getMessage());
             DB::rollback();
         }
 
