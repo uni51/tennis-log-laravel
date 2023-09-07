@@ -6,7 +6,6 @@ namespace App\Providers;
 use App\Consts\Token;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Laravel\Passport\Passport;
 use Illuminate\Support\Carbon;
 
 class AuthServiceProvider extends ServiceProvider
@@ -37,6 +36,5 @@ class AuthServiceProvider extends ServiceProvider
 
     public function register()
     {
-        Passport::ignoreRoutes();
     }
 }
