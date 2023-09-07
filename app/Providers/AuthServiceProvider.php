@@ -26,15 +26,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        // PersonalAccessTokenの有効期限を設定する
-        // Passport::personalAccessTokensExpireIn(Carbon::now()->addMinutes(Token::TokenValidMinutes));
-
 //        ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
 //            return config('app.frontend_url')."/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}";
 //        });
-    }
-
-    public function register()
-    {
     }
 }
