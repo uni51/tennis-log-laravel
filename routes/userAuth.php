@@ -22,6 +22,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [FirebaseAuthController::class, 'login'])
         ->middleware('guest')
         ->name('user.login');
+
     Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
         ->middleware('guest')
         ->name('password.email');
@@ -43,7 +44,7 @@ Route::prefix('auth')->group(function () {
 //        ->name('logout');
 
     Route::get('/logout', [FirebaseAuthController::class, 'logout'])
-        ->middleware('auth')
+        ->middleware('auth:web')
         ->name('logout');
 });
 

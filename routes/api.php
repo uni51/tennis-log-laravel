@@ -1,14 +1,15 @@
 <?php
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashBoardMemoController;
 use App\Http\Controllers\PrivateMemoController;
 use App\Http\Controllers\PublicMemoController;
 use App\Http\Controllers\MemoController;
-use App\Http\Controllers\UserAuth\FirebaseAuthController;
 use App\Http\Controllers\FirebaseTestController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,32 +37,24 @@ Route::get('/public/memos/category/{categoryId}', [PublicMemoController::class, 
 Route::get('/public/{nickname}/memos/category/{categoryId}',
     [PublicMemoController::class, 'userMemoListByCategory']);
 
+// ログインユーザー取得
 
-Route::group(['middleware' => 'auth:front_api'], function () { // この書き方だと、検証用のSQLが常に3つ走る
-//Route::group(['middleware' => 'client'], function () { // こちらの書き方だと検証用のSQLが1つのみ走る
-
-    // ログインユーザー取得
-    Route::get('/user', [FirebaseAuthController::class, 'user']);
-
-     // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
-     Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list']);
-     Route::get('/dashboard/memos/category/{categoryId}', [DashBoardMemoController::class, 'memoListByCategory']);
-     Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'show']);
-     Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create']);
-     Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'edit']);
-     Route::post('/dashboard/memos/{id}/delete', [DashBoardMemoController::class, 'destroy']);
-});
-
-Route::group(['middleware' => 'auth:sanctum'], function () {
+Route::group(['middleware' => 'auth:api'], function () {
 //    Route::get('/user', function (Request $request) {
 //        return $request->user();
 //    });
+    Route::get('/user', function() {
+        $user = Auth::user();
+        return $user ? new UserResource($user) : null;
+    });
 
-    // ログインユーザー取得
-//    Route::get('/user', function() {
-//        $user = Auth::user();
-//        return $user ? new UserResource($user) : null;
-//    });
+    // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
+    Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list']);
+    Route::get('/dashboard/memos/category/{categoryId}', [DashBoardMemoController::class, 'memoListByCategory']);
+    Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'show']);
+    Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create']);
+    Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'edit']);
+    Route::post('/dashboard/memos/{id}/delete', [DashBoardMemoController::class, 'destroy']);
 
     Route::get('/user/delete', function() {
         $user = Auth::user();
