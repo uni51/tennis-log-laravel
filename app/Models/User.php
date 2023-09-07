@@ -19,7 +19,6 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'id',
         'firebase_uid',
         'name',
         'nickname',
@@ -55,10 +54,5 @@ class User extends Authenticatable
     public function memos()
     {
         return $this->hasMany(Memo::class);
-    }
-
-    public function firebaseLogins()
-    {
-        return $this->hasMany(FirebaseLogin::class);
     }
 }
