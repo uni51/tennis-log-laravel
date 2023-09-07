@@ -8,7 +8,6 @@ use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Auth\CreateSessionCookie\FailedToCreateSessionCookie;
 use Kreait\Firebase\Exception\Auth\RevokedIdToken;
-use App\Consts\Token;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Response;
