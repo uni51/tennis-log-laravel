@@ -39,7 +39,7 @@ class FirebaseAuthController extends Controller
         $id_token = $request->input('idToken');
 
         try {
-            $verifiedIdToken = $this->auth->verifyIdToken($id_token, 8000);
+            $verifiedIdToken = $this->auth->verifyIdToken($id_token);
             // Log::debug('verifiedIdToken:' . $verifiedIdToken->toString());
 
             $firebaseUid = $verifiedIdToken->claims()->get('sub');
@@ -48,6 +48,7 @@ class FirebaseAuthController extends Controller
 
             $user = User::select('users.*')
                 ->where('firebase_uid', '=', $firebaseUid)
+                ->where('email', '=', $firebaseUser->email)
                 ->first();
 
             if (is_null($user)) {
@@ -61,7 +62,10 @@ class FirebaseAuthController extends Controller
                         'email' => $firebaseUser->email,
                     ]);
                 } else {
+                    // 同一のEmailのユーザーが存在する場合は、FirebaseのUIDを更新
                     $user = $existSameEmailUser;
+                    $user->firebase_uid = $firebaseUid;
+                    $user->save();
                 }
             }
 
@@ -109,19 +113,9 @@ class FirebaseAuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $sessionCookie = $request->cookie('session');
-
-        try {
-            Auth::guard('web')->logout();
-            Cookie::queue(Cookie::forget('session'));
-            Session::flush();
-        } catch(\Exception $error) {
-            Log::debug($error->getMessage());
-            return response()->json([
-                'error' => 'LogoutError' . $error->getMessage(),
-                Response::HTTP_UNAUTHORIZED,
-            ]);
-        }
+        Auth::guard('web')->logout();
+        Cookie::queue(Cookie::forget('session'));
+        Session::flush();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

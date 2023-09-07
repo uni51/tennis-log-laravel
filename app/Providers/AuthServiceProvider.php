@@ -9,6 +9,7 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Kreait\Firebase\Factory;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -32,8 +33,17 @@ class AuthServiceProvider extends ServiceProvider
 //            return config('app.frontend_url')."/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}";
 //        });
 
-        Auth::viaRequest('firebase_cookie', function () {
+        Auth::viaRequest('firebase_cookie', function (Request $request) {
+//             $factory = (new Factory())
+//                ->withServiceAccount(file_get_contents(storage_path(env('FIREBASE_CREDENTIALS'))))
+//                ->withProjectId(env('FIREBASE_PROJECT'));
+//             $firebaseAuth = $factory->createAuth();
+//             $sessionCookie = $request->cookie('session');
+//             $verifiedIdToken = $firebaseAuth->verifySessionCookie($sessionCookie, true);
+//             $firebaseUid = $verifiedIdToken->claims()->get('sub');
+
             return User::select()
+                // ->where('firebase_uid', '=', $firebaseUid)
                 ->where('firebase_uid', '=', Session::get('uid'))
                 ->first();
         });
