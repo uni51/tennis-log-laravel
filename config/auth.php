@@ -44,6 +44,9 @@ return [
             'driver' => 'sanctum',
             'provider' => 'users',
         ],
+        'firebase_cookie' => [
+            'driver' => 'firebase_cookie',
+        ],
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',

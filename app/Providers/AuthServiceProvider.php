@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
-use App\Consts\Token;
+use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -29,5 +31,11 @@ class AuthServiceProvider extends ServiceProvider
 //        ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
 //            return config('app.frontend_url')."/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}";
 //        });
+
+        Auth::viaRequest('firebase_cookie', function () {
+            return User::select()
+                ->where('firebase_uid', '=', Session::get('uid'))
+                ->first();
+        });
     }
 }

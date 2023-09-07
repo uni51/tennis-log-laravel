@@ -7,19 +7,14 @@ use App\Http\Controllers\Controller;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Auth\CreateSessionCookie\FailedToCreateSessionCookie;
-use Kreait\Firebase\Exception\Auth\RevokedIdToken;
 use App\Models\User;
-use App\Http\Resources\UserResource;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Session;
 
 class FirebaseAuthController extends Controller
 {
@@ -48,6 +43,7 @@ class FirebaseAuthController extends Controller
             // Log::debug('verifiedIdToken:' . $verifiedIdToken->toString());
 
             $firebaseUid = $verifiedIdToken->claims()->get('sub');
+            Session::put('uid', $firebaseUid);
             $firebaseUser = $this->auth->getUser($firebaseUid);
 
             $user = User::select('users.*')
@@ -118,8 +114,7 @@ class FirebaseAuthController extends Controller
         try {
             Auth::guard('web')->logout();
             Cookie::queue(Cookie::forget('session'));
-            $verifiedSessionCookie = $this->auth->verifySessionCookie($sessionCookie, true);
-            $firebaseUid = $verifiedSessionCookie->claims()->get('sub');
+            Session::flush();
         } catch(\Exception $error) {
             Log::debug($error->getMessage());
             return response()->json([

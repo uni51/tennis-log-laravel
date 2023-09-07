@@ -39,7 +39,7 @@ Route::get('/public/{nickname}/memos/category/{categoryId}',
 
 // ログインユーザー取得
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => ['auth:api', 'auth:firebase_cookie']], function () {
 //    Route::get('/user', function (Request $request) {
 //        return $request->user();
 //    });
