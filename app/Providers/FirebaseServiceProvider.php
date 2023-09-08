@@ -8,6 +8,9 @@ use Kreait\Firebase\Factory;
 
 class FirebaseServiceProvider extends ServiceProvider
 {
+    /**
+     * @var bool
+     */
     protected $defer = true;
 
     /**
@@ -17,9 +20,9 @@ class FirebaseServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(Firebase::class, function () {
+        $this->app->singleton('firebase', function () {
             return (new Factory())
-                ->withServiceAccount(file_get_contents(base_path(env('FIREBASE_CREDENTIALS'))))
+                ->withServiceAccount(file_get_contents(storage_path(env('FIREBASE_CREDENTIALS'))))
                 ->withProjectId(env('FIREBASE_PROJECT'));
         });
     }

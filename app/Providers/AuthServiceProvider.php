@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Kreait\Firebase\Factory;
+use Illuminate\Support\Facades\Log;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -34,18 +35,26 @@ class AuthServiceProvider extends ServiceProvider
 //        });
 
         Auth::viaRequest('firebase_cookie', function (Request $request) {
-//             $factory = (new Factory())
-//                ->withServiceAccount(file_get_contents(storage_path(env('FIREBASE_CREDENTIALS'))))
-//                ->withProjectId(env('FIREBASE_PROJECT'));
-//             $firebaseAuth = $factory->createAuth();
-//             $sessionCookie = $request->cookie('session');
-//             $verifiedIdToken = $firebaseAuth->verifySessionCookie($sessionCookie, true);
-//             $firebaseUid = $verifiedIdToken->claims()->get('sub');
+             $sessionCookie = Session::get('sessionCookie');
 
-            return User::select()
-                // ->where('firebase_uid', '=', $firebaseUid)
-                ->where('firebase_uid', '=', Session::get('uid'))
-                ->first();
+             $firebaseFactory = app()->make('firebase');
+             $firebaseAuth = $firebaseFactory->createAuth();
+
+             $requestCookieSession = $request->cookie('session');
+
+             if ($sessionCookie !== $requestCookieSession) {
+                 Session::put('sessionCookie', $requestCookieSession);
+                 $verifiedIdToken = $firebaseAuth->verifySessionCookie($requestCookieSession, true);
+                 $firebaseUid = $verifiedIdToken->claims()->get('sub');
+             } else {
+                 $firebaseUid = Session::get('uid');
+             }
+
+             $user = User::select()
+                 ->where('firebase_uid', '=', $firebaseUid)
+                 ->first();
+
+            return $user;
         });
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Auth\CreateSessionCookie\FailedToCreateSessionCookie;
+use Kreait\Laravel\Firebase\Facades\Firebase;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
@@ -22,11 +23,8 @@ class FirebaseAuthController extends Controller
 
     public function __construct()
     {
-        $factory = (new Factory())
-            ->withServiceAccount(file_get_contents(storage_path(env('FIREBASE_CREDENTIALS'))))
-            ->withProjectId(env('FIREBASE_PROJECT'));
-
-        $this->auth = $factory->createAuth();
+        $firebaseFactory = app()->make('firebase');
+        $this->auth = $firebaseFactory->createAuth();
     }
 
     /**
