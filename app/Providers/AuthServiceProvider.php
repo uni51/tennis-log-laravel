@@ -35,26 +35,18 @@ class AuthServiceProvider extends ServiceProvider
 //        });
 
         Auth::viaRequest('firebase_cookie', function (Request $request) {
-             $sessionCookie = Session::get('sessionCookie');
 
              $firebaseFactory = app()->make('firebase');
              $firebaseAuth = $firebaseFactory->createAuth();
 
              $requestCookieSession = $request->cookie('session');
 
-             if ($sessionCookie !== $requestCookieSession) {
-                 Session::put('sessionCookie', $requestCookieSession);
-                 $verifiedIdToken = $firebaseAuth->verifySessionCookie($requestCookieSession, true);
-                 $firebaseUid = $verifiedIdToken->claims()->get('sub');
-             } else {
-                 $firebaseUid = Session::get('uid');
-             }
+             $verifiedIdToken = $firebaseAuth->verifySessionCookie($requestCookieSession, true);
+             $firebaseUid = $verifiedIdToken->claims()->get('sub');
 
-             $user = User::select()
+             return User::select()
                  ->where('firebase_uid', '=', $firebaseUid)
                  ->first();
-
-            return $user;
         });
     }
 }
