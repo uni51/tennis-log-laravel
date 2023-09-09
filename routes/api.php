@@ -46,15 +46,15 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/user', function() {
         $user = Auth::user();
         return $user ? new UserResource($user) : null;
-    })->middleware('auth:firebase_cookie');
+    });
 
     // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
     Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list']);
     Route::get('/dashboard/memos/category/{categoryId}', [DashBoardMemoController::class, 'memoListByCategory']);
     Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'show']);
-    Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create']);
-    Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'edit']);
-    Route::post('/dashboard/memos/{id}/delete', [DashBoardMemoController::class, 'destroy']);
+    Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create'])->middleware('auth:firebase_cookie');;
+    Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'edit'])->middleware('auth:firebase_cookie');;
+    Route::post('/dashboard/memos/{id}/delete', [DashBoardMemoController::class, 'destroy'])->middleware('auth:firebase_cookie');;
 
     Route::get('/user/delete', function() {
         $user = Auth::user();

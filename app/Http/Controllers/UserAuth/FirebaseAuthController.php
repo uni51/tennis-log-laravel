@@ -73,6 +73,10 @@ class FirebaseAuthController extends Controller
                 $sessionCookieString = $this->auth->createSessionCookie($verifiedIdToken, $oneWeek);
             } catch (FailedToCreateSessionCookie $error) {
                 Log::debug($error->getMessage());
+                return response()->json([
+                    'error' => 'createSessionCookie:' . $error->getMessage(),
+                    Response::HTTP_UNAUTHORIZED,
+                ]);
             }
 
             // TODO: セキュア属性の見直し
@@ -94,11 +98,13 @@ class FirebaseAuthController extends Controller
         } catch (FailedToVerifyToken $error) {
             Log::debug($error->getMessage());
             return response()->json([
-                'error' => 'FailedToVerifyToken' . $error->getMessage(),
+                'error' => 'FailedToVerifyToken:' . $error->getMessage(),
+                Response::HTTP_UNAUTHORIZED,
             ]);
         } catch (\Exception $error) {
+            Log::debug($error->getMessage());
             return response()->json([
-                'error' => 'LoginError' . $error->getMessage(),
+                'error' => 'LoginError:' . $error->getMessage(),
                 Response::HTTP_UNAUTHORIZED,
             ]);
         }
