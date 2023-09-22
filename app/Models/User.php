@@ -6,8 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-//use Laravel\Sanctum\HasApiTokens;
-use Laravel\Passport\HasApiTokens;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
@@ -20,7 +19,6 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'id',
         'firebase_uid',
         'name',
         'nickname',
@@ -56,10 +54,5 @@ class User extends Authenticatable
     public function memos()
     {
         return $this->hasMany(Memo::class);
-    }
-
-    public function firebaseLogins()
-    {
-        return $this->hasMany(FirebaseLogin::class);
     }
 }

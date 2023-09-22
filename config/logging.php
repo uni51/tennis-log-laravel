@@ -19,10 +19,20 @@ return [
 
     'default' => env('LOG_CHANNEL', 'stack'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Log
+    |--------------------------------------------------------------------------
+    */
+    'request' => [
+        'enable' => env('LOG_REQUEST_ENABLE', false),
+    ],
+
     'sql' => [
         'enable' => env('LOG_SQL_ENABLE', false),
         'slow_query_time' => env('LOG_SQL_SLOW_QUERY_TIME', 2000), // ms
     ],
+
     /*
     |--------------------------------------------------------------------------
     | Deprecations Log Channel
@@ -58,7 +68,7 @@ return [
         'stack' => [
             'driver' => 'stack',
             'channels' => [
-                'daily', 'sqllog'
+                'daily', 'sqllog',
             ],
             'ignore_exceptions' => false,
         ],
@@ -129,7 +139,6 @@ return [
             'path' => storage_path('logs/sql.log'),
             'level' => 'debug',
         ],
-
     ],
 
 ];
