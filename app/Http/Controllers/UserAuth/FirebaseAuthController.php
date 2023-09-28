@@ -35,7 +35,7 @@ class FirebaseAuthController extends Controller
         $id_token = $request->input('idToken');
 
         try {
-            $verifiedIdToken = $this->auth->verifyIdToken($id_token);
+            $verifiedIdToken = $this->auth->verifyIdToken($id_token, true, $leewayInSeconds = 60);
             // Log::debug('verifiedIdToken:' . $verifiedIdToken->toString());
 
             $firebaseUid = $verifiedIdToken->claims()->get('sub');
