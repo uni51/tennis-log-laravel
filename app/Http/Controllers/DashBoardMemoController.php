@@ -106,12 +106,13 @@ class DashBoardMemoController extends Controller
             // モデルの保存
             $memo->update([
                 $memo->category_id = $request->category_id,
+                $memo->status = (int)$request->status_id,
                 $memo->title = $request->title,
                 $memo->body = $request->body,
             ]);
 
             // メモとタグの紐付け
-            $memo->retag($request->tags);
+            // $memo->retag($request->tags);
 
             DB::commit();
         } catch (Exception $e) {
