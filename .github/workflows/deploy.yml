@@ -1,22 +1,23 @@
-name: CI
+name: Deploy to ConoHa VPS
+
 on:
   push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
-    types: [closed]
+    branches:
+      - develop
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Deploy
-        uses: appleboy/ssh-action@master
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.5
         with:
-          key: ${{ secrets.STAGING_PRIVATE_KEY }}
-          host: ${{ secrets.STAGING_SERVER_HOST }}
-          username: ${{ secrets.STAGING_SSH_USERNAME }}
-          port: ${{ secrets.STAGING_SSH_PORT }}
-          script: |
-            cd ${{ secrets.STAGING_SERVER_DEPLOY_DIR }}
-            git pull origin main
+          ssh-private-key: ${{secrets.STAGING_SSH_PRIVATE_KEY}}
+
+      - name: Deploy to ConoHa VPS
+        run: |
+          ssh koichi@118.27.68.201 'cd /home/koichi/tennis_log_api && git pull origin develop
