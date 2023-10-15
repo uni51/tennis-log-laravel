@@ -1,4 +1,4 @@
-name: Deploy to ConoHa VPS
+name: Deploy Backend to ConoHa VPS Staging Server
 
 on:
   push:
@@ -6,8 +6,9 @@ on:
       - develop
 
 jobs:
-  deploy:
+  deploy_to_backend:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
       - name: Install SSH Key for Deploy
@@ -18,5 +19,5 @@ jobs:
           username: ${{ secrets.STAGING_SSH_USER }}
           port: ${{ secrets.STAGING_SSH_PORT }}
           script: |
-            cd tennis_log_api
+            cd ./tennis_log_api
             git pull origin develop
