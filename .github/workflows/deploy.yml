@@ -16,8 +16,8 @@ jobs:
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.7.0
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key:${{secrets.SSH_PRIVATE_KEY}}
 
       - name: Deploy to ConoHa VPS
         run: |
-          ssh koichi@118.27.68.201 'cd /home/koichi/tennis_log_api && git pull origin develop
+          ssh koichi@118.27.68.201 'cd /home/koichi/tennis_log_api && git pull origin develop'
