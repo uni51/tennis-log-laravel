@@ -8,16 +8,15 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Set up SSH key
-        uses: webfactory/ssh-agent@v0.7.0
+      - uses: actions/checkout@v3
+      - name: Install SSH Key for Deploy
+        uses: appleboy/ssh-action@master
         with:
-          ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}}
-
-      - name: Deploy to ConoHa VPS
-        run: |
-          ssh koichi@118.27.68.201 'cd /home/koichi/tennis_log_api && git pull origin develop'
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          host: ${{ secrets.STAGING_SHOST_NAME }}
+          username: ${{ secrets.STAGING_SSSH_USER }}
+          port: ${{ secrets.STAGING_SSH_PORT }}
+          script: |
+            cd tennis_log_api
+            git pull origin develop
