@@ -8,6 +8,8 @@ use App\Http\Controllers\PrivateMemoController;
 use App\Http\Controllers\PublicMemoController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\FirebaseTestController;
+use App\Http\Controllers\CareerController;
+use App\Http\Controllers\PlayFrequencyController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -25,8 +27,10 @@ use Illuminate\Support\Facades\Log;
 Route::get('/firebasetest/login_anonymous', [FirebaseTestController::class, 'loginAnonymous']);
 
 Route::get('/memos/categories', [MemoController::class, 'getCategoryList']);
-
 Route::get('/memos/status', [MemoController::class, 'getStatusList']);
+
+Route::get('/career', [CareerController::class, 'getCareerTypeList']);
+Route::get('/frequency', [PlayFrequencyController::class, 'getPlayFrequencyList']);
 
 // 公開中の記事一覧を取得するAPI
 Route::get('/public/memos', [PublicMemoController::class, 'allList']);

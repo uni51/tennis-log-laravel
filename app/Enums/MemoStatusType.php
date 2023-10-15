@@ -10,7 +10,6 @@ final class MemoStatusType extends Enum {
     const PUBLISHING = 1; // 公開中
     const SHARING = 2; // シェア
     const UN_PUBLISHING = 3; // 非公開
-    const DELETED = 4; // 削除
 
 // ここから先を追加
     public static function getDescription($value): string
@@ -26,9 +25,6 @@ final class MemoStatusType extends Enum {
         }
         if ($value === self::UN_PUBLISHING) {
             return '非公開';
-        }
-        if ($value === self::DELETED) {
-            return '削除';
         }
         return parent::getDescription($value);
     }
@@ -46,9 +42,6 @@ final class MemoStatusType extends Enum {
         }
         if ($key === '非公開') {
             return self::UN_PUBLISHING;
-        }
-        if ($key === '削除') {
-            return self::DELETED;
         }
         return parent::getValue($key);
     }
