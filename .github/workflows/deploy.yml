@@ -9,12 +9,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
+          key: ${{ secrets.STAGING_PRIVATE_KEY }}
           host: ${{ secrets.STAGING_SERVER_HOST }}
           username: ${{ secrets.STAGING_SSH_USERNAME }}
-          key: ${{ secrets.STAGING_PRIVATE_KEY }}
           port: ${{ secrets.STAGING_SSH_PORT }}
           script: |
             cd ${{ secrets.STAGING_SERVER_DEPLOY_DIR }}
