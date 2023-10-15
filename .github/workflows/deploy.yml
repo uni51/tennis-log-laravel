@@ -1,0 +1,20 @@
+name: CI
+on:
+  pull_request:
+    branches: [ develop ]
+    types: [closed]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.STAGING_SERVER_HOST}}
+          username: ${{secrets.STAGING_SSH_USERNAME}}
+          port: ${{secrets.STAGING_SSH_PORT}}
+          key: ${{ secrets.STAGING_SK }}
+          script: |
+            cd ${{ secrets.STAGING_SERVER_DEPLOY_DIR }}
+            git pull origin main
