@@ -3,12 +3,12 @@
 use App\Http\Controllers\DashBoardMemoController;
 use App\Http\Controllers\FirebaseTestController;
 use App\Http\Controllers\MemoController;
-use App\Http\Controllers\PlayFrequencyController;
 use App\Http\Controllers\PrivateMemoController;
 use App\Http\Controllers\Profile\CareerController;
 use App\Http\Controllers\Profile\GenderController;
 use App\Http\Controllers\Profile\AgeRangeController;
 use App\Http\Controllers\Profile\DominantHandController;
+use App\Http\Controllers\Profile\PlayFrequencyController;
 use App\Http\Controllers\PublicMemoController;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -31,11 +31,18 @@ Route::get('/firebasetest/login_anonymous', [FirebaseTestController::class, 'log
 Route::get('/memos/categories', [MemoController::class, 'getCategoryList']);
 Route::get('/memos/status', [MemoController::class, 'getStatusList']);
 
-Route::get('/profile/career', [CareerController::class, 'careerList']);
-Route::get('/profile/gender', [GenderController::class, 'genderList']);
-Route::get('/profile/age_range', [AgeRangeController::class, 'ageLangeList']);
-Route::get('/profile/dominant_hand', [DominantHandController::class, 'dominantHandList']);
-Route::get('/frequency', [PlayFrequencyController::class, 'playFrequencyList']);
+// テニス歴
+Route::get('/profile/career', [CareerController::class, 'careerList'])->name('profile.career');
+// 性別
+Route::get('/profile/gender', [GenderController::class, 'genderList'])->name('profile.gender');
+// 年齢（範囲）
+Route::get('/profile/age_range', [AgeRangeController::class, 'ageLangeList'])->name('profile.age_range');
+// 利き手
+Route::get('/profile/dominant_hand', [DominantHandController::class, 'dominantHandList'])
+    ->name('profile.dominant_hand');
+// プレー頻度
+Route::get('/profile/play_frequency', [PlayFrequencyController::class, 'playFrequencyList'])
+    ->name('profile.play_frequency');
 
 // 公開中の記事一覧を取得するAPI
 Route::get('/public/memos', [PublicMemoController::class, 'allList']);

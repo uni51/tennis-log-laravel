@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Profile;
 
-use App\Enums\CareerType;
 use App\Enums\PlayFrequencyType;
+use App\Http\Controllers\Controller;
 
 class PlayFrequencyController extends Controller
 {
