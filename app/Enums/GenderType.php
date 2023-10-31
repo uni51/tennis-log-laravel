@@ -8,11 +8,13 @@ use BenSampo\Enum\Enum;
 
 final class GenderType extends Enum
 {
-    const MALE = 0; // 男性
-    const FEMALE = 1; // 女性
-    //const OTHER = 2; // その他
+    const UNSELECTED = 0; // 選択してください
+    const MALE = 1; // 男性
+    const FEMALE = 2; // 女性
+    // const OTHER = 3; // その他
 
     private static $descriptions = [
+        self::UNSELECTED => '選択してください',
         self::MALE => '男性',
         self::FEMALE => '女性',
         // self::OTHER => 'その他',
@@ -24,6 +26,7 @@ final class GenderType extends Enum
     }
 
     private static $values = [
+        '選択してください' => self::UNSELECTED,
         '男性' => self::MALE,
         '女性' => self::FEMALE,
         // 'その他' => self::OTHER,
