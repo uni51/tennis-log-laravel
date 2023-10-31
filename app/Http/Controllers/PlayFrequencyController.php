@@ -7,7 +7,7 @@ use App\Enums\PlayFrequencyType;
 
 class PlayFrequencyController extends Controller
 {
-    public function getPlayFrequencyList()
+    public function playFrequencyList(): \Illuminate\Http\JsonResponse
     {
         return response()->json(PlayFrequencyType::asSelectArray());
     }
