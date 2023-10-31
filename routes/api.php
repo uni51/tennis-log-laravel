@@ -1,17 +1,17 @@
 <?php
 
+use App\Http\Controllers\DashBoardMemoController;
+use App\Http\Controllers\FirebaseTestController;
+use App\Http\Controllers\MemoController;
+use App\Http\Controllers\PlayFrequencyController;
+use App\Http\Controllers\PrivateMemoController;
+use App\Http\Controllers\Profile\CareerController;
+use App\Http\Controllers\Profile\GenderController;
+use App\Http\Controllers\PublicMemoController;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashBoardMemoController;
-use App\Http\Controllers\PrivateMemoController;
-use App\Http\Controllers\PublicMemoController;
-use App\Http\Controllers\MemoController;
-use App\Http\Controllers\FirebaseTestController;
-use App\Http\Controllers\CareerController;
-use App\Http\Controllers\PlayFrequencyController;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +29,8 @@ Route::get('/firebasetest/login_anonymous', [FirebaseTestController::class, 'log
 Route::get('/memos/categories', [MemoController::class, 'getCategoryList']);
 Route::get('/memos/status', [MemoController::class, 'getStatusList']);
 
-Route::get('/career', [CareerController::class, 'getCareerTypeList']);
+Route::get('/career', [CareerController::class, 'careerList']);
+Route::get('/gender', [GenderController::class, 'genderList']);
 Route::get('/frequency', [PlayFrequencyController::class, 'getPlayFrequencyList']);
 
 // 公開中の記事一覧を取得するAPI

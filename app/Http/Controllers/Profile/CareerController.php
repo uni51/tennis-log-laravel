@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Profile;
 
 use App\Enums\CareerType;
+use App\Http\Controllers\Controller;
 
 class CareerController extends Controller
 {
-    public function getCareerTypeList()
+    public function careerList(): \Illuminate\Http\JsonResponse
     {
         return response()->json(CareerType::asSelectArray());
     }
