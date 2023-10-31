@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Profile;
 
-use App\Enums\CareerType;
+use App\Enums\Profile\CareerType;
 use App\Http\Controllers\Controller;
 
 class CareerController extends Controller

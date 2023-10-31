@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Profile;
 
-use App\Enums\AgeRangeType;
+use App\Enums\Profile\AgeRangeType;
 use App\Http\Controllers\Controller;
 
 class AgeRangeController extends Controller

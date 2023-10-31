@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Profile;
 
-use App\Enums\DominantHandType;
+use App\Enums\Profile\DominantHandType;
 use App\Http\Controllers\Controller;
 
 class DominantHandController extends Controller

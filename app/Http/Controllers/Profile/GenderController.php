@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Profile;
 
-use App\Enums\GenderType;
+use App\Enums\Profile\GenderType;
 use App\Http\Controllers\Controller;
 
 class GenderController extends Controller

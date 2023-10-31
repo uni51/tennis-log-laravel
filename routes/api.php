@@ -9,6 +9,7 @@ use App\Http\Controllers\Profile\GenderController;
 use App\Http\Controllers\Profile\AgeRangeController;
 use App\Http\Controllers\Profile\DominantHandController;
 use App\Http\Controllers\Profile\PlayFrequencyController;
+use App\Http\Controllers\Profile\TennisLevelController;
 use App\Http\Controllers\PublicMemoController;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -43,6 +44,9 @@ Route::get('/profile/dominant_hand', [DominantHandController::class, 'dominantHa
 // プレー頻度
 Route::get('/profile/play_frequency', [PlayFrequencyController::class, 'playFrequencyList'])
     ->name('profile.play_frequency');
+// テニスレベル
+Route::get('/profile/tennis_level', [TennisLevelController::class, 'tennisLevelList'])
+    ->name('profile.tennis_level');
 
 // 公開中の記事一覧を取得するAPI
 Route::get('/public/memos', [PublicMemoController::class, 'allList']);

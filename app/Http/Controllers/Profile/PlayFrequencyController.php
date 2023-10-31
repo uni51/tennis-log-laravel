@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Profile;
 
-use App\Enums\PlayFrequencyType;
+use App\Enums\Profile\PlayFrequencyType;
 use App\Http\Controllers\Controller;
 
 class PlayFrequencyController extends Controller
