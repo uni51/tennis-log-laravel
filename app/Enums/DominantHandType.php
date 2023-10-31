@@ -1,41 +1,39 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Enums;
 
 use BenSampo\Enum\Enum;
 
-final class DominantHandType extends Enum {
-    const RIGHT_HANDED = 0; // 右利き
-    const LEFT_HANDED = 1; // 左利き
-    const BOTH_HANDED = 2; // 利き手なし（左右同じくらい）
+final class DominantHandType extends Enum
+{
+    const UNSELECTED = 0; // 選択してください
+    const RIGHT_HANDED = 1; // 右利き
+    const LEFT_HANDED = 2; // 左利き
+    const BOTH_HANDED = 3; // 両利き
 
-// ここから先を追加
+    private static $descriptions = [
+        self::UNSELECTED => '選択してください',
+        self::RIGHT_HANDED => '右利き',
+        self::LEFT_HANDED => '左利き',
+        self::BOTH_HANDED => '両利き',
+    ];
+
     public static function getDescription($value): string
     {
-        if ($value === self::RIGHT_HANDED) {
-            return '右利き';
-        }
-        if ($value === self::LEFT_HANDED) {
-            return '左利き';
-        }
-        if ($value === self::BOTH_HANDED) {
-            return '利き手なし（左右同じくらい）';
-        }
-        return parent::getDescription($value);
+        return self::$descriptions[$value] ?? parent::getDescription($value);
     }
+
+    private static $values = [
+        '選択してください' => self::UNSELECTED,
+        '右利き' => self::RIGHT_HANDED,
+        '左利き' => self::LEFT_HANDED,
+        '両利き' => self::BOTH_HANDED,
+    ];
 
     public static function getValue(string $key): int
     {
-        if ($key === '右利き') {
-            return self::RIGHT_HANDED;
-        }
-        if ($key === '左利き') {
-            return self::LEFT_HANDED;
-        }
-        if ($key === '利き手なし（左右同じくらい）') {
-            return self::BOTH_HANDED;
-        }
-        return parent::getValue($key);
+        return self::$values[$key] ?? parent::getValue($key);
     }
 }

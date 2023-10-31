@@ -8,6 +8,7 @@ use App\Http\Controllers\PrivateMemoController;
 use App\Http\Controllers\Profile\CareerController;
 use App\Http\Controllers\Profile\GenderController;
 use App\Http\Controllers\Profile\AgeRangeController;
+use App\Http\Controllers\Profile\DominantHandController;
 use App\Http\Controllers\PublicMemoController;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -30,9 +31,10 @@ Route::get('/firebasetest/login_anonymous', [FirebaseTestController::class, 'log
 Route::get('/memos/categories', [MemoController::class, 'getCategoryList']);
 Route::get('/memos/status', [MemoController::class, 'getStatusList']);
 
-Route::get('/career', [CareerController::class, 'careerList']);
-Route::get('/gender', [GenderController::class, 'genderList']);
-Route::get('/age_range', [AgeRangeController::class, 'ageLangeList']);
+Route::get('/profile/career', [CareerController::class, 'careerList']);
+Route::get('/profile/gender', [GenderController::class, 'genderList']);
+Route::get('/profile/age_range', [AgeRangeController::class, 'ageLangeList']);
+Route::get('/profile/dominant_hand', [DominantHandController::class, 'dominantHandList']);
 Route::get('/frequency', [PlayFrequencyController::class, 'playFrequencyList']);
 
 // 公開中の記事一覧を取得するAPI
