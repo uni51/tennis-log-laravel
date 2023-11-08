@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\UserManageController;
 use App\Http\Controllers\DashBoardMemoController;
 use App\Http\Controllers\FirebaseTestController;
 use App\Http\Controllers\MemoController;
@@ -12,6 +11,8 @@ use App\Http\Controllers\Profile\GenderController;
 use App\Http\Controllers\Profile\PlayFrequencyController;
 use App\Http\Controllers\Profile\TennisLevelController;
 use App\Http\Controllers\PublicMemoController;
+use App\Http\Controllers\Admin\UserManageController;
+use App\Http\Controllers\Admin\MemoManageController;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -93,4 +94,5 @@ Route::group(['middleware' => 'auth:admin'], function () {
         return $request->user();
     });
     Route::get('/admin/users', [UserManageController::class, 'list']);
+    Route::get('/admin/memos', [MemoManageController::class, 'list']);
 });
