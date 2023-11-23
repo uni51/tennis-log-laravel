@@ -20,7 +20,7 @@ jobs:
           port: ${{ secrets.PROD01_SSH_PORT }}
           script: |
             cd ./tennis_log_api
-            git pull origin develop
+            git pull origin main
 
       - name: cache vendor
         id: cache
