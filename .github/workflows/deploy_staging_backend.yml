@@ -14,7 +14,7 @@ jobs:
       - name: Install SSH Key for Deploy
         uses: appleboy/ssh-action@master
         with:
-          key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          key: ${{ secrets.TENNISLOG_SSH_PRIVATE_KEY }}
           host: ${{ secrets.STAGING_HOST_IP }}
           username: ${{ secrets.STAGING_SSH_USER }}
           port: ${{ secrets.STAGING_SSH_PORT }}
