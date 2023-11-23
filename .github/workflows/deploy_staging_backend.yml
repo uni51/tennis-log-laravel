@@ -1,0 +1,36 @@
+name: Deploy Backend to ConoHa VPS Staging Server
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy_to_staging_backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install SSH Key for Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          key: ${{ secrets.TENNISLOG_SSH_PRIVATE_KEY }}
+          host: ${{ secrets.STAGING_HOST_IP }}
+          username: ${{ secrets.STAGING_SSH_USER }}
+          port: ${{ secrets.STAGING_SSH_PORT }}
+          script: |
+            cd ./tennis_log_api
+            git pull origin develop
+
+      - name: cache vendor
+        id: cache
+        uses: actions/cache@v1
+        with:
+          path: ./vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: composer install
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: composer install -n --prefer-dist

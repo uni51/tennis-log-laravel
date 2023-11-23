@@ -1,15 +1,22 @@
 <?php
 
+use App\Http\Controllers\DashBoardMemoController;
+use App\Http\Controllers\FirebaseTestController;
+use App\Http\Controllers\MemoController;
+use App\Http\Controllers\PrivateMemoController;
+use App\Http\Controllers\Profile\AgeRangeController;
+use App\Http\Controllers\Profile\CareerController;
+use App\Http\Controllers\Profile\DominantHandController;
+use App\Http\Controllers\Profile\GenderController;
+use App\Http\Controllers\Profile\PlayFrequencyController;
+use App\Http\Controllers\Profile\TennisLevelController;
+use App\Http\Controllers\PublicMemoController;
+use App\Http\Controllers\Admin\UserManageController;
+use App\Http\Controllers\Admin\MemoManageController;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashBoardMemoController;
-use App\Http\Controllers\PrivateMemoController;
-use App\Http\Controllers\PublicMemoController;
-use App\Http\Controllers\MemoController;
-use App\Http\Controllers\FirebaseTestController;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,8 +32,23 @@ use Illuminate\Support\Facades\Log;
 Route::get('/firebasetest/login_anonymous', [FirebaseTestController::class, 'loginAnonymous']);
 
 Route::get('/memos/categories', [MemoController::class, 'getCategoryList']);
-
 Route::get('/memos/status', [MemoController::class, 'getStatusList']);
+
+// テニス歴
+Route::get('/profile/career', [CareerController::class, 'careerList'])->name('profile.career');
+// 性別
+Route::get('/profile/gender', [GenderController::class, 'genderList'])->name('profile.gender');
+// 年齢（範囲）
+Route::get('/profile/age_range', [AgeRangeController::class, 'ageLangeList'])->name('profile.age_range');
+// 利き手
+Route::get('/profile/dominant_hand', [DominantHandController::class, 'dominantHandList'])
+    ->name('profile.dominant_hand');
+// プレー頻度
+Route::get('/profile/play_frequency', [PlayFrequencyController::class, 'playFrequencyList'])
+    ->name('profile.play_frequency');
+// テニスレベル
+Route::get('/profile/tennis_level', [TennisLevelController::class, 'tennisLevelList'])
+    ->name('profile.tennis_level');
 
 // 公開中の記事一覧を取得するAPI
 Route::get('/public/memos', [PublicMemoController::class, 'allList']);
@@ -71,4 +93,6 @@ Route::group(['middleware' => 'auth:admin'], function () {
     Route::get('/admin', function (Request $request) {
         return $request->user();
     });
+    Route::get('/admin/users', [UserManageController::class, 'list']);
+    Route::get('/admin/memos', [MemoManageController::class, 'list']);
 });
