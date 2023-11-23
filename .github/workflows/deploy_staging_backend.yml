@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  deploy_to_backend:
+  deploy_to_staging_backend:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,8 +14,8 @@ jobs:
       - name: Install SSH Key for Deploy
         uses: appleboy/ssh-action@master
         with:
-          key: ${{ secrets.STAGING_SSH_KEY }}
-          host: ${{ secrets.STAGING_HOST_NAME }}
+          key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          host: ${{ secrets.STAGING_HOST_IP }}
           username: ${{ secrets.STAGING_SSH_USER }}
           port: ${{ secrets.STAGING_SSH_PORT }}
           script: |
