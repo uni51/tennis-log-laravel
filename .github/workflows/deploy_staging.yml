@@ -21,3 +21,16 @@ jobs:
           script: |
             cd ./tennis_log_api
             git pull origin develop
+
+      - name: cache vendor
+        id: cache
+        uses: actions/cache@v1
+        with:
+          path: ./vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: composer install
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: composer install -n --prefer-dist
