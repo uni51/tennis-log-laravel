@@ -1,7 +1,8 @@
 name: Deploy Backend to ConoHa VPS Prod02 Server
+
 on:
-  label:
-    types: [created]
+  pull_request:
+    types: [labeled]
 
 jobs:
   deploy_to_prod02_backend:
