@@ -1,26 +1,25 @@
-name: Deploy Backend to ConoHa VPS Prod01 Server
-
+name: Deploy Backend to ConoHa VPS Prod02 Server
 on:
   pull_request:
     types: [opened, synchronize, labeled]
 
 jobs:
-  deploy_to_prod01_backend:
+  deploy_to_prod02_backend:
     runs-on: ubuntu-latest
     if: |
       ((github.event.action == 'labeled') &&
-        (github.event.label.name == 'deploy_prod01')) ||
+        (github.event.label.name == 'deploy_prod02')) ||
       ((github.event.action == 'synchronize') &&
-        contains(github.event.pull_request.labels.*.name, 'deploy_prod01')
+        contains(github.event.pull_request.labels.*.name, 'deploy_prod02')
     steps:
       - uses: actions/checkout@v3
       - name: Install SSH Key for Deploy
         uses: appleboy/ssh-action@master
         with:
           key: ${{ secrets.TENNISLOG_SSH_PRIVATE_KEY }}
-          host: ${{ secrets.PROD01_HOST_IP }}
-          username: ${{ secrets.PROD01_SSH_USER }}
-          port: ${{ secrets.PROD01_SSH_PORT }}
+          host: ${{ secrets.PROD02_HOST_IP }}
+          username: ${{ secrets.PROD02_SSH_USER }}
+          port: ${{ secrets.PROD02_SSH_PORT }}
           script: |
             cd ./tennis_log_api
             git pull origin main
