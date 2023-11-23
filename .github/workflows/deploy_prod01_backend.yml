@@ -1,8 +1,8 @@
 name: Deploy Backend to ConoHa VPS Prod01 Server
 
 on:
-  pull_request:
-    types: [opened, synchronize, labeled]
+  label:
+    types: [created]
 
 jobs:
   deploy_to_prod01_backend:
@@ -11,7 +11,7 @@ jobs:
       ((github.event.action == 'labeled') &&
         (github.event.label.name == 'deploy_prod01')) ||
       ((github.event.action == 'synchronize') &&
-        contains(github.event.pull_request.labels.*.name, 'deploy_prod01')
+        contains(github.event.pull_request.labels.*.name, 'deploy_prod01'))
     steps:
       - uses: actions/checkout@v3
       - name: Install SSH Key for Deploy
