@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\MemoPostRequest;
 use App\Http\Requests\MemoEditRequest;
+use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use App\Services\MemoService;
-use App\Services\PublicMemoService;
 use Exception;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;

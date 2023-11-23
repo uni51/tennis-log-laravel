@@ -2,8 +2,8 @@
 namespace App\Services;
 
 use App\Http\Resources\MemoResource;
-use App\Models\User;
 use App\Models\Memo;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
