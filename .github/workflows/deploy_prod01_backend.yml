@@ -9,9 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       ((github.event.action == 'labeled') &&
-        (github.event.label.name == 'deploy_prod01')) ||
-      ((github.event.action == 'synchronize') &&
-        contains(github.event.pull_request.labels.*.name, 'deploy_prod01'))
+        (github.event.label.name == 'deploy_prod01'))
     steps:
       - uses: actions/checkout@v3
       - name: Install SSH Key for Deploy
