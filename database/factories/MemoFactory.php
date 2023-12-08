@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,7 +19,7 @@ class MemoFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id,
-            'category_id' => Category::inRandomOrder()->first()->id,
+            'category_id' => fake()->numberBetween(1, 7),
             'title' => fake()->realTextBetween(5,50),
             'status' => fake()->numberBetween(0, 3),
             'body' => fake()->realText(),

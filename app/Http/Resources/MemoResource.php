@@ -21,7 +21,7 @@ class MemoResource extends JsonResource
             'title' => $this->title,
             'body' => $this->body,
             'category_id' => $this->category_id,
-            'category_name' => $this->category->name,
+//            'category_name' => $this->category->name,
             'tag_list' => [
                 'tags' => $this->tagArray,
                 'normalized' => $this->tagArrayNormalized,

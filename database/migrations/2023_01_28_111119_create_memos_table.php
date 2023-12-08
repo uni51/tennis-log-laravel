@@ -18,13 +18,8 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrained()
                 ->onUpdate('cascade')
-                ->onDelete('restrict')
                 ->comment('ユーザーID');
-            $table->foreignId('category_id')
-                ->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('restrict')
-                ->comment('カテゴリーID');
+            $table->unsignedTinyInteger('category_id')->comment('カテゴリーID');
             $table->string('title', 100)->comment('タイトル');
             $table->string('body', 3000)->comment('メモの内容');
             $table->unsignedTinyInteger('status')->default(0)->comment('記事のステータス: 0:下書き, 1:公開中, 2:シェア, 3:非公開, 4:削除');

@@ -2,30 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CategoryType;
 use App\Enums\MemoStatusType;
-use App\Http\Resources\CategoryResource;
-use App\Models\Category;
-use Exception;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\JsonResponse;
 
 class MemoController extends Controller
 {
-
     /**
-     * @return AnonymousResourceCollection
-     * @throws Exception
+     * @return JsonResponse
      */
-    public function getCategoryList()
+    public function getCategoryList(): JsonResponse
     {
-        try {
-            $categories = Category::all();
-        } catch (Exception $e) {
-            throw $e;
-        }
-
-        return CategoryResource::collection($categories);
+        return response()->json(CategoryType::asSelectArray());
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function getStatusList()
     {
         return response()->json(MemoStatusType::asSelectArray());

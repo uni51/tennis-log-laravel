@@ -18,8 +18,7 @@ class PublicMemoService
     public function allList(): AnonymousResourceCollection
     {
         try {
-            $memos = Memo::with(['category:name,id'])
-                        ->where('status', 1)
+            $memos = Memo::where('status', 1)
                         ->paginate(6);
         } catch (Exception $e) {
             throw $e;
