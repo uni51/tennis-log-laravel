@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MemoResource;
+use App\Models\Memo;
 use App\Services\Admin\MemoManageService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -23,5 +25,12 @@ class MemoManageController extends Controller
     public function list(MemoManageService $service): AnonymousResourceCollection
     {
         return $service->list();
+    }
+
+    public function show($id)
+    {
+        $memo = Memo::findOrFail($id);
+
+        return new MemoResource($memo);
     }
 }
