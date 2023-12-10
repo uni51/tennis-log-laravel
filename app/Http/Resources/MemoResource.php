@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\CategoryType;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,7 +22,7 @@ class MemoResource extends JsonResource
             'title' => $this->title,
             'body' => $this->body,
             'category_id' => $this->category_id,
-//            'category_name' => $this->category->name,
+            'category_name' => CategoryType::getDescription($this->category_id),
             'tag_list' => [
                 'tags' => $this->tagArray,
                 'normalized' => $this->tagArrayNormalized,
