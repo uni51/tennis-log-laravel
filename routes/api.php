@@ -51,20 +51,26 @@ Route::get('/profile/tennis_level', [TennisLevelController::class, 'tennisLevelL
     ->name('profile.tennis_level');
 
 // 公開中の記事一覧を取得するAPI
-Route::get('/public/memos', [PublicMemoController::class, 'allList']);
-Route::get('/public/memos/{id}', [PublicMemoController::class, 'show']);
-Route::get('/public/{nickname}/memos', [PublicMemoController::class, 'userMemoList']);
-Route::get('/public/{nickname}/memos/{memoId}', [PublicMemoController::class, 'userMemoDetail']);
-Route::get('/public/memos/category/{categoryId}', [PublicMemoController::class, 'memoListByCategory']);
+Route::get('/public/memos', [PublicMemoController::class, 'publicMemos'])
+    ->name('get.publicMemos');
+Route::get('/public/memos/{id}', [PublicMemoController::class, 'publicMemoDetails'])
+    ->name('get.publicMemoDetails');
+Route::get('/public/{nickname}/memos', [PublicMemoController::class, 'publicMemosByNickname'])
+    ->name('get.publicMemosByNickname');
+Route::get('/public/{nickname}/memos/{memoId}', [PublicMemoController::class, 'publicMemoDetailsByNickname'])
+    ->name('get.publicMemoDetailsByNickname');
+Route::get('/public/memos/category/{categoryId}', [PublicMemoController::class, 'publicMemosByCategory'])
+    ->name('get.publicMemosByCategory');
 Route::get('/public/{nickname}/memos/category/{categoryId}',
-    [PublicMemoController::class, 'userMemoListByCategory']);
+    [PublicMemoController::class, 'publicMemoListByNicknameAndCategory'])
+    ->name('get.publicMemoListByNicknameAndCategory');
 
 // ログインユーザー取得
 
 Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
 //    Route::get('/user', function (Request $request) {
 //        return $request->user();
-//    });
+//    })m
     Route::get('/user', function() {
         $user = Auth::user();
         return $user ? new UserResource($user) : null;

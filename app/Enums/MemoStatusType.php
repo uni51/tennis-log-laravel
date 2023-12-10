@@ -11,36 +11,41 @@ final class MemoStatusType extends Enum {
     const SHARING = 2; // シェア
     const UN_PUBLISHING = 3; // 非公開
 
+    const DRAFT_LABEL = '下書き';
+    const PUBLISHING_LABEL = '公開中';
+    const SHARING_LABEL = 'シェア';
+    const UN_PUBLISHING_LABEL = '非公開';
+
 // ここから先を追加
     public static function getDescription($value): string
     {
         if ($value === self::DRAFT) {
-            return '下書き';
+            return self::DRAFT_LABEL;
         }
         if ($value === self::PUBLISHING) {
-            return '公開中';
+            return self::PUBLISHING_LABEL;
         }
         if ($value === self::SHARING) {
-            return 'シェア';
+            return self::SHARING_LABEL;
         }
         if ($value === self::UN_PUBLISHING) {
-            return '非公開';
+            return self::UN_PUBLISHING_LABEL;
         }
         return parent::getDescription($value);
     }
 
     public static function getValue(string $key): int
     {
-        if ($key === '下書き') {
+        if ($key === self::DRAFT_LABEL) {
             return self::DRAFT;
         }
-        if ($key === '公開中') {
+        if ($key === self::PUBLISHING_LABEL) {
             return self::PUBLISHING;
         }
-        if ($key === 'シェア') {
+        if ($key === self::SHARING_LABEL) {
             return self::SHARING;
         }
-        if ($key === '非公開') {
+        if ($key === self::UN_PUBLISHING_LABEL) {
             return self::UN_PUBLISHING;
         }
         return parent::getValue($key);

@@ -15,12 +15,12 @@ class PublicMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function allList(PublicMemoService $service): AnonymousResourceCollection
+    public function publicMemos(PublicMemoService $service): AnonymousResourceCollection
     {
-        return $service->allList();
+        return $service->publicMemos();
     }
 
-    public function show($id)
+    public function publicMemoDetails($id)
     {
         $memo = Memo::where('status', 1)->findOrFail($id);
 
@@ -33,23 +33,23 @@ class PublicMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoList(PublicMemoService $service, $nickName)
+    public function publicMemosByNickname(PublicMemoService $service, $nickName): AnonymousResourceCollection
     {
-        return $service->userMemoList($nickName);
+        return $service->publicMemosByNickname($nickName);
     }
 
-    public function userMemoDetail(PublicMemoService $service, $nickName, $memoId)
+    public function publicMemoDetailsByNickname(PublicMemoService $service, $nickName, $memoId)
     {
-        return $service->userMemoDetail($nickName, $memoId);
+        return $service->publicMemoDetailsByNickname($nickName, $memoId);
     }
 
-    public function memoListByCategory(PublicMemoService $service, $categoryId)
+    public function publicMemosByCategory(PublicMemoService $service, $categoryId)
     {
-        return $service->memoListByCategory($categoryId);
+        return $service->publicMemosByCategory($categoryId);
     }
 
-    public function userMemoListByCategory(PublicMemoService $service, $nickName, $categoryId)
+    public function publicMemoListByNicknameAndCategory(PublicMemoService $service, $nickName, $categoryId)
     {
-        return $service->userMemoListByCategory($nickName, $categoryId);
+        return $service->publicMemoListByNicknameAndCategory($nickName, $categoryId);
     }
 }
