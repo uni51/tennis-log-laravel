@@ -17,8 +17,7 @@ class MemoService
     public function listMemoLinkedToUser(int $userId): AnonymousResourceCollection
     {
         try {
-            $memos = Memo::with(['category:name,id'])
-                    ->where('user_id', $userId)
+            $memos = Memo::where('user_id', $userId)
                     ->orderBy('updated_at', 'desc')
                     ->paginate(6);
         } catch (Exception $e) {
@@ -31,8 +30,7 @@ class MemoService
     public function memoListByCategory($userId, $categoryId)
     {
         try {
-            $memos = Memo::with(['category:name,id'])
-                ->where('user_id', $userId)
+            $memos = Memo::where('user_id', $userId)
                 ->where('category_id', $categoryId)
                 ->paginate(6);
 
