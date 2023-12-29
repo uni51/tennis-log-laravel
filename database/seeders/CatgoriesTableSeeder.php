@@ -41,10 +41,14 @@ class CatgoriesTableSeeder extends Seeder
         ]);
         Category::create([
             'id'   => 7,
-            'name' => 'ゲーム',
+            'name' => 'シングルス',
         ]);
         Category::create([
             'id'   => 8,
+            'name' => 'ダブルス',
+        ]);
+        Category::create([
+            'id'   => 99,
             'name' => 'その他',
         ]);
     }
