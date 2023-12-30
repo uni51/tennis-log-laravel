@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Enums\MemoStatusType;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use App\Models\User;
@@ -19,7 +20,7 @@ class PublicMemoService
     {
         try {
             $memos = Memo::with(['category:name,id'])
-                        ->where('status', 1)
+                        ->where('status', MemoStatusType::getValue('公開中'))
                         ->paginate(6);
         } catch (Exception $e) {
             throw $e;
