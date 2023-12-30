@@ -21,30 +21,42 @@ class CatgoriesTableSeeder extends Seeder
         ]);
         Category::create([
             'id'   => 2,
-            'name' => 'バックハンド',
+            'name' => '両手バックハンド',
         ]);
         Category::create([
             'id'   => 3,
-            'name' => 'サーブ',
+            'name' => '片手バックハンド',
         ]);
         Category::create([
             'id'   => 4,
-            'name' => 'リターン',
+            'name' => 'サーブ',
         ]);
         Category::create([
             'id'   => 5,
-            'name' => 'ボレー',
+            'name' => 'リターン',
         ]);
         Category::create([
             'id'   => 6,
-            'name' => 'スマッシュ',
+            'name' => 'ボレー',
         ]);
         Category::create([
             'id'   => 7,
-            'name' => 'ゲーム',
+            'name' => 'スマッシュ',
         ]);
         Category::create([
             'id'   => 8,
+            'name' => 'シングルス',
+        ]);
+        Category::create([
+            'id'   => 9,
+            'name' => 'ダブルス',
+        ]);
+        Category::create([
+            'id'   => 10,
+            'name' => 'ギア',
+        ]);
+        Category::create([
+            'id'   => 99,
             'name' => 'その他',
         ]);
     }
