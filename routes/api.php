@@ -52,6 +52,7 @@ Route::get('/profile/tennis_level', [TennisLevelController::class, 'tennisLevelL
 
 // 公開中の記事一覧を取得するAPI
 Route::get('/public/memos', [PublicMemoController::class, 'allList']);
+Route::get('/public/memos/search', [PublicMemoController::class, 'search']);
 Route::get('/public/memos/{id}', [PublicMemoController::class, 'show']);
 Route::get('/public/{nickname}/memos', [PublicMemoController::class, 'userMemoList']);
 Route::get('/public/{nickname}/memos/{memoId}', [PublicMemoController::class, 'userMemoDetail']);
@@ -72,7 +73,6 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
 
     // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
     Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list']);
-            // ->middleware('cache.headers:private;max_age=0;etag;');
     Route::get('/dashboard/memos/category/{categoryId}', [DashBoardMemoController::class, 'memoListByCategory']);
     Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'show']);
     Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create']);
