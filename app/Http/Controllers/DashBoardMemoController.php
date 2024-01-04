@@ -114,7 +114,7 @@ class DashBoardMemoController extends Controller
             ]);
 
             // メモとタグの紐付け
-            // $memo->retag($request->tags);
+             $memo->retag($request->tags);
 
             DB::commit();
         } catch (Exception $e) {
