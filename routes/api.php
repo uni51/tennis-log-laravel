@@ -73,6 +73,7 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
 
     // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
     Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list']);
+    Route::get('/dashboard/memos/search', [DashBoardMemoController::class, 'search']);
     Route::get('/dashboard/memos/category/{categoryId}', [DashBoardMemoController::class, 'memoListByCategory']);
     Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'show']);
     Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create']);
