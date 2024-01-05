@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DashboardMemoSearchRequest;
 use App\Http\Requests\MemoEditRequest;
 use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;
@@ -40,31 +41,13 @@ class DashBoardMemoController extends Controller
         return $service->listMemoLinkedToUser($userId);
     }
 
-    public function search(Request $request)
+    public function search(MemoService $service, DashboardMemoSearchRequest $request)
     {
         $userId = Auth::id();
         if (!$userId) {
             throw new Exception('未ログインです。');
         }
-        $query = (new Memo)->newQuery();
-        $query->where('user_id', $userId)
-            ->whereNull('deleted_at');
-
-        // search title and description for provided strings (space-separated)
-        if ($request->q) {
-            $keywords = explode(' ', $request->q);
-
-            $query->where(function($q) use ($keywords){
-                foreach ($keywords as $keyword) {
-                    $q->where(function($qq) use ($keyword) {
-                        $qq->orWhere('title', 'like', '%'.$keyword.'%')
-                            ->orWhere('body', 'like', '%'.$keyword.'%');
-                    });
-                }
-            });
-        }
-
-        $memos = $query->with(['category:name,id'])->paginate(6);
+        $memos = $service->dashboardMemoSearch($userId, $request);
 
         return MemoResource::collection($memos);
     }
