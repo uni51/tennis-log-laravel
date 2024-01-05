@@ -31,23 +31,12 @@ class DashBoardMemoController extends Controller
      */
     public function list(MemoService $service)
     {
-        // return Auth::guard('sanctum')->user();
-        // return Auth::user();
-        // ログインユーザーのID取得
-        $userId = Auth::id();
-        if (!$userId) {
-            throw new Exception('未ログインです。');
-        }
-        return $service->listMemoLinkedToUser($userId);
+        return $service->listMemoLinkedToUser(Auth::id());
     }
 
     public function search(MemoService $service, DashboardMemoSearchRequest $request)
     {
-        $userId = Auth::id();
-        if (!$userId) {
-            throw new Exception('未ログインです。');
-        }
-        $memos = $service->dashboardMemoSearch($userId, $request);
+        $memos = $service->dashboardMemoSearch(Auth::id(), $request);
 
         return MemoResource::collection($memos);
     }
@@ -55,15 +44,17 @@ class DashBoardMemoController extends Controller
 
     public function memoListByCategory(MemoService $service, $categoryId)
     {
-        // ログインユーザーのID取得
-        $userId = Auth::id();
-        if (!$userId) {
-            throw new Exception('未ログインです。');
-        }
-
-        return $service->memoListByCategory($userId, $categoryId);
+        return $service->memoListByCategory(Auth::id(), $categoryId);
     }
 
+    public function memoListByTag(MemoService $service, $tag)
+    {
+        return $service->memoListByTag(Auth::id(), $tag);
+    }
+    public function memoListByCategoryAndTag(MemoService $service, $categoryId, $tag)
+    {
+        return $service->memoListByCategoryAndTag(Auth::id(), $categoryId, $tag);
+    }
 
     /**
      * メモの登録

@@ -75,6 +75,8 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list']);
     Route::get('/dashboard/memos/search', [DashBoardMemoController::class, 'search']);
     Route::get('/dashboard/memos/category/{categoryId}', [DashBoardMemoController::class, 'memoListByCategory']);
+    Route::get('/dashboard/memos/tag/{tag}', [DashBoardMemoController::class, 'memoListByTag']);
+    Route::get('/dashboard/memos/category/{categoryId}/tag/{tag}', [DashBoardMemoController::class, 'memoListByCategoryAndTag']);
     Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'show']);
     Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create']);
     Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'edit']);

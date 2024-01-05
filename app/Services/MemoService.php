@@ -45,6 +45,44 @@ class MemoService
         return MemoResource::collection($memos);
     }
 
+    public function memoListByTag($userId, $tag)
+    {
+        try {
+            $memos = Memo::with(['category:name,id'])
+                ->where('user_id', $userId)
+                ->whereHas('tags', function($q) use ($tag) {
+                    $q->where('normalized', $tag);
+                })
+                ->paginate(6);
+            // Log::debug($memos);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+    public function memoListByCategoryAndTag($userId, $categoryId, $tag)
+    {
+        try {
+            $memos = Memo::with(['category:name,id'])
+                ->where('user_id', $userId)
+                ->where('category_id', $categoryId)
+                ->whereHas('tags', function($q) use ($tag) {
+                    $q->where('normalized', $tag);
+                })
+                ->paginate(6);
+            // Log::debug($memos);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+
     public function dashboardMemoSearch($userId, DashboardMemoSearchRequest $request)
     {
         $query = (new Memo)->newQuery();
