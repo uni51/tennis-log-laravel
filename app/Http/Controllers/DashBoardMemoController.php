@@ -9,6 +9,7 @@ use App\Models\Memo;
 use App\Services\MemoService;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -37,6 +38,35 @@ class DashBoardMemoController extends Controller
             throw new Exception('未ログインです。');
         }
         return $service->listMemoLinkedToUser($userId);
+    }
+
+    public function search(Request $request)
+    {
+        $userId = Auth::id();
+        if (!$userId) {
+            throw new Exception('未ログインです。');
+        }
+        $query = (new Memo)->newQuery();
+        $query->where('user_id', $userId)
+            ->whereNull('deleted_at');
+
+        // search title and description for provided strings (space-separated)
+        if ($request->q) {
+            $keywords = explode(' ', $request->q);
+
+            $query->where(function($q) use ($keywords){
+                foreach ($keywords as $keyword) {
+                    $q->where(function($qq) use ($keyword) {
+                        $qq->orWhere('title', 'like', '%'.$keyword.'%')
+                            ->orWhere('body', 'like', '%'.$keyword.'%');
+                    });
+                }
+            });
+        }
+
+        $memos = $query->with(['category:name,id'])->paginate(6);
+
+        return MemoResource::collection($memos);
     }
 
 
