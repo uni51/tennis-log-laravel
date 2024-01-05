@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Http\Requests\DashboardMemoSearchRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use Exception;
@@ -42,5 +43,28 @@ class MemoService
         }
 
         return MemoResource::collection($memos);
+    }
+
+    public function dashboardMemoSearch($userId, DashboardMemoSearchRequest $request)
+    {
+        $query = (new Memo)->newQuery();
+        $query->where('user_id', $userId)
+            ->whereNull('deleted_at');
+
+        // search title and description for provided strings (space-separated)
+        if ($request->q) {
+            $keywords = explode(' ', $request->q);
+
+            $query->where(function($q) use ($keywords){
+                foreach ($keywords as $keyword) {
+                    $q->where(function($qq) use ($keyword) {
+                        $qq->orWhere('title', 'like', '%'.$keyword.'%')
+                            ->orWhere('body', 'like', '%'.$keyword.'%');
+                    });
+                }
+            });
+        }
+
+        return $query->with(['category:name,id'])->paginate(6);
     }
 }
