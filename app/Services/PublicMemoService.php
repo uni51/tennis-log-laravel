@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Enums\MemoStatusType;
+use App\Http\Requests\PublicMemoSearchRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use App\Models\User;
@@ -27,6 +28,28 @@ class PublicMemoService
         }
 
         return MemoResource::collection($memos);
+    }
+
+    public function search(PublicMemoSearchRequest $request){
+        $query = (new Memo)->newQuery();
+        $query->where('status', 1)
+            ->whereNull('deleted_at');
+
+        // search title and description for provided strings (space-separated)
+        if ($request->q) {
+            $keywords = explode(' ', $request->q);
+
+            $query->where(function($q) use ($keywords){
+                foreach ($keywords as $keyword) {
+                    $q->where(function($qq) use ($keyword) {
+                        $qq->orWhere('title', 'like', '%'.$keyword.'%')
+                            ->orWhere('body', 'like', '%'.$keyword.'%');
+                    });
+                }
+            });
+        }
+
+        return $query->with(['category:name,id'])->paginate(6);
     }
 
     /**

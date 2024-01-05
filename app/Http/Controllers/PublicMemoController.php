@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PublicMemoSearchRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use App\Services\PublicMemoService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PublicMemoController extends Controller
 {
-
     /**
+     * @param PublicMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
@@ -28,28 +28,9 @@ class PublicMemoController extends Controller
         return new MemoResource($memo);
     }
 
-    public function search(Request $request)
+    public function search(PublicMemoService $service, PublicMemoSearchRequest $request)
     {
-        $query = (new Memo)->newQuery();
-        $query->where('status', 1)
-            ->whereNull('deleted_at');
-
-        // search title and description for provided strings (space-separated)
-        if ($request->q) {
-            $keywords = explode(' ', $request->q);
-
-            $query->where(function($q) use ($keywords){
-                foreach ($keywords as $keyword) {
-                    $q->where(function($qq) use ($keyword) {
-                        $qq->orWhere('title', 'like', '%'.$keyword.'%')
-                            ->orWhere('body', 'like', '%'.$keyword.'%');
-                    });
-                }
-            });
-        }
-
-        $memos = $query->with(['category:name,id'])->paginate(6);
-
+        $memos = $service->search($request);
         return MemoResource::collection($memos);
     }
 
