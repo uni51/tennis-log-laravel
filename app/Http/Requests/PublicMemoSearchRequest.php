@@ -28,7 +28,7 @@ class PublicMemoSearchRequest extends FormRequest
     public function rules()
     {
         return [
-            'q' => 'nullable|string|max:2', // 例: 文字列で最大255文字
+            'q' => 'nullable|string|max:255', // 例: 文字列で最大255文字
         ];
     }
 
@@ -42,6 +42,7 @@ class PublicMemoSearchRequest extends FormRequest
     public function messages()
     {
         return [
+            'q.string' => '検索キーワードはstring型で入力してください。',
             'q.max' => '検索キーワードは255文字以内で入力してください。',
         ];
     }

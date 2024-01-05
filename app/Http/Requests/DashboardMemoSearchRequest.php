@@ -38,6 +38,7 @@ class DashboardMemoSearchRequest extends FormRequest
     public function messages()
     {
         return [
+            'q.string' => '検索キーワードはstring型で入力してください。',
             'q.max' => '検索キーワードは255文字以内で入力してください。',
         ];
     }
