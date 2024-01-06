@@ -97,6 +97,7 @@ Route::group(['middleware' => 'auth:admin'], function () {
         return $request->user();
     });
     Route::get('/admin/users', [UserManageController::class, 'list']);
+    Route::post('/admin/users/disable', [UserManageController::class, 'disable']);
     Route::get('/admin/memos', [MemoManageController::class, 'list']);
     Route::get('/admin/memos/{id}', [MemoManageController::class, 'show']);
 });

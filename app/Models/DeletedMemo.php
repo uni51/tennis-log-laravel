@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentTaggable\Taggable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Memo extends Model
+class DeletedMemo extends Model
 {
     use HasFactory, Taggable;
 
@@ -18,12 +17,8 @@ class Memo extends Model
         'title',
         'body',
         'status',
+        'force_deleted',
     ];
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function category() {
         return $this->belongsTo(Category::class, 'category_id', 'id');
