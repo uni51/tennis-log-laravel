@@ -83,11 +83,9 @@ class MemoService
     }
 
 
-    public function dashboardMemoSearch($userId, DashboardMemoSearchRequest $request)
-    {
+    public function dashboardMemoSearch($userId, DashboardMemoSearchRequest $request){
         $query = (new Memo)->newQuery();
-        $query->where('user_id', $userId)
-            ->whereNull('deleted_at');
+        $query->where('user_id', $userId);
 
         // search title and description for provided strings (space-separated)
         if ($request->q) {

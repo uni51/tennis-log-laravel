@@ -24,7 +24,7 @@ class DashboardMemoSearchRequest extends FormRequest
     public function rules()
     {
         return [
-            'q' => 'nullable|string|max:2', // 例: 文字列で最大255文字
+            'q' => 'nullable|string|max:255', // 例: 文字列で最大255文字
         ];
     }
 

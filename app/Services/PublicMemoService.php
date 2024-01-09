@@ -32,8 +32,7 @@ class PublicMemoService
 
     public function search(PublicMemoSearchRequest $request){
         $query = (new Memo)->newQuery();
-        $query->where('status', 1)
-            ->whereNull('deleted_at');
+        $query->where('status', 1);
 
         // search title and description for provided strings (space-separated)
         if ($request->q) {
