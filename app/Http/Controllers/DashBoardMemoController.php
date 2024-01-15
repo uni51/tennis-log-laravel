@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Dashboard\DashboardMemosCategoryRequest;
+use App\Http\Requests\Dashboard\DashboardMemosStatusRequest;
 use App\Http\Requests\DashboardMemoSearchRequest;
 use App\Http\Requests\MemoEditRequest;
 use App\Http\Requests\MemoPostRequest;
@@ -34,17 +36,21 @@ class DashBoardMemoController extends Controller
         return $service->listMemoLinkedToUser(Auth::id());
     }
 
-    public function search(MemoService $service, DashboardMemoSearchRequest $request)
+    public function search(DashboardMemoSearchRequest $request, MemoService $service)
     {
         $memos = $service->dashboardMemoSearch(Auth::id(), $request);
 
         return MemoResource::collection($memos);
     }
 
-
-    public function memoListByCategory(MemoService $service, $categoryId)
+    public function memoListByStatus(DashboardMemosStatusRequest $request, MemoService $service)
     {
-        return $service->memoListByCategory(Auth::id(), $categoryId);
+        return $service->memoListByStatus(Auth::id(), $request->status);
+    }
+
+    public function memoListByCategory(DashboardMemosCategoryRequest $request, MemoService $service)
+    {
+        return $service->memoListByCategory(Auth::id(), $request->categoryId);
     }
 
     public function memoListByTag(MemoService $service, $tag)

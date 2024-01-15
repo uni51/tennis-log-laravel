@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Consts\Pagination;
 use App\Http\Requests\DashboardMemoSearchRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
@@ -21,8 +22,24 @@ class MemoService
             $memos = Memo::with(['category:name,id'])
                     ->where('user_id', $userId)
                     ->orderBy('updated_at', 'desc')
-                    ->paginate(6);
+                    ->paginate(Pagination::DEFAULT_PER_PAGE);
         } catch (Exception $e) {
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+    public function memoListByStatus($userId, $status)
+    {
+        try {
+            $memos = Memo::with(['category:name,id'])
+                ->where('user_id', $userId)
+                ->where('status', $status)
+                ->paginate(Pagination::DEFAULT_PER_PAGE);
+
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
             throw $e;
         }
 
@@ -35,7 +52,7 @@ class MemoService
             $memos = Memo::with(['category:name,id'])
                 ->where('user_id', $userId)
                 ->where('category_id', $categoryId)
-                ->paginate(6);
+                ->paginate(Pagination::DEFAULT_PER_PAGE);
 
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -53,7 +70,7 @@ class MemoService
                 ->whereHas('tags', function($q) use ($tag) {
                     $q->where('normalized', $tag);
                 })
-                ->paginate(6);
+                ->paginate(Pagination::DEFAULT_PER_PAGE);
             // Log::debug($memos);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -72,7 +89,7 @@ class MemoService
                 ->whereHas('tags', function($q) use ($tag) {
                     $q->where('normalized', $tag);
                 })
-                ->paginate(6);
+                ->paginate(Pagination::DEFAULT_PER_PAGE);
             // Log::debug($memos);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -101,6 +118,6 @@ class MemoService
             });
         }
 
-        return $query->with(['category:name,id'])->paginate(6);
+        return $query->with(['category:name,id'])->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 }
