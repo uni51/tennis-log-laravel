@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Category;
+use App\Enums\CategoryType;
 
 class CatgoriesTableSeeder extends Seeder
 {
@@ -16,48 +17,48 @@ class CatgoriesTableSeeder extends Seeder
     public function run()
     {
         Category::create([
-            'id'   => 1,
-            'name' => 'フォアハンド',
+            'id'   => CategoryType::FOREHAND,
+            'name' => CategoryType::getDescription(CategoryType::FOREHAND),
         ]);
         Category::create([
-            'id'   => 2,
-            'name' => '両手バックハンド',
+            'id'   => CategoryType::DOUBLE_BACKHAND,
+            'name' => CategoryType::getDescription(CategoryType::DOUBLE_BACKHAND),
         ]);
         Category::create([
-            'id'   => 3,
-            'name' => '片手バックハンド',
+            'id'   => CategoryType::SINGLE_BACKHAND,
+            'name' => CategoryType::getDescription(CategoryType::SINGLE_BACKHAND),
         ]);
         Category::create([
-            'id'   => 4,
-            'name' => 'サーブ',
+            'id'   => CategoryType::SERVE,
+            'name' => CategoryType::getDescription(CategoryType::SERVE),
         ]);
         Category::create([
-            'id'   => 5,
-            'name' => 'リターン',
+            'id'   => CategoryType::RETURN,
+            'name' => CategoryType::getDescription(CategoryType::RETURN),
         ]);
         Category::create([
-            'id'   => 6,
-            'name' => 'ボレー',
+            'id'   => CategoryType::VOLLEY,
+            'name' => CategoryType::getDescription(CategoryType::VOLLEY),
         ]);
         Category::create([
-            'id'   => 7,
-            'name' => 'スマッシュ',
+            'id'   => CategoryType::SMASH,
+            'name' => CategoryType::getDescription(CategoryType::SMASH),
         ]);
         Category::create([
-            'id'   => 8,
-            'name' => 'シングルス',
+            'id'   => CategoryType::SINGLES,
+            'name' => CategoryType::getDescription(CategoryType::SINGLES),
         ]);
         Category::create([
-            'id'   => 9,
-            'name' => 'ダブルス',
+            'id'   => CategoryType::DOUBLES,
+            'name' => CategoryType::getDescription(CategoryType::DOUBLES),
         ]);
         Category::create([
-            'id'   => 10,
-            'name' => 'ギア',
+            'id'   => CategoryType::GEAR,
+            'name' => CategoryType::getDescription(CategoryType::GEAR),
         ]);
         Category::create([
-            'id'   => 99,
-            'name' => 'その他',
+            'id'   => CategoryType::OTHER,
+            'name' => CategoryType::getDescription(CategoryType::OTHER),
         ]);
     }
 }
