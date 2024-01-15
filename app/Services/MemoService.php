@@ -7,6 +7,7 @@ use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 
 class MemoService
@@ -30,7 +31,13 @@ class MemoService
         return MemoResource::collection($memos);
     }
 
-    public function memoListByStatus($userId, $status)
+    /**
+     * @param int $userId
+     * @param int $status
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByStatus(int $userId, int $status): AnonymousResourceCollection
     {
         try {
             $memos = Memo::with(['category:name,id'])
@@ -46,7 +53,13 @@ class MemoService
         return MemoResource::collection($memos);
     }
 
-    public function memoListByCategory($userId, $categoryId)
+    /**
+     * @param int $userId
+     * @param int $categoryId
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByCategory(int $userId, int $categoryId): AnonymousResourceCollection
     {
         try {
             $memos = Memo::with(['category:name,id'])
@@ -62,7 +75,13 @@ class MemoService
         return MemoResource::collection($memos);
     }
 
-    public function memoListByTag($userId, $tag)
+    /**
+     * @param int $userId
+     * @param string $tag
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByTag(int $userId, string $tag): AnonymousResourceCollection
     {
         try {
             $memos = Memo::with(['category:name,id'])
@@ -80,7 +99,14 @@ class MemoService
         return MemoResource::collection($memos);
     }
 
-    public function memoListByCategoryAndTag($userId, $categoryId, $tag)
+    /**
+     * @param int $userId
+     * @param int $categoryId
+     * @param string $tag
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByCategoryAndTag(int $userId, int $categoryId, string $tag): AnonymousResourceCollection
     {
         try {
             $memos = Memo::with(['category:name,id'])
@@ -99,14 +125,19 @@ class MemoService
         return MemoResource::collection($memos);
     }
 
-
-    public function dashboardMemoSearch($userId, DashboardMemoSearchRequest $request){
+    /**
+     * @param int $userId
+     * @param string $keyword
+     * @return LengthAwarePaginator
+     */
+    public function dashboardMemoSearch(int $userId, string $keyword): LengthAwarePaginator
+    {
         $query = (new Memo)->newQuery();
         $query->where('user_id', $userId);
 
         // search title and description for provided strings (space-separated)
-        if ($request->q) {
-            $keywords = explode(' ', $request->q);
+        if ($keyword) {
+            $keywords = explode(' ', $keyword);
 
             $query->where(function($q) use ($keywords){
                 foreach ($keywords as $keyword) {
