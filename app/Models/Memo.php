@@ -8,6 +8,13 @@ use Cviebrock\EloquentTaggable\Taggable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int|mixed|string|null $user_id
+ * @property mixed $category_id
+ * @property mixed $status
+ * @property mixed $title
+ * @property mixed $body
+ */
 class Memo extends Model
 {
     use HasFactory, Taggable;

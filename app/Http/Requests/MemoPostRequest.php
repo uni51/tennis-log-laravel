@@ -28,7 +28,7 @@ class MemoPostRequest extends FormRequest
             'body'        => ['required', 'min:3', 'max:3000'],
             'category_id' => ['required', 'int', 'between:1,8'],
             'status_id'   => ['required', 'int', 'between:0,4'],
-            'tags'        => ['nullable'],
+            'tags'        => ['nullable', 'array'],
         ];
     }
 

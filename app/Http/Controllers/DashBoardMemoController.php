@@ -11,6 +11,7 @@ use App\Http\Requests\MemoEditRequest;
 use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
+use App\Services\DashboardMemoService;
 use App\Services\MemoService;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -117,39 +118,10 @@ class DashBoardMemoController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function create(MemoPostRequest $request): JsonResponse
+    public function create(MemoPostRequest $request, DashboardMemoService $service): JsonResponse
     {
-        try {
-            DB::beginTransaction();
-
-            // モデルクラスのインスタンス化
-            $memo = new Memo();
-            // パラメータのセット
-            $memo->user_id = Auth::id();
-            $memo->category_id = $request->category_id;
-            $memo->status = $request->status_id;
-            $memo->title = $request->title;
-            $memo->body = $request->body;
-            // モデルの保存
-            $memo->save();
-
-            // メモとタグの紐付け
-            if ($request->tags) {
-                $memo->retag($request->tags);
-            }
-
-            $memo->retag($request->tags);
-
-            DB::commit();
-
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-
-        return response()->json([
-            'message' => 'メモの登録に成功しました。'
-        ], 201);
+        $validated = $request->validated();
+        return $service->create($validated);
     }
 
     public function show($id)
