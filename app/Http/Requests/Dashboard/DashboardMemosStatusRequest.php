@@ -7,11 +7,12 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class DashboardMemosStatusRequest extends FormRequest
 {
-    protected function prepareForValidation()
-    {
-        $this->merge(['status' => $this->route('status')]);
-    }
-    public function authorize()
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool // リクエストの許可を認可
+     */
+    public function authorize(): bool
     {
         return true; // リクエストの許可を認可
     }
@@ -21,10 +22,20 @@ class DashboardMemosStatusRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'status' => 'required | int | between:'.MemoStatusType::DRAFT.','.MemoStatusType::UN_PUBLISHING,
         ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge(['status' => $this->route('status')]);
     }
 }
