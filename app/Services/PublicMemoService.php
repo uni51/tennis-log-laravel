@@ -22,6 +22,8 @@ class PublicMemoService
         try {
             $memos = Memo::with(['category:name,id'])
                         ->where('status', MemoStatusType::getValue('公開中'))
+                        ->orderBy('updated_at', 'desc')
+                        ->orderBy('id', 'desc')
                         ->paginate(6);
         } catch (Exception $e) {
             throw $e;
