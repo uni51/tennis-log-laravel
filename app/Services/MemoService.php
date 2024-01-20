@@ -2,7 +2,6 @@
 namespace App\Services;
 
 use App\Consts\Pagination;
-use App\Http\Requests\DashboardMemoSearchRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use Exception;
@@ -43,6 +42,7 @@ class MemoService
             $memos = Memo::with(['category:name,id'])
                 ->where('user_id', $userId)
                 ->where('status', $status)
+                ->orderBy('updated_at', 'desc')
                 ->paginate(Pagination::DEFAULT_PER_PAGE);
 
         } catch (Exception $e) {
@@ -65,6 +65,7 @@ class MemoService
             $memos = Memo::with(['category:name,id'])
                 ->where('user_id', $userId)
                 ->where('category_id', $categoryId)
+                ->orderBy('updated_at', 'desc')
                 ->paginate(Pagination::DEFAULT_PER_PAGE);
 
         } catch (Exception $e) {
@@ -89,6 +90,7 @@ class MemoService
                 ->whereHas('tags', function($q) use ($tag) {
                     $q->where('normalized', $tag);
                 })
+                ->orderBy('updated_at', 'desc')
                 ->paginate(Pagination::DEFAULT_PER_PAGE);
             // Log::debug($memos);
         } catch (Exception $e) {
@@ -115,6 +117,7 @@ class MemoService
                 ->whereHas('tags', function($q) use ($tag) {
                     $q->where('normalized', $tag);
                 })
+                ->orderBy('updated_at', 'desc')
                 ->paginate(Pagination::DEFAULT_PER_PAGE);
             // Log::debug($memos);
         } catch (Exception $e) {
@@ -149,6 +152,8 @@ class MemoService
             });
         }
 
-        return $query->with(['category:name,id'])->paginate(Pagination::DEFAULT_PER_PAGE);
+        return $query->with(['category:name,id'])
+                ->orderBy('updated_at', 'desc')
+                ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 }
