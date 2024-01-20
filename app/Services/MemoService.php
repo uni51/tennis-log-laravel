@@ -131,29 +131,38 @@ class MemoService
     /**
      * @param int $userId
      * @param string $keyword
-     * @return LengthAwarePaginator
+     * @return AnonymousResourceCollection
+     * @throws Exception
      */
-    public function dashboardMemoSearch(int $userId, string $keyword): LengthAwarePaginator
+    public function dashboardMemoSearch(int $userId, string $keyword): AnonymousResourceCollection
     {
-        $query = (new Memo)->newQuery();
-        $query->where('user_id', $userId);
+        try {
+            $query = (new Memo)->newQuery();
+            $query->where('user_id', $userId);
 
-        // search title and description for provided strings (space-separated)
-        if ($keyword) {
-            $keywords = explode(' ', $keyword);
+            // search title and description for provided strings (space-separated)
+            if ($keyword) {
+                $keywords = explode(' ', $keyword);
 
-            $query->where(function($q) use ($keywords){
-                foreach ($keywords as $keyword) {
-                    $q->where(function($qq) use ($keyword) {
-                        $qq->orWhere('title', 'like', '%'.$keyword.'%')
-                            ->orWhere('body', 'like', '%'.$keyword.'%');
-                    });
-                }
-            });
-        }
+                $query->where(function ($q) use ($keywords) {
+                    foreach ($keywords as $keyword) {
+                        $q->where(function ($qq) use ($keyword) {
+                            $qq->orWhere('title', 'like', '%' . $keyword . '%')
+                                ->orWhere('body', 'like', '%' . $keyword . '%');
+                        });
+                    }
+                });
+            }
 
-        return $query->with(['category:name,id'])
+            $memos = $query->with(['category:name,id'])
                 ->orderBy('updated_at', 'desc')
                 ->paginate(Pagination::DEFAULT_PER_PAGE);
+
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
     }
 }

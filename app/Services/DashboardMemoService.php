@@ -1,17 +1,11 @@
 <?php
 namespace App\Services;
 
-use App\Consts\Pagination;
-use App\Http\Requests\MemoEditRequest;
-use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use Exception;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 
 class DashboardMemoService
 {

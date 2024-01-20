@@ -24,7 +24,7 @@ class DashboardMemosTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tag' => [ 'required', 'string'],
+            'tag' => ['required', 'string'],
         ];
     }
 

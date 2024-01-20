@@ -46,12 +46,12 @@ class DashBoardMemoController extends Controller
      * @param DashboardMemoSearchRequest $request
      * @param MemoService $service
      * @return AnonymousResourceCollection
+     * @throws Exception
      */
     public function search(DashboardMemoSearchRequest $request, MemoService $service): AnonymousResourceCollection
     {
-        $memos = $service->dashboardMemoSearch(Auth::id(), $request->q);
-
-        return MemoResource::collection($memos);
+        $validated = $request->validated();
+        return $service->dashboardMemoSearch(Auth::id(), $validated['q']);
     }
 
     /**
@@ -65,7 +65,8 @@ class DashBoardMemoController extends Controller
         MemoService $service
     ): AnonymousResourceCollection
     {
-        return $service->memoListByStatus(Auth::id(), $request->status);
+        $validated = $request->validated();
+        return $service->memoListByStatus(Auth::id(), $validated['status']);
     }
 
     /**
@@ -81,7 +82,8 @@ class DashBoardMemoController extends Controller
         MemoService $service
     ): AnonymousResourceCollection
     {
-        return $service->memoListByCategory(Auth::id(), $request->categoryId);
+        $validated = $request->validated();
+        return $service->memoListByCategory(Auth::id(), $validated['categoryId']);
     }
 
     /**
@@ -94,7 +96,8 @@ class DashBoardMemoController extends Controller
      */
     public function memoListByTag(DashboardMemosTagRequest $request, MemoService $service): AnonymousResourceCollection
     {
-        return $service->memoListByTag(Auth::id(), $request->tag);
+        $validated = $request->validated();
+        return $service->memoListByTag(Auth::id(), $validated['tag']);
     }
 
     /**
@@ -110,11 +113,13 @@ class DashBoardMemoController extends Controller
         MemoService $service
     ): AnonymousResourceCollection
     {
-        return $service->memoListByCategoryAndTag(Auth::id(), $request->categoryId, $request->tag);
+        $validated = $request->validated();
+        return $service->memoListByCategoryAndTag(Auth::id(), $validated['categoryId'], $validated['tag']);
     }
 
     /**
      * @param MemoPostRequest $request
+     * @param DashboardMemoService $service
      * @return JsonResponse
      * @throws Exception
      */
