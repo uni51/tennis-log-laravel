@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property mixed $status
  * @property mixed $title
  * @property mixed $body
+ * @method static findOrFail(int $id)
  */
 class Memo extends Model
 {

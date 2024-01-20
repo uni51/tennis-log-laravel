@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\MemoStatusType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MemoEditRequest extends FormRequest
@@ -24,11 +25,12 @@ class MemoEditRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', 'int'],
-            'category_id' => ['required', 'int'],
+            'id' => ['required', 'int', 'exists:memos,id'],
             'title' => ['required'],
             'body' => ['required'],
-            'tags' => ['nullable', 'array']
+            'category_id' => ['required', 'int'],
+            'tags' => ['nullable', 'array'],
+            'status_id' => ['required', 'int', 'between:'.MemoStatusType::DRAFT.','.MemoStatusType::UN_PUBLISHING],
         ];
     }
 

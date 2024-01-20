@@ -131,32 +131,16 @@ class DashBoardMemoController extends Controller
         return new MemoResource($memo);
     }
 
-    public function edit(MemoEditRequest $request, $id)
+    /**
+     * @param MemoEditRequest $request
+     * @param DashboardMemoService $service
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function edit(MemoEditRequest $request, DashboardMemoService $service): JsonResponse
     {
-        try {
-            DB::beginTransaction();
-
-            $memo = Memo::findOrFail($id);
-            // モデルの保存
-            $memo->update([
-                $memo->category_id = $request->category_id,
-                $memo->status = (int)$request->status_id,
-                $memo->title = $request->title,
-                $memo->body = $request->body,
-            ]);
-
-            // メモとタグの紐付け
-             $memo->retag($request->tags);
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-
-        return response()->json([
-            'message' => 'メモの編集に成功しました。'
-        ], 201);
+        $validated = $request->validated();
+        return $service->edit($validated);
     }
 
     public function destroy($id)

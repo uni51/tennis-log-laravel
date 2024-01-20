@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Consts\Pagination;
+use App\Http\Requests\MemoEditRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use Exception;
@@ -47,6 +48,40 @@ class DashboardMemoService
 
         return response()->json([
             'message' => 'メモの登録に成功しました。'
+        ], 201);
+    }
+
+
+    /**
+     * @param mixed $validated
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function edit(mixed $validated): JsonResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            $memo = Memo::findOrFail($validated['id']);
+            // モデルの保存
+            $memo->update([
+                $memo->title = $validated['title'],
+                $memo->body = $validated['body'],
+                $memo->category_id = $validated['category_id'],
+                $memo->status = $validated['status_id'],
+            ]);
+
+            // メモとタグの紐付け
+            $memo->retag($validated['tags']);
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return response()->json([
+            'message' => 'メモの編集に成功しました。'
         ], 201);
     }
 }
