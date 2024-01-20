@@ -11,9 +11,9 @@ class MemoEditRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        return true;
+        return true; // リクエストの許可を認可
     }
 
     /**
@@ -21,10 +21,10 @@ class MemoEditRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            // 'id' => ['required', 'int'],
+            'id' => ['required', 'int'],
             'category_id' => ['required', 'int'],
             'title' => ['required'],
             'body' => ['required'],
@@ -32,7 +32,22 @@ class MemoEditRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge(['id' => $this->route('id')]);
+    }
+
+    /**
+     * Get the validation error messages that apply to the request.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
     {
         return [
             'required' => '必須入力です。',

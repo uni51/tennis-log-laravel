@@ -11,7 +11,7 @@ class DashboardMemoSearchRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true; // リクエストの許可を認可
     }
@@ -21,21 +21,31 @@ class DashboardMemoSearchRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'q' => 'nullable|string|max:255', // 例: 文字列で最大255文字
         ];
     }
 
-    public function attributes()
+    /**
+     * バリデーションエラーのカスタム属性の取得
+     *
+     * @return array
+     */
+    public function attributes(): array
     {
         return [
             'q' => '検索キーワード',
         ];
     }
 
-    public function messages()
+    /**
+     * Get the validation error messages that apply to the request.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
     {
         return [
             'q.string' => '検索キーワードはstring型で入力してください。',

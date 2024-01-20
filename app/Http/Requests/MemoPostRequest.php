@@ -11,9 +11,9 @@ class MemoPostRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        return true;
+        return true; // リクエストの許可を認可
     }
 
     /**
@@ -21,7 +21,7 @@ class MemoPostRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title'       => ['required', 'min:3', 'max:100'],
@@ -32,7 +32,12 @@ class MemoPostRequest extends FormRequest
         ];
     }
 
-    public function attributes()
+    /**
+     * バリデーションエラーのカスタム属性の取得
+     *
+     * @return array
+     */
+    public function attributes(): array
     {
         return [
             'title' => 'タイトル',
