@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Dashboard\DashboardMemoEditRequest;
+use App\Http\Requests\Dashboard\DashboardMemoShowRequest;
 use App\Http\Requests\Dashboard\DashboardMemosCategoryRequest;
 use App\Http\Requests\Dashboard\DashboardMemosCategoryTagRequest;
 use App\Http\Requests\Dashboard\DashboardMemosStatusRequest;
 use App\Http\Requests\Dashboard\DashboardMemosTagRequest;
 use App\Http\Requests\DashboardMemoSearchRequest;
-use App\Http\Requests\MemoEditRequest;
 use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
@@ -15,10 +16,8 @@ use App\Services\DashboardMemoService;
 use App\Services\MemoService;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Class DashBoardMemoController
@@ -129,20 +128,25 @@ class DashBoardMemoController extends Controller
         return $service->create($validated);
     }
 
-    public function show($id)
+    /**
+     * @param DashboardMemoShowRequest $request
+     * @param DashboardMemoService $service
+     * @return MemoResource
+     * @throws Exception
+     */
+    public function show(DashboardMemoShowRequest $request, DashboardMemoService $service): MemoResource
     {
-        $memo = Memo::findOrFail($id);
-
-        return new MemoResource($memo);
+        $validated = $request->validated();
+        return $service->show($validated['id']);
     }
 
     /**
-     * @param MemoEditRequest $request
+     * @param DashboardMemoEditRequest $request
      * @param DashboardMemoService $service
      * @return JsonResponse
      * @throws Exception
      */
-    public function edit(MemoEditRequest $request, DashboardMemoService $service): JsonResponse
+    public function edit(DashboardMemoEditRequest $request, DashboardMemoService $service): JsonResponse
     {
         $validated = $request->validated();
         return $service->edit($validated);

@@ -25,7 +25,7 @@ class ValidCategory implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         // $valueが1から10または99のいずれかの値であることを検証
         return in_array($value, CategoryType::getValues());
@@ -36,7 +36,7 @@ class ValidCategory implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return '無効なカテゴリーです。';
     }

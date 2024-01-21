@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -43,6 +44,16 @@ class DashboardMemoService
         return response()->json([
             'message' => 'メモの登録に成功しました。'
         ], 201);
+    }
+
+    /**
+     * @param int $id
+     * @return MemoResource
+     */
+    public function show(int $id): MemoResource
+    {
+        $memo = Memo::findOrFail($id);
+        return new MemoResource($memo);
     }
 
 

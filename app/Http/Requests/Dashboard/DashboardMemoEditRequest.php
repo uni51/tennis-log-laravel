@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Dashboard;
 
 use App\Enums\MemoStatusType;
+use App\Rules\ValidMemoOwner;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class MemoEditRequest extends FormRequest
+class DashboardMemoEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +27,7 @@ class MemoEditRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', 'int', 'exists:memos,id'],
+            'id' => ['required', 'int'],
             'title' => ['required'],
             'body' => ['required'],
             'category_id' => ['required', 'int'],
