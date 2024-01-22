@@ -2,10 +2,8 @@
 
 namespace App\Http\Requests\Dashboard;
 
-use App\Enums\MemoStatusType;
 use App\Rules\ValidMemoOwner;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class DashboardMemoShowRequest extends FormRequest
 {
@@ -39,17 +37,5 @@ class DashboardMemoShowRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge(['id' => $this->route('id')]);
-    }
-
-    /**
-     * Get the validation error messages that apply to the request.
-     *
-     * @return array<string, string>
-     */
-    public function messages(): array
-    {
-        return [
-            'required' => '必須入力です。',
-        ];
     }
 }
