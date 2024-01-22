@@ -106,18 +106,21 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
         ->name('get.dashboard.memos.category.tag');
 
     Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'show'])
+        ->where('id', '[0-9]+')
         ->name('get.dashboard.memos.id');
     // メモの新規作成
     Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create'])
         ->name('post.dashboard.memos');
     // メモの編集
     Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'edit'])
+        ->where('id', '[0-9]+')
         ->name('post.dashboard.memos.id');
 
     Route::post('/dashboard/memos/{id}/delete', [DashBoardMemoController::class, 'destroy'])
+        ->where('id', '[0-9]+')
         ->name('post.dashboard.memos.id.delete');
 
-    Route::get('/user/delete', function() {
+    Route::get('/user/delete', function () {
         $user = Auth::user();
         \App\Models\Memo::where('user_id', $user->id)->delete();
         return $user->delete();

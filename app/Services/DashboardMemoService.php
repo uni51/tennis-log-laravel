@@ -89,4 +89,15 @@ class DashboardMemoService
             'message' => 'メモの編集に成功しました。'
         ], 201);
     }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        $memo = Memo::findOrFail($id);
+        $memo->delete();
+        return response()->json(['message' => 'Memo deleted'], 200);
+    }
 }

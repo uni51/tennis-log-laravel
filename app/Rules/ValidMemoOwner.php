@@ -29,7 +29,6 @@ class ValidMemoOwner implements Rule
      */
     public function passes($attribute, $value): bool
     {
-        Log::info("Validating memo with user_id: {$this->userId} and memo_id: {$value}");
         return Memo::where('id', $value)->where('user_id', $this->userId)->exists();
     }
 

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property mixed $body
  * @method static findOrFail(int $id)
  * @method static where(string $string, mixed $value)
+ * @method static find(\Illuminate\Routing\Route|object|string|null $route)
  */
 class Memo extends Model
 {

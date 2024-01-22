@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Dashboard\DashboardMemoDestroyRequest;
 use App\Http\Requests\Dashboard\DashboardMemoEditRequest;
 use App\Http\Requests\Dashboard\DashboardMemoShowRequest;
 use App\Http\Requests\Dashboard\DashboardMemosCategoryRequest;
@@ -152,10 +153,15 @@ class DashBoardMemoController extends Controller
         return $service->edit($validated);
     }
 
-    public function destroy($id)
+    /**
+     * @param DashboardMemoDestroyRequest $request
+     * @param DashboardMemoService $service
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function destroy(DashboardMemoDestroyRequest $request, DashboardMemoService $service): JsonResponse
     {
-        $memo = Memo::findOrFail($id);
-        $memo->delete();
-        return response()->json(['message' => 'Memo deleted'], 200);
+        $validated = $request->validated();
+        return $service->destroy($validated['id']);
     }
 }

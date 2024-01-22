@@ -7,7 +7,7 @@ use App\Models\Memo;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DashboardMemoShowRequest extends FormRequest
+class DashboardMemoDestroyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
