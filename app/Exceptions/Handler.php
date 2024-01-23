@@ -54,7 +54,7 @@ class Handler extends ExceptionHandler
         if ($e instanceof MemoNotFoundException) {
             return response()->json([
                 'message' => $e->getMessage() ?: 'エラーが発生しました。'
-            ], 422); // 422はUnprocessable Entityのステータスコード
+            ], 404); // 404はNot Foundのステータスコード
         }
         if ($e instanceof AuthorizationException) {
             return response()->json([

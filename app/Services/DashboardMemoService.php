@@ -1,9 +1,14 @@
-<?php
+<?php /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+
 namespace App\Services;
 
+use App\Exceptions\MemoNotFoundException;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
+use App\Models\User;
 use Exception;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
@@ -46,14 +51,24 @@ class DashboardMemoService
         ], 201);
     }
 
+
     /**
      * @param int $id
+     * @param Authenticatable $user
      * @return MemoResource
+     * @throws MemoNotFoundException
+     * @throws AuthorizationException
      */
-    public function show(int $id): MemoResource
+    public function show(int $id, Authenticatable $user): MemoResource
     {
-        $memo = Memo::findOrFail($id);
-        return new MemoResource($memo);
+        $dashboardMemo = Memo::find($id);
+        if (!$dashboardMemo) {
+            throw new MemoNotFoundException('指定されたIDのメモが見つかりません。');
+        }
+        if ($user->cannot('dashboardMemoShow', $dashboardMemo)) {
+            throw new AuthorizationException('指定されたIDのメモを表示する権限がありません。');
+        }
+        return new MemoResource($dashboardMemo);
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\MemoNotFoundException;
 use App\Http\Requests\Dashboard\DashboardMemoDestroyRequest;
 use App\Http\Requests\Dashboard\DashboardMemoEditRequest;
 use App\Http\Requests\Dashboard\DashboardMemoShowRequest;
@@ -16,6 +17,8 @@ use App\Models\Memo;
 use App\Services\DashboardMemoService;
 use App\Services\MemoService;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
@@ -137,8 +140,9 @@ class DashBoardMemoController extends Controller
      */
     public function show(DashboardMemoShowRequest $request, DashboardMemoService $service): MemoResource
     {
+        $user = Auth::user();
         $validated = $request->validated();
-        return $service->show($validated['id']);
+        return $service->show($validated['id'], $user);
     }
 
     /**
