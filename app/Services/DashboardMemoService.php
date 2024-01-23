@@ -56,33 +56,39 @@ class DashboardMemoService
      * @param int $id
      * @param Authenticatable $user
      * @return MemoResource
-     * @throws MemoNotFoundException
      * @throws AuthorizationException
      */
     public function show(int $id, Authenticatable $user): MemoResource
     {
-        $dashboardMemo = Memo::find($id);
-        if (!$dashboardMemo) {
-            throw new MemoNotFoundException('指定されたIDのメモが見つかりません。');
+        $memo = Memo::find($id);
+        if (!$memo) {
+            abort(404, '指定されたIDのメモが見つかりません。');
         }
-        if ($user->cannot('dashboardMemoShow', $dashboardMemo)) {
+        if ($user->cannot('dashboardMemoShow', $memo)) {
             throw new AuthorizationException('指定されたIDのメモを表示する権限がありません。');
         }
-        return new MemoResource($dashboardMemo);
+        return new MemoResource($memo);
     }
 
 
     /**
      * @param mixed $validated
+     * @param Authenticatable $user
      * @return JsonResponse
      * @throws Exception
      */
-    public function edit(mixed $validated): JsonResponse
+    public function edit(mixed $validated, Authenticatable $user): JsonResponse
     {
         try {
             DB::beginTransaction();
 
-            $memo = Memo::findOrFail($validated['id']);
+            $memo = Memo::find($validated['id']);
+            if (!$memo) {
+                abort(404, '指定されたIDのメモが見つかりません。');
+            }
+            if ($user->cannot('update', $memo)) {
+                throw new AuthorizationException('指定されたIDのメモを表示する権限がありません。');
+            }
             // モデルの保存
             $memo->update([
                 $memo->title = $validated['title'],
@@ -107,11 +113,19 @@ class DashboardMemoService
 
     /**
      * @param int $id
+     * @param Authenticatable $user
      * @return JsonResponse
+     * @throws AuthorizationException
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(int $id, Authenticatable $user): JsonResponse
     {
-        $memo = Memo::findOrFail($id);
+        $memo = Memo::find($id);
+        if (!$memo) {
+            abort(404, '指定されたIDのメモが見つかりません。');
+        }
+        if ($user->cannot('delete', $memo)) {
+            throw new AuthorizationException('指定されたIDのメモを表示する権限がありません。');
+        }
         $memo->delete();
         return response()->json(['message' => 'Memo deleted'], 200);
     }

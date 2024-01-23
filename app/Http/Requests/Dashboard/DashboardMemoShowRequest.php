@@ -2,9 +2,6 @@
 
 namespace App\Http\Requests\Dashboard;
 
-use App\Exceptions\MemoNotFoundException;
-use App\Models\Memo;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DashboardMemoShowRequest extends FormRequest

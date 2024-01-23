@@ -59,12 +59,13 @@ class MemoPolicy
 
 
     /**
-     * Determine whether the user can create dashboard memo.
+     * Determine whether the user can update dashboard memo.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param  User  $user
+     * @param  Memo  $memo
+     * @return Response|bool
      */
-    public function update(User $user, Memo $memo)
+    public function update(User $user, Memo $memo): Response|bool
     {
         return $user->id === $memo->user_id;
     }
@@ -72,13 +73,13 @@ class MemoPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Memo  $memo
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param  User  $user
+     * @param  Memo  $memo
+     * @return Response|bool
      */
-    public function delete(User $user, Memo $memo)
+    public function delete(User $user, Memo $memo): Response|bool
     {
-        //
+        return $user->id === $memo->user_id;
     }
 
     /**

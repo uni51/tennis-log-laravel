@@ -153,8 +153,9 @@ class DashBoardMemoController extends Controller
      */
     public function edit(DashboardMemoEditRequest $request, DashboardMemoService $service): JsonResponse
     {
+        $user = Auth::user();
         $validated = $request->validated();
-        return $service->edit($validated);
+        return $service->edit($validated, $user);
     }
 
     /**
@@ -165,7 +166,8 @@ class DashBoardMemoController extends Controller
      */
     public function destroy(DashboardMemoDestroyRequest $request, DashboardMemoService $service): JsonResponse
     {
+        $user = Auth::user();
         $validated = $request->validated();
-        return $service->destroy($validated['id']);
+        return $service->destroy($validated['id'], $user);
     }
 }

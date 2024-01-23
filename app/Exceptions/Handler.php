@@ -51,11 +51,6 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
-        if ($e instanceof MemoNotFoundException) {
-            return response()->json([
-                'message' => $e->getMessage() ?: 'エラーが発生しました。'
-            ], 404); // 404はNot Foundのステータスコード
-        }
         if ($e instanceof AuthorizationException) {
             return response()->json([
                 'message' => $e->getMessage() ?: 'このアクションを実行する権限がありません。'
