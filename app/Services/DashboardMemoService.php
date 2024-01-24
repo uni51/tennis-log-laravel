@@ -2,10 +2,9 @@
 
 namespace App\Services;
 
-use App\Exceptions\MemoNotFoundException;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
-use App\Models\User;
+use App\Repositories\DashboardMemoRepository;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -15,6 +14,18 @@ use Illuminate\Http\JsonResponse;
 
 class DashboardMemoService
 {
+    private DashboardMemoRepository $repository;
+
+    /**
+     * コンストラクタ
+     *
+     * @param DashboardMemoRepository|null $repository
+     */
+    public function __construct(DashboardMemoRepository $repository = null)
+    {
+        $this->repository = $repository ?? app(DashboardMemoRepository::class);
+    }
+
     /**
      * @param mixed $validated
      * @return JsonResponse
@@ -60,10 +71,8 @@ class DashboardMemoService
      */
     public function show(int $id, Authenticatable $user): MemoResource
     {
-        $memo = Memo::find($id);
-        if (!$memo) {
-            abort(404, '指定されたIDのメモが見つかりません。');
-        }
+        $memo = $this->repository->getMemoById($id);
+
         if ($user->cannot('dashboardMemoShow', $memo)) {
             throw new AuthorizationException('指定されたIDのメモを表示する権限がありません。');
         }
@@ -72,30 +81,25 @@ class DashboardMemoService
 
 
     /**
-     * @param mixed $validated
+     * @param array $validated
      * @param Authenticatable $user
      * @return JsonResponse
      * @throws Exception
      */
-    public function edit(mixed $validated, Authenticatable $user): JsonResponse
+    public function edit(array $validated, Authenticatable $user): JsonResponse
     {
         try {
             DB::beginTransaction();
 
-            $memo = Memo::find($validated['id']);
-            if (!$memo) {
-                abort(404, '指定されたIDのメモが見つかりません。');
-            }
+            $memo = $this->repository->getMemoById($validated['id']);
+
             if ($user->cannot('update', $memo)) {
-                throw new AuthorizationException('指定されたIDのメモを表示する権限がありません。');
+                throw new AuthorizationException('指定されたIDのメモを更新する権限がありません。');
             }
             // モデルの保存
-            $memo->update([
-                $memo->title = $validated['title'],
-                $memo->body = $validated['body'],
-                $memo->category_id = $validated['category_id'],
-                $memo->status = $validated['status_id'],
-            ]);
+            if (!$this->repository->updateMemo($memo, $validated)) {
+                throw new Exception('メモの編集に失敗しました。');
+            }
 
             // メモとタグの紐付け
             $memo->retag($validated['tags']);
@@ -119,12 +123,10 @@ class DashboardMemoService
      */
     public function destroy(int $id, Authenticatable $user): JsonResponse
     {
-        $memo = Memo::find($id);
-        if (!$memo) {
-            abort(404, '指定されたIDのメモが見つかりません。');
-        }
+        $memo = $this->repository->getMemoById($id);
+
         if ($user->cannot('delete', $memo)) {
-            throw new AuthorizationException('指定されたIDのメモを表示する権限がありません。');
+            throw new AuthorizationException('指定されたIDのメモを削除する権限がありません。');
         }
         $memo->delete();
         return response()->json(['message' => 'Memo deleted'], 200);

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\MemoNotFoundException;
 use App\Http\Requests\Dashboard\DashboardMemoDestroyRequest;
 use App\Http\Requests\Dashboard\DashboardMemoEditRequest;
 use App\Http\Requests\Dashboard\DashboardMemoShowRequest;
@@ -13,12 +12,9 @@ use App\Http\Requests\Dashboard\DashboardMemosTagRequest;
 use App\Http\Requests\DashboardMemoSearchRequest;
 use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;
-use App\Models\Memo;
 use App\Services\DashboardMemoService;
 use App\Services\MemoService;
 use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
