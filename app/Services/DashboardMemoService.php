@@ -27,35 +27,13 @@ class DashboardMemoService
     }
 
     /**
-     * @param mixed $validated
-     * @return JsonResponse
+     * @param array $validated
      * @throws Exception
+     * @return JsonResponse
      */
-    public function create(mixed $validated): JsonResponse
+    public function create(array $validated): JsonResponse
     {
-        try {
-            DB::beginTransaction();
-
-            // モデルクラスのインスタンス化
-            $memo = new Memo();
-            // パラメータのセット
-            $memo->user_id = Auth::id();
-            $memo->category_id = $validated['category_id'];
-            $memo->status = $validated['status_id'];
-            $memo->title = $validated['title'];
-            $memo->body = $validated['body'];
-            // モデルの保存
-            $memo->save();
-
-            // メモとタグの紐付け
-            if (!empty($validated['tags'])) {
-                $memo->retag($validated['tags']);
-            }
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        $this->repository->createMemo($validated);
 
         return response()->json([
             'message' => 'メモの登録に成功しました。'
