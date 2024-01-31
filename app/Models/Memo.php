@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static findOrFail(int $id)
  * @method static where(string $string, mixed $value)
  * @method static find(int $id)
+ * @method static create(array $array)
  */
 class Memo extends Model
 {

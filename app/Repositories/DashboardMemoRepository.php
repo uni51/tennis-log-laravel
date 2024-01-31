@@ -29,34 +29,50 @@ class DashboardMemoRepository
 
     /**
      * @param array $validated
-     * @throws Exception
      * @return void
+     * @throws Exception
      */
     public function createMemo(array $validated): void
     {
         try {
             DB::beginTransaction();
-
-            // モデルクラスのインスタンス化
-            $memo = new Memo();
-            // パラメータのセット
-            $memo->user_id = Auth::id();
-            $memo->category_id = $validated['category_id'];
-            $memo->status = $validated['status_id'];
-            $memo->title = $validated['title'];
-            $memo->body = $validated['body'];
-            $memo->save();
-
-            // メモとタグの紐付け
-            if (!empty($validated['tags'])) {
-                $memo->tag($validated['tags']);
-            }
+            $memo = $this->createNewMemo($validated);
+            $this->attachTagsToMemo($memo, $validated['tags'] ?? []);
             DB::commit();
-
         } catch (Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage());
             throw new Exception('メモの登録に失敗しました。');
+        }
+    }
+
+    /**
+     * 新しいメモを作成して返します。
+     *
+     * @param array $data メモのデータ
+     * @return Memo 作成されたメモ
+     */
+    private function createNewMemo(array $data): Memo
+    {
+        return Memo::create([
+            'user_id' => Auth::id(),
+            'category_id' => $data['category_id'],
+            'status' => $data['status_id'],
+            'title' => $data['title'],
+            'body' => $data['body'],
+        ]);
+    }
+
+    /**
+     * メモにタグを紐付けます。
+     *
+     * @param Memo $memo タグを紐付けるメモ
+     * @param array $tags タグの配列
+     */
+    private function attachTagsToMemo(Memo $memo, array $tags): void
+    {
+        if (!empty($tags)) {
+            $memo->tag($tags);
         }
     }
 
@@ -67,10 +83,11 @@ class DashboardMemoRepository
      */
     public function updateMemo(Memo $memo, array $validated): bool
     {
-        $memo->title = $validated['title'];
-        $memo->body = $validated['body'];
-        $memo->category_id = $validated['category_id'];
-        $memo->status = $validated['status_id'];
-        return $memo->update();
+//        $memo->title = $validated['title'];
+//        $memo->body = $validated['body'];
+//        $memo->category_id = $validated['category_id'];
+//        $memo->status = $validated['status_id'];
+        $memo->fill($validated);
+        return $memo->save();
     }
 }
