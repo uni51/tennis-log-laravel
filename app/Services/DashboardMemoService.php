@@ -8,7 +8,6 @@ use App\Repositories\DashboardMemoRepository;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 
@@ -27,6 +26,28 @@ class DashboardMemoService
     }
 
     /**
+     * @param int $memoId
+     * @param Authenticatable $user
+     * @param string $abilities
+     * @throws AuthorizationException
+     * @return Memo
+     */
+    private function validateUserPermission(int $memoId, Authenticatable $user, string $abilities): Memo
+    {
+        $memo = $this->repository->getMemoById($memoId);
+        if ($user->cannot($abilities, $memo)) {
+            throw match ($abilities) {
+                'dashboardMemoShow' => new AuthorizationException('指定されたIDのメモを表示する権限がありません。'),
+                'update' => new AuthorizationException('指定されたIDのメモを更新する権限がありません。'),
+                'delete' => new AuthorizationException('指定されたIDのメモを削除する権限がありません。'),
+                default => new AuthorizationException('指定されたIDのメモを編集する権限がありません。'),
+            };
+        }
+        return $memo;
+    }
+
+
+    /**
      * @param array $validated
      * @throws Exception
      * @return JsonResponse
@@ -40,7 +61,6 @@ class DashboardMemoService
         ], 201);
     }
 
-
     /**
      * @param int $id
      * @param Authenticatable $user
@@ -49,48 +69,48 @@ class DashboardMemoService
      */
     public function show(int $id, Authenticatable $user): MemoResource
     {
-        $memo = $this->repository->getMemoById($id);
+        $memo = $this->validateUserPermission($id, $user, 'dashboardMemoShow');
 
-        if ($user->cannot('dashboardMemoShow', $memo)) {
-            throw new AuthorizationException('指定されたIDのメモを表示する権限がありません。');
-        }
         return new MemoResource($memo);
     }
-
 
     /**
      * @param array $validated
      * @param Authenticatable $user
-     * @return JsonResponse
+     * @throws AuthorizationException
      * @throws Exception
+     * @return JsonResponse
      */
     public function edit(array $validated, Authenticatable $user): JsonResponse
     {
-        try {
-            DB::beginTransaction();
+        $memo = $this->validateUserPermission($validated['id'], $user, 'update');
 
-            $memo = $this->repository->getMemoById($validated['id']);
-
-            if ($user->cannot('update', $memo)) {
-                throw new AuthorizationException('指定されたIDのメモを更新する権限がありません。');
-            }
-            // モデルの保存
-            if (!$this->repository->updateMemo($memo, $validated)) {
-                throw new Exception('メモの編集に失敗しました。');
-            }
-
-            // メモとタグの紐付け
-            $memo->retag($validated['tags']);
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
+        if (!$this->processMemoUpdate($validated, $memo)) {
+            throw new Exception('メモの編集に失敗しました。');
         }
 
         return response()->json([
             'message' => 'メモの編集に成功しました。'
         ], 201);
+    }
+
+    /**
+     * @param array $validated
+     * @param Memo $memo
+     * @return bool
+     */
+    private function processMemoUpdate(array $validated, Memo $memo): bool
+    {
+        try {
+            DB::beginTransaction();
+            $this->repository->updateMemo($memo, $validated);
+            $memo->retag($validated['tags']);
+            DB::commit();
+            return true;
+        } catch (Exception $e) {
+            DB::rollBack();
+            return false;
+        }
     }
 
     /**
@@ -101,11 +121,7 @@ class DashboardMemoService
      */
     public function destroy(int $id, Authenticatable $user): JsonResponse
     {
-        $memo = $this->repository->getMemoById($id);
-
-        if ($user->cannot('delete', $memo)) {
-            throw new AuthorizationException('指定されたIDのメモを削除する権限がありません。');
-        }
+        $memo = $this->validateUserPermission($id, $user, 'delete');
         $memo->delete();
         return response()->json(['message' => 'Memo deleted'], 200);
     }
