@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Dashboard;
+namespace App\Http\Requests\DashboardMemos;
 
-use App\Enums\MemoStatusType;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\ValidCategory;
 
-class DashboardMemoEditRequest extends FormRequest
+class DashboardMemosCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -20,17 +20,12 @@ class DashboardMemoEditRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
-            'id' => ['required', 'int'],
-            'title' => ['required'],
-            'body' => ['required'],
-            'category_id' => ['required', 'int'],
-            'tags' => ['nullable', 'array'],
-            'status_id' => ['required', 'int', 'between:'.MemoStatusType::DRAFT.','.MemoStatusType::UN_PUBLISHING],
+            'categoryId' => [ 'required', 'int', new ValidCategory],
         ];
     }
 
@@ -41,6 +36,6 @@ class DashboardMemoEditRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge(['id' => $this->route('id')]);
+        $this->merge(['categoryId' => $this->route('categoryId')]);
     }
 }

@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Http\Requests\Dashboard;
+namespace App\Http\Requests\DashboardMemos;
 
-use App\Enums\MemoStatusType;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DashboardMemosStatusRequest extends FormRequest
+class DashboardMemoDestroyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool // リクエストの許可を認可
+     * @return bool
      */
     public function authorize(): bool
     {
@@ -20,12 +19,12 @@ class DashboardMemosStatusRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, mixed>
+     * @return array
      */
     public function rules(): array
     {
         return [
-            'status' => 'required | int | between:'.MemoStatusType::DRAFT.','.MemoStatusType::UN_PUBLISHING,
+            'id' => ['required', 'int'],
         ];
     }
 
@@ -36,6 +35,6 @@ class DashboardMemosStatusRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge(['status' => $this->route('status')]);
+        $this->merge(['id' => $this->route('id')]);
     }
 }

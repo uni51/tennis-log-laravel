@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Dashboard;
+namespace App\Http\Requests\DashboardMemos;
 
+use App\Enums\MemoStatusType;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DashboardMemoDestroyRequest extends FormRequest
+class DashboardMemoEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,6 +26,11 @@ class DashboardMemoDestroyRequest extends FormRequest
     {
         return [
             'id' => ['required', 'int'],
+            'title' => ['required'],
+            'body' => ['required'],
+            'category_id' => ['required', 'int'],
+            'tags' => ['nullable', 'array'],
+            'status_id' => ['required', 'int', 'between:'.MemoStatusType::DRAFT.','.MemoStatusType::UN_PUBLISHING],
         ];
     }
 

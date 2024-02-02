@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Dashboard\DashboardMemoDestroyRequest;
-use App\Http\Requests\Dashboard\DashboardMemoEditRequest;
-use App\Http\Requests\Dashboard\DashboardMemoShowRequest;
-use App\Http\Requests\Dashboard\DashboardMemosCategoryRequest;
-use App\Http\Requests\Dashboard\DashboardMemosCategoryTagRequest;
-use App\Http\Requests\Dashboard\DashboardMemosStatusRequest;
-use App\Http\Requests\Dashboard\DashboardMemosTagRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoDestroyRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoEditRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoShowRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemosCategoryRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemosCategoryTagRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemosStatusRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemosTagRequest;
 use App\Http\Requests\DashboardMemoSearchRequest;
 use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;

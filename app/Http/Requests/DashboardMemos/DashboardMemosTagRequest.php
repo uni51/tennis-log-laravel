@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Requests\Dashboard;
+namespace App\Http\Requests\DashboardMemos;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DashboardMemoShowRequest extends FormRequest
+class DashboardMemosTagRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return bool // リクエストの許可を認可
      */
     public function authorize(): bool
     {
@@ -19,12 +19,12 @@ class DashboardMemoShowRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
-            'id' => ['required', 'int'],
+            'tag' => ['required', 'string'],
         ];
     }
 
@@ -35,6 +35,6 @@ class DashboardMemoShowRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge(['id' => $this->route('id')]);
+        $this->merge(['tag' => $this->route('tag')]);
     }
 }
