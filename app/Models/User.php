@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property mixed $id
+ * @method static where(string $string, string $nickName)
  */
 class User extends Authenticatable
 {

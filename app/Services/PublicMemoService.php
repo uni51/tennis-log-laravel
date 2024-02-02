@@ -72,11 +72,11 @@ class PublicMemoService
     }
 
     /**
-     * @param $nickName
+     * @param string $nickName
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoList($nickName)
+    public function userMemoList(string $nickName): AnonymousResourceCollection
     {
         try {
             DB::beginTransaction();
@@ -98,7 +98,13 @@ class PublicMemoService
         return MemoResource::collection($memos);
     }
 
-    public function userMemoDetail($nickName, $memoId)
+    /**
+     * @param string $nickName
+     * @param int $id
+     * @return MemoResource
+     * @throws Exception
+     */
+    public function userMemoDetail(string $nickName, int $id): MemoResource
     {
         try {
             DB::beginTransaction();
@@ -108,7 +114,7 @@ class PublicMemoService
             $memos = Memo::with(['category:name,id'])
                 ->where('user_id', $user->id)
                 ->where('status', 1)
-                ->where('id', $memoId)
+                ->where('id', $id)
                 ->firstOrFail();
 
             DB::commit();

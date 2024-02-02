@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PublicMemos\PublicMemoShowRequest;
+use App\Http\Requests\PublicMemos\PublicUserMemoDetailRequest;
+use App\Http\Requests\PublicMemos\PublicUserMemoListRequest;
 use App\Http\Requests\PublicMemoSearchRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
@@ -44,20 +46,29 @@ class PublicMemoController extends Controller
         return $service->search($validated['q']);
     }
 
+
     /**
+     * @param PublicUserMemoListRequest $request
      * @param PublicMemoService $service
-     * @param $nickName
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoList(PublicMemoService $service, $nickName)
+    public function userMemoList(PublicUserMemoListRequest $request, PublicMemoService $service): AnonymousResourceCollection
     {
-        return $service->userMemoList($nickName);
+        $validated = $request->validated();
+        return $service->userMemoList($validated['nickName']);
     }
 
-    public function userMemoDetail(PublicMemoService $service, $nickName, $memoId)
+    /**
+     * @param PublicUserMemoDetailRequest $request
+     * @param PublicMemoService $service
+     * @return MemoResource
+     * @throws Exception
+     */
+    public function userMemoDetail(PublicUserMemoDetailRequest $request, PublicMemoService $service): MemoResource
     {
-        return $service->userMemoDetail($nickName, $memoId);
+        $validated = $request->validated();
+        return $service->userMemoDetail($validated['nickName'], $validated['id']);
     }
 
     public function memoListByCategory(PublicMemoService $service, $categoryId)
