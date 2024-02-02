@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PublicMemos\PublicMemoShowRequest;
 use App\Http\Requests\PublicMemoSearchRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
@@ -21,17 +22,26 @@ class PublicMemoController extends Controller
         return $service->allList();
     }
 
-    public function show($id)
+    /**
+     * @param PublicMemoShowRequest $request
+     * @param PublicMemoService $service
+     * @return MemoResource
+     */
+    public function show(PublicMemoShowRequest $request, PublicMemoService $service): MemoResource
     {
-        $memo = Memo::where('status', 1)->findOrFail($id);
-
-        return new MemoResource($memo);
+        $validated = $request->validated();
+        return $service->show($validated['id']);
     }
 
-    public function search(PublicMemoService $service, PublicMemoSearchRequest $request)
+    /**
+     * @param PublicMemoSearchRequest $request
+     * @param PublicMemoService $service
+     * @return AnonymousResourceCollection
+     */
+    public function search(PublicMemoSearchRequest $request, PublicMemoService $service): AnonymousResourceCollection
     {
-        $memos = $service->search($request);
-        return MemoResource::collection($memos);
+        $validated = $request->validated();
+        return $service->search($validated['q']);
     }
 
     /**

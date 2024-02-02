@@ -32,15 +32,32 @@ class PublicMemoService
         return MemoResource::collection($memos);
     }
 
-    public function search(PublicMemoSearchRequest $request){
+
+    /**
+     * @param int $id
+     * @return MemoResource
+     */
+    public function show(int $id): MemoResource
+    {
+        $memo = Memo::where('status', MemoStatusType::getValue('公開中'))->findOrFail($id);
+
+        return new MemoResource($memo);
+    }
+
+    /**
+     * @param string $input_keyword
+     * @return AnonymousResourceCollection
+     */
+    public function search(string $input_keyword): AnonymousResourceCollection
+    {
         $query = (new Memo)->newQuery();
         $query->where('status', 1);
 
         // search title and description for provided strings (space-separated)
-        if ($request->q) {
-            $keywords = explode(' ', $request->q);
+        if ($input_keyword) {
+            $keywords = explode(' ', $input_keyword);
 
-            $query->where(function($q) use ($keywords){
+            $query->where(function($q) use ($keywords) {
                 foreach ($keywords as $keyword) {
                     $q->where(function($qq) use ($keyword) {
                         $qq->orWhere('title', 'like', '%'.$keyword.'%')
@@ -50,7 +67,8 @@ class PublicMemoService
             });
         }
 
-        return $query->with(['category:name,id'])->paginate(6);
+        $memos = $query->with(['category:name,id'])->paginate(6);
+        return MemoResource::collection($memos);
     }
 
     /**
