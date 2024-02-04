@@ -99,13 +99,13 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     Route::get('/dashboard/memos/status/{status}', [DashBoardMemoController::class, 'memoListByStatus'])
         ->name('get.dashboard.memos.status');
 
-    Route::get('/dashboard/memos/category/{categoryId}', [DashBoardMemoController::class, 'memoListByCategory'])
+    Route::get('/dashboard/memos/category/{category_id}', [DashBoardMemoController::class, 'memoListByCategory'])
         ->name('get.dashboard.memos.category');
 
     Route::get('/dashboard/memos/tag/{tag}', [DashBoardMemoController::class, 'memoListByTag'])
         ->name('get.dashboard.memos.tag');
 
-    Route::get('/dashboard/memos/category/{categoryId}/tag/{tag}',
+    Route::get('/dashboard/memos/category/{category_id}/tag/{tag}',
         [DashBoardMemoController::class, 'memoListByCategoryAndTag'])
         ->name('get.dashboard.memos.category.tag');
 

@@ -25,7 +25,7 @@ class DashboardMemosCategoryTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'categoryId' => [ 'required', 'int', new ValidCategory],
+            'category_id' => [ 'required', 'int', new ValidCategory],
             'tag' => [ 'required', 'string'],
         ];
     }
@@ -38,7 +38,7 @@ class DashboardMemosCategoryTagRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'categoryId' => $this->route('categoryId'),
+            'category_id' => $this->route('category_id'),
             'tag' => $this->route('tag')
         ]);
     }

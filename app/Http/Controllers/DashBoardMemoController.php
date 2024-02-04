@@ -82,7 +82,7 @@ class DashBoardMemoController extends Controller
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByCategory(Auth::id(), $validated['categoryId']);
+        return $service->memoListByCategory(Auth::id(), $validated['category_id']);
     }
 
     /**
@@ -113,7 +113,7 @@ class DashBoardMemoController extends Controller
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByCategoryAndTag(Auth::id(), $validated['categoryId'], $validated['tag']);
+        return $service->memoListByCategoryAndTag(Auth::id(), $validated['category_id'], $validated['tag']);
     }
 
     /**
