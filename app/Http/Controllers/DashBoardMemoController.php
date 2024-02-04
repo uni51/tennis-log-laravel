@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DashboardMemos\DashboardMemoDestroyRequest;
@@ -9,7 +7,7 @@ use App\Http\Requests\DashboardMemos\DashboardMemoShowRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoListByCategoryRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoListByCategoryTagRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoListByStatusRequest;
-use App\Http\Requests\DashboardMemos\DashboardMemosByTagRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoListByTagRequest;
 use App\Http\Requests\DashboardMemoSearchRequest;
 use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;
@@ -18,6 +16,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DashBoardMemoController
@@ -88,16 +87,16 @@ class DashBoardMemoController extends Controller
     /**
      * タグ別 記事一覧取得API
      *
-     * @param DashboardMemosByTagRequest $request
+     * @param DashboardMemoListByTagRequest $request
      * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByTag(DashboardMemosByTagRequest $request, DashboardMemoService $service)
+    public function memoListByTag(DashboardMemoListByTagRequest $request, DashboardMemoService $service)
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByTag($validated['tag'], Auth::id());
+        return $service->memoListByTag(Auth::id(), $validated['tag']);
     }
 
     /**

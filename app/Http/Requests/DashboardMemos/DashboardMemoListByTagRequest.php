@@ -4,7 +4,7 @@ namespace App\Http\Requests\DashboardMemos;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DashboardMemosByTagRequest extends FormRequest
+class DashboardMemoListByTagRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
