@@ -14,7 +14,11 @@ use Illuminate\Database\Eloquent\Builder;
 class NicknameMemoRepository
 {
 
-    public function getUserMemoList(string $nickname): LengthAwarePaginator
+    /**
+     * @param string $nickname
+     * @return LengthAwarePaginator
+     */
+    public function userMemoList(string $nickname): LengthAwarePaginator
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 
@@ -29,7 +33,7 @@ class NicknameMemoRepository
      * @param int $id
      * @return Builder | Memo
      */
-    public function getUserMemoDetail(string $nickname, int $id): Builder | Memo
+    public function userMemoDetail(string $nickname, int $id): Builder | Memo
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 
@@ -38,5 +42,22 @@ class NicknameMemoRepository
             ->where('status', MemoStatusType::getValue('公開中'))
             ->where('id', $id)
             ->firstOrFail();
+    }
+
+
+    /**
+     * @param string $nickName
+     * @param int $categoryId
+     * @return LengthAwarePaginator
+     */
+    public function userMemoListByCategory(string $nickName, int $categoryId): LengthAwarePaginator
+    {
+        $user = User::where('nickname', $nickName)->firstOrFail();
+
+        return Memo::with(['category:name,id'])
+            ->where('user_id', $user->id)
+            ->where('category_id', $categoryId)
+            ->where('status', MemoStatusType::getValue('公開中'))
+            ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 }

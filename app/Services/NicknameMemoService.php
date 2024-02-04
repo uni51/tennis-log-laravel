@@ -34,7 +34,7 @@ class NicknameMemoService
     public function userMemoList(string $nickname): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->getUserMemoList($nickname);
+            $memos = $this->repository->userMemoList($nickname);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
@@ -52,7 +52,7 @@ class NicknameMemoService
     public function userMemoDetail(string $nickname, int $id): MemoResource
     {
         try {
-            $memo = $this->repository->getUserMemoDetail($nickname, $id);
+            $memo = $this->repository->userMemoDetail($nickname, $id);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
@@ -61,23 +61,18 @@ class NicknameMemoService
         return MemoResource::make($memo);
     }
 
-    public function userMemoListByCategory($nickName, $categoryId)
+    /**
+     * @param string $nickName
+     * @param int $categoryId
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function userMemoListByCategory(string $nickName, int $categoryId): AnonymousResourceCollection
     {
         try {
-            DB::beginTransaction();
-
-            $user = User::where('nickname', $nickName)->firstOrFail();
-
-            $memos = Memo::with(['category:name,id'])
-                ->where('user_id', $user->id)
-                ->where('category_id', $categoryId)
-                ->where('status', MemoStatusType::getValue('公開中'))
-                ->paginate(Pagination::DEFAULT_PER_PAGE);
-
-            DB::commit();
+            $memos = $this->repository->userMemoListByCategory($nickName, $categoryId);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            DB::rollBack();
             throw $e;
         }
 

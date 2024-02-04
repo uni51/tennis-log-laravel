@@ -69,11 +69,11 @@ Route::get('/public/memos/search', [PublicMemoController::class, 'search'])
 
 Route::get('/public/{nickname}/memos', [NicknameMemoController::class, 'userMemoList'])
     ->name('get.public.memos.nickname');
-Route::get('/public/{nickname}/memos/category/{categoryId}',
-    [NicknameMemoController::class, 'userMemoListByCategory'])
-    ->name('get.public.nickname.memos.category');
 Route::get('/public/{nickname}/memos/{id}', [NicknameMemoController::class, 'userMemoDetail'])
     ->name('get.public.nickname.memos.id');
+Route::get('/public/{nickname}/memos/category/{category_id}',
+    [NicknameMemoController::class, 'userMemoListByCategory'])
+    ->name('get.public.nickname.memos.category');
 
 // ログインユーザー取得
 

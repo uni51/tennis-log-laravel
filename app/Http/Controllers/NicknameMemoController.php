@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoDetailRequest;
 use App\Http\Resources\MemoResource;
@@ -35,8 +36,16 @@ class NicknameMemoController extends Controller
         return $service->userMemoDetail($validated['nickname'], $validated['id']);
     }
 
-    public function userMemoListByCategory(NicknameMemoService $service, $nickName, $categoryId)
+    /**
+     * @param NicknameMemoListByCategoryRequest $request
+     * @param NicknameMemoService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function userMemoListByCategory(NicknameMemoListByCategoryRequest $request, NicknameMemoService $service)
+    : AnonymousResourceCollection
     {
-        return $service->userMemoListByCategory($nickName, $categoryId);
+        $validated = $request->validated();
+        return $service->userMemoListByCategory($validated['nickname'], $validated['category_id']);
     }
 }
