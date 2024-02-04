@@ -134,7 +134,7 @@ class DashboardMemoService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function listMemoLinkedToUser(int $authUserId): AnonymousResourceCollection
+    public function memoListByAuthUser(int $authUserId): AnonymousResourceCollection
     {
         try {
             $memos = $this->repository->memoListByAuthUser($authUserId);
@@ -173,6 +173,42 @@ class DashboardMemoService
     {
         try {
             $memos = $this->repository->memoListByCategory($categoryId, $authUserId);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+    /**
+     * @param int $status
+     * @param int $userId
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByStatus(int $status, int $userId): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->memoListByStatus($status, $userId);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+    /**
+     * @param string $tag
+     * @param int $userId
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByTag(string $tag, int $userId): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->memoListByTag($tag, $userId);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;

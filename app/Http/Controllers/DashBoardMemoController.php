@@ -36,7 +36,7 @@ class DashBoardMemoController extends Controller
      */
     public function list(DashboardMemoService $service): AnonymousResourceCollection
     {
-        return $service->listMemoLinkedToUser(Auth::id());
+        return $service->memoListByAuthUser(Auth::id());
     }
 
     /**
@@ -55,17 +55,17 @@ class DashBoardMemoController extends Controller
 
     /**
      * @param DashboardMemosStatusRequest $request
-     * @param MemoService $service
+     * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function memoListByStatus(
         DashboardMemosStatusRequest $request,
-        MemoService $service
+        DashboardMemoService $service
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByStatus(Auth::id(), $validated['status']);
+        return $service->memoListByStatus($validated['status'], Auth::id());
     }
 
     /**
@@ -89,14 +89,15 @@ class DashBoardMemoController extends Controller
      * タグ別 記事一覧取得API
      *
      * @param DashboardMemosTagRequest $request
-     * @param MemoService $service
+     * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByTag(DashboardMemosTagRequest $request, MemoService $service): AnonymousResourceCollection
+    public function memoListByTag(DashboardMemosTagRequest $request, DashboardMemoService $service)
+    : AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByTag(Auth::id(), $validated['tag']);
+        return $service->memoListByTag($validated['tag'], Auth::id());
     }
 
     /**

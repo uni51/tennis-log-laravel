@@ -147,4 +147,34 @@ class DashboardMemoRepository
                 ->orderBy('updated_at', 'desc')
                 ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
+
+    /**
+     * @param int $status
+     * @param int $userId
+     * @return LengthAwarePaginator
+     */
+    public function memoListByStatus(int $status, int $userId): LengthAwarePaginator
+    {
+        return Memo::with(['category:name,id'])
+                ->where('user_id', $userId)
+                ->where('status', $status)
+                ->orderBy('updated_at', 'desc')
+                ->paginate(Pagination::DEFAULT_PER_PAGE);
+    }
+
+    /**
+     * @param string $tag
+     * @param int $userId
+     * @return LengthAwarePaginator
+     */
+    public function memoListByTag(string $tag, int $userId): LengthAwarePaginator
+    {
+        return Memo::with(['category:name,id'])
+            ->where('user_id', $userId)
+            ->whereHas('tags', function($q) use ($tag) {
+                $q->where('normalized', $tag);
+            })
+            ->orderBy('updated_at', 'desc')
+            ->paginate(Pagination::DEFAULT_PER_PAGE);
+    }
 }
