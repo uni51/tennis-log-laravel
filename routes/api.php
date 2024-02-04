@@ -11,6 +11,7 @@ use App\Http\Controllers\Profile\GenderController;
 use App\Http\Controllers\Profile\PlayFrequencyController;
 use App\Http\Controllers\Profile\TennisLevelController;
 use App\Http\Controllers\PublicMemoController;
+use App\Http\Controllers\NicknameMemoController;
 use App\Http\Controllers\Admin\UserManageController;
 use App\Http\Controllers\Admin\MemoManageController;
 use App\Http\Resources\UserResource;
@@ -56,23 +57,23 @@ Route::get('/profile/tennis_level', [TennisLevelController::class, 'tennisLevelL
 // 公開中の記事一覧を取得するAPI
 Route::get('/public/memos', [PublicMemoController::class, 'allList'])
     ->name('get.public.memos');
-
 Route::get('/public/memos/search', [PublicMemoController::class, 'search'])
     ->name('get.public.memos.search');
-
+Route::get('/public/memos/category/{category_id}', [PublicMemoController::class, 'memoListByCategory'])
+    ->name('get.public.memos.category');
+// TOOD: implement
+Route::get('/public/memos/tag/{tag}', [PublicMemoController::class, 'memoListByTag'])
+    ->name('get.public.memos.category');
 Route::get('/public/memos/{id}', [PublicMemoController::class, 'show'])
     ->name('get.public.memos.id');
 
-Route::get('/public/{nickname}/memos', [PublicMemoController::class, 'userMemoList'])
+Route::get('/public/{nickname}/memos', [NicknameMemoController::class, 'userMemoList'])
     ->name('get.public.memos.nickname');
-
+Route::get('/public/{nickname}/memos/category/{categoryId}',
+    [NicknameMemoController::class, 'userMemoListByCategory'])
+    ->name('get.public.nickname.memos.category');
 Route::get('/public/{nickname}/memos/{id}', [PublicMemoController::class, 'userMemoDetail'])
     ->name('get.public.nickname.memos.id');
-Route::get('/public/memos/category/{category_id}', [PublicMemoController::class, 'memoListByCategory'])
-    ->name('get.public.memos.category');
-Route::get('/public/{nickname}/memos/category/{categoryId}',
-    [PublicMemoController::class, 'userMemoListByCategory'])
-    ->name('get.public.nickname.memos.category');
 
 // ログインユーザー取得
 

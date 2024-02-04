@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\PublicMemos;
+namespace App\Http\Requests\NicknameMemos;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PublicUserMemoListRequest extends FormRequest
+class NicknameUserMemoListRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
