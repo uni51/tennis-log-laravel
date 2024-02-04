@@ -1,8 +1,8 @@
-<?php /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+<?php
+declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Consts\Pagination;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use App\Repositories\DashboardMemoRepository;
