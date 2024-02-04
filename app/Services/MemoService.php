@@ -13,25 +13,6 @@ class MemoService
 {
     /**
      * @param int $userId
-     * @return AnonymousResourceCollection
-     * @throws Exception
-     */
-    public function listMemoLinkedToUser(int $userId): AnonymousResourceCollection
-    {
-        try {
-            $memos = Memo::with(['category:name,id'])
-                    ->where('user_id', $userId)
-                    ->orderBy('updated_at', 'desc')
-                    ->paginate(Pagination::DEFAULT_PER_PAGE);
-        } catch (Exception $e) {
-            throw $e;
-        }
-
-        return MemoResource::collection($memos);
-    }
-
-    /**
-     * @param int $userId
      * @param int $status
      * @return AnonymousResourceCollection
      * @throws Exception
@@ -97,44 +78,6 @@ class MemoService
                 ->orderBy('updated_at', 'desc')
                 ->paginate(Pagination::DEFAULT_PER_PAGE);
             // Log::debug($memos);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            throw $e;
-        }
-
-        return MemoResource::collection($memos);
-    }
-
-    /**
-     * @param int $userId
-     * @param string $keyword
-     * @return AnonymousResourceCollection
-     * @throws Exception
-     */
-    public function dashboardMemoSearch(int $userId, string $keyword): AnonymousResourceCollection
-    {
-        try {
-            $query = (new Memo)->newQuery();
-            $query->where('user_id', $userId);
-
-            // search title and description for provided strings (space-separated)
-            if ($keyword) {
-                $keywords = explode(' ', $keyword);
-
-                $query->where(function ($q) use ($keywords) {
-                    foreach ($keywords as $keyword) {
-                        $q->where(function ($qq) use ($keyword) {
-                            $qq->orWhere('title', 'like', '%' . $keyword . '%')
-                                ->orWhere('body', 'like', '%' . $keyword . '%');
-                        });
-                    }
-                });
-            }
-
-            $memos = $query->with(['category:name,id'])
-                ->orderBy('updated_at', 'desc')
-                ->paginate(Pagination::DEFAULT_PER_PAGE);
-
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;

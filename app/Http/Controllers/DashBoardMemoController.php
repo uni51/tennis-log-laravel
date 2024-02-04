@@ -30,11 +30,11 @@ class DashBoardMemoController extends Controller
     /**
      * メモの公開・非公開を問わずに、そのユーザーに紐づく記事一覧を取得するAPI
      *
-     * @param MemoService $service
+     * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function list(MemoService $service): AnonymousResourceCollection
+    public function list(DashboardMemoService $service): AnonymousResourceCollection
     {
         return $service->listMemoLinkedToUser(Auth::id());
     }
@@ -43,14 +43,14 @@ class DashBoardMemoController extends Controller
      * キーワードによる記事検索API
      *
      * @param DashboardMemoSearchRequest $request
-     * @param MemoService $service
+     * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function search(DashboardMemoSearchRequest $request, MemoService $service): AnonymousResourceCollection
+    public function search(DashboardMemoSearchRequest $request, DashboardMemoService $service): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->dashboardMemoSearch(Auth::id(), $validated['q']);
+        return $service->dashboardMemoSearch($validated['q'], Auth::id());
     }
 
     /**

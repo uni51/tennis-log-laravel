@@ -130,6 +130,40 @@ class DashboardMemoService
     }
 
     /**
+     * @param int $authUserId
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function listMemoLinkedToUser(int $authUserId): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->memoListByAuthUser($authUserId);
+        } catch (Exception $e) {
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+    /**
+     * @param int $authUserId
+     * @param string $keyword
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function dashboardMemoSearch(string $keyword, int $authUserId): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->dashboardMemoSearch($keyword, $authUserId);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+    /**
      * @param int $categoryId
      * @param int $authUserId
      * @return AnonymousResourceCollection

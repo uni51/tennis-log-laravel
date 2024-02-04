@@ -94,6 +94,18 @@ class DashboardMemoRepository
     }
 
     /**
+     * @param int $authUserId
+     * @return LengthAwarePaginator
+     */
+    public function memoListByAuthUser(int $authUserId): LengthAwarePaginator
+    {
+        return Memo::with(['category:name,id'])
+                ->where('user_id', $authUserId)
+                ->orderBy('updated_at', 'desc')
+                ->paginate(Pagination::DEFAULT_PER_PAGE);
+    }
+
+    /**
      * @param int $categoryId
      * @param int $authUserId
      * @return LengthAwarePaginator
@@ -105,5 +117,34 @@ class DashboardMemoRepository
                     ->where('category_id', $categoryId)
                     ->orderBy('updated_at', 'desc')
                     ->paginate(Pagination::DEFAULT_PER_PAGE);
+    }
+
+    /**
+     * @param string $keyword
+     * @param int $authUserId
+     * @return LengthAwarePaginator
+     */
+    public function dashboardMemoSearch(string $keyword, int $authUserId): LengthAwarePaginator
+    {
+        $query = (new Memo)->newQuery();
+        $query->where('user_id', $authUserId);
+
+        // search title and description for provided strings (space-separated)
+        if ($keyword) {
+            $keywords = explode(' ', $keyword);
+
+            $query->where(function ($q) use ($keywords) {
+                foreach ($keywords as $keyword) {
+                    $q->where(function ($qq) use ($keyword) {
+                        $qq->orWhere('title', 'like', '%' . $keyword . '%')
+                            ->orWhere('body', 'like', '%' . $keyword . '%');
+                    });
+                }
+            });
+        }
+
+       return $query->with(['category:name,id'])
+                ->orderBy('updated_at', 'desc')
+                ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 }
