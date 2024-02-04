@@ -57,8 +57,6 @@ Route::get('/profile/tennis_level', [TennisLevelController::class, 'tennisLevelL
 // 公開中の記事一覧を取得するAPI
 Route::get('/public/memos', [PublicMemoController::class, 'allList'])
     ->name('get.public.memos');
-Route::get('/public/memos/search', [PublicMemoController::class, 'search'])
-    ->name('get.public.memos.search');
 Route::get('/public/memos/category/{category_id}', [PublicMemoController::class, 'memoListByCategory'])
     ->name('get.public.memos.category');
 // TOOD: implement
@@ -66,6 +64,8 @@ Route::get('/public/memos/tag/{tag}', [PublicMemoController::class, 'memoListByT
     ->name('get.public.memos.category');
 Route::get('/public/memos/{id}', [PublicMemoController::class, 'show'])
     ->name('get.public.memos.id');
+Route::get('/public/memos/search', [PublicMemoController::class, 'search'])
+    ->name('get.public.memos.search');
 
 Route::get('/public/{nickname}/memos', [NicknameMemoController::class, 'userMemoList'])
     ->name('get.public.memos.nickname');
@@ -89,7 +89,6 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
     Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list'])
         ->name('get.dashboard.memos');
-
     // メモの新規作成
     Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create'])
         ->name('post.dashboard.memos');

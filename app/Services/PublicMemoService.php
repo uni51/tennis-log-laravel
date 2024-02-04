@@ -35,7 +35,7 @@ class PublicMemoService
     public function allList(): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->getAllPublicList();
+            $memos = $this->repository->allPublicList();
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
@@ -44,42 +44,36 @@ class PublicMemoService
         return MemoResource::collection($memos);
     }
 
-
     /**
      * @param int $id
      * @return MemoResource
+     * @throws Exception
      */
     public function show(int $id): MemoResource
     {
-        $memo = Memo::where('status', MemoStatusType::getValue('公開中'))->findOrFail($id);
-
+        try {
+            $memo = $this->repository->publicMemoById($id);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
         return new MemoResource($memo);
     }
+
 
     /**
      * @param string $input_keyword
      * @return AnonymousResourceCollection
+     * @throws Exception
      */
     public function search(string $input_keyword): AnonymousResourceCollection
     {
-        $query = (new Memo)->newQuery();
-        $query->where('status', MemoStatusType::getValue('公開中'));
-
-        // search title and description for provided strings (space-separated)
-        if ($input_keyword) {
-            $keywords = explode(' ', $input_keyword);
-
-            $query->where(function($q) use ($keywords) {
-                foreach ($keywords as $keyword) {
-                    $q->where(function($qq) use ($keyword) {
-                        $qq->orWhere('title', 'like', '%'.$keyword.'%')
-                            ->orWhere('body', 'like', '%'.$keyword.'%');
-                    });
-                }
-            });
+        try {
+            $memos = $this->repository->searchPublicMemoList($input_keyword);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
         }
-
-        $memos = $query->with(['category:name,id'])->paginate(Pagination::DEFAULT_PER_PAGE);
         return MemoResource::collection($memos);
     }
 
