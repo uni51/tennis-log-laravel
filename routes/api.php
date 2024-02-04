@@ -78,7 +78,10 @@ Route::get('/public/{nickname}/memos/category/{category_id}',
     ->name('get.public.nickname.memos.category');
 Route::get('/public/{nickname}/memos/tag/{tag}',
     [NicknameMemoController::class, 'userMemoListByTag'])
-    ->name('get.public.nickname.memos.category');
+    ->name('get.public.nickname.memos.tag');
+Route::get('/public/{nickname}/memos/category/{category_id}/tag/{tag}',
+    [NicknameMemoController::class, 'userMemoListByCategoryAndTag'])
+    ->name('get.public.nickname.memos.category.tag');
 
 // ログインユーザー取得
 
