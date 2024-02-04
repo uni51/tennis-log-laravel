@@ -6,9 +6,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DashboardMemos\DashboardMemoDestroyRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoEditRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoShowRequest;
-use App\Http\Requests\DashboardMemos\DashboardMemosByCategoryRequest;
-use App\Http\Requests\DashboardMemos\DashboardMemosByCategoryTagRequest;
-use App\Http\Requests\DashboardMemos\DashboardMemosByStatusRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoListByCategoryRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoListByCategoryTagRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoListByStatusRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemosByTagRequest;
 use App\Http\Requests\DashboardMemoSearchRequest;
 use App\Http\Requests\MemoPostRequest;
@@ -54,13 +54,13 @@ class DashBoardMemoController extends Controller
     }
 
     /**
-     * @param DashboardMemosByStatusRequest $request
+     * @param DashboardMemoListByStatusRequest $request
      * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function memoListByStatus(
-        DashboardMemosByStatusRequest $request,
+        DashboardMemoListByStatusRequest $request,
         DashboardMemoService $service
     ): AnonymousResourceCollection
     {
@@ -71,13 +71,13 @@ class DashBoardMemoController extends Controller
     /**
      * カテゴリー別 記事一覧取得API
      *
-     * @param DashboardMemosByCategoryRequest $request
+     * @param DashboardMemoListByCategoryRequest $request
      * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function memoListByCategory(
-        DashboardMemosByCategoryRequest $request,
+        DashboardMemoListByCategoryRequest $request,
         DashboardMemoService $service
     ): AnonymousResourceCollection
     {
@@ -103,13 +103,13 @@ class DashBoardMemoController extends Controller
     /**
      * カテゴリーおよびタグによる記事一覧取得API
      *
-     * @param DashboardMemosByCategoryTagRequest $request
+     * @param DashboardMemoListByCategoryTagRequest $request
      * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function memoListByCategoryAndTag(
-        DashboardMemosByCategoryTagRequest $request,
+        DashboardMemoListByCategoryTagRequest $request,
         DashboardMemoService $service
     ): AnonymousResourceCollection
     {
