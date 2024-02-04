@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests\DashboardMemos;
 
-use App\Enums\MemoStatusType;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DashboardMemosStatusRequest extends FormRequest
+class DashboardMemosByTagRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +24,7 @@ class DashboardMemosStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => 'required | int | between:'.MemoStatusType::DRAFT.','.MemoStatusType::UN_PUBLISHING,
+            'tag' => ['required', 'string'],
         ];
     }
 
@@ -36,6 +35,6 @@ class DashboardMemosStatusRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge(['status' => $this->route('status')]);
+        $this->merge(['tag' => $this->route('tag')]);
     }
 }

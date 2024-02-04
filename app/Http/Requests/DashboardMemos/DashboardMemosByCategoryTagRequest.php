@@ -5,7 +5,7 @@ namespace App\Http\Requests\DashboardMemos;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\ValidCategory;
 
-class DashboardMemosCategoryRequest extends FormRequest
+class DashboardMemosByCategoryTagRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,6 +26,7 @@ class DashboardMemosCategoryRequest extends FormRequest
     {
         return [
             'category_id' => [ 'required', 'int', new ValidCategory],
+            'tag' => [ 'required', 'string'],
         ];
     }
 
@@ -36,6 +37,9 @@ class DashboardMemosCategoryRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge(['category_id' => $this->route('category_id')]);
+        $this->merge([
+            'category_id' => $this->route('category_id'),
+            'tag' => $this->route('tag')
+        ]);
     }
 }

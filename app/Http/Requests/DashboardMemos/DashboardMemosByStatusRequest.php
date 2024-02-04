@@ -2,15 +2,15 @@
 
 namespace App\Http\Requests\DashboardMemos;
 
+use App\Enums\MemoStatusType;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\ValidCategory;
 
-class DashboardMemosCategoryTagRequest extends FormRequest
+class DashboardMemosByStatusRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return bool // リクエストの許可を認可
      */
     public function authorize(): bool
     {
@@ -25,8 +25,7 @@ class DashboardMemosCategoryTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => [ 'required', 'int', new ValidCategory],
-            'tag' => [ 'required', 'string'],
+            'status' => 'required | int | between:'.MemoStatusType::DRAFT.','.MemoStatusType::UN_PUBLISHING,
         ];
     }
 
@@ -37,9 +36,6 @@ class DashboardMemosCategoryTagRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge([
-            'category_id' => $this->route('category_id'),
-            'tag' => $this->route('tag')
-        ]);
+        $this->merge(['status' => $this->route('status')]);
     }
 }

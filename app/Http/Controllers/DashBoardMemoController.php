@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DashboardMemos\DashboardMemoDestroyRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoEditRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoShowRequest;
-use App\Http\Requests\DashboardMemos\DashboardMemosCategoryRequest;
-use App\Http\Requests\DashboardMemos\DashboardMemosCategoryTagRequest;
-use App\Http\Requests\DashboardMemos\DashboardMemosStatusRequest;
-use App\Http\Requests\DashboardMemos\DashboardMemosTagRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemosByCategoryRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemosByCategoryTagRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemosByStatusRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemosByTagRequest;
 use App\Http\Requests\DashboardMemoSearchRequest;
 use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;
@@ -53,13 +53,13 @@ class DashBoardMemoController extends Controller
     }
 
     /**
-     * @param DashboardMemosStatusRequest $request
+     * @param DashboardMemosByStatusRequest $request
      * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function memoListByStatus(
-        DashboardMemosStatusRequest $request,
+        DashboardMemosByStatusRequest $request,
         DashboardMemoService $service
     ): AnonymousResourceCollection
     {
@@ -70,13 +70,13 @@ class DashBoardMemoController extends Controller
     /**
      * カテゴリー別 記事一覧取得API
      *
-     * @param DashboardMemosCategoryRequest $request
+     * @param DashboardMemosByCategoryRequest $request
      * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function memoListByCategory(
-        DashboardMemosCategoryRequest $request,
+        DashboardMemosByCategoryRequest $request,
         DashboardMemoService $service
     ): AnonymousResourceCollection
     {
@@ -87,12 +87,12 @@ class DashBoardMemoController extends Controller
     /**
      * タグ別 記事一覧取得API
      *
-     * @param DashboardMemosTagRequest $request
+     * @param DashboardMemosByTagRequest $request
      * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByTag(DashboardMemosTagRequest $request, DashboardMemoService $service)
+    public function memoListByTag(DashboardMemosByTagRequest $request, DashboardMemoService $service)
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
@@ -102,13 +102,13 @@ class DashBoardMemoController extends Controller
     /**
      * カテゴリーおよびタグによる記事一覧取得API
      *
-     * @param DashboardMemosCategoryTagRequest $request
+     * @param DashboardMemosByCategoryTagRequest $request
      * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function memoListByCategoryAndTag(
-        DashboardMemosCategoryTagRequest $request,
+        DashboardMemosByCategoryTagRequest $request,
         DashboardMemoService $service
     ): AnonymousResourceCollection
     {
