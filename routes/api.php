@@ -61,6 +61,9 @@ Route::get('/public/memos/category/{category_id}', [PublicMemoController::class,
     ->name('get.public.memos.category');
 Route::get('/public/memos/tag/{tag}', [PublicMemoController::class, 'memoListByTag'])
     ->name('get.public.memos.category');
+Route::get('/public/memos/category/{category_id}/tag/{tag}',
+    [PublicMemoController::class, 'memoListByCategoryAndTag'])
+    ->name('get.public.memos.category.tag');
 Route::get('/public/memos/{id}', [PublicMemoController::class, 'show'])
     ->name('get.public.memos.id');
 Route::get('/public/memos/search', [PublicMemoController::class, 'search'])

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PublicMemos\PublicMemoListByCategoryTagRequest;
 use App\Http\Requests\PublicMemos\PublicMemoListByCategoryRequest;
 use App\Http\Requests\PublicMemos\PublicMemoListByTagRequest;
 use App\Http\Requests\PublicMemos\PublicMemoShowRequest;
@@ -71,5 +72,22 @@ class PublicMemoController extends Controller
     {
         $validated = $request->validated();
         return $service->memoListByTag($validated['tag']);
+    }
+
+    /**
+     * カテゴリーおよびタグによる記事一覧取得API
+     *
+     * @param PublicMemoListByCategoryTagRequest $request
+     * @param PublicMemoService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByCategoryAndTag(
+        PublicMemoListByCategoryTagRequest $request,
+        PublicMemoService $service
+    ): AnonymousResourceCollection
+    {
+        $validated = $request->validated();
+        return $service->memoListByCategoryAndTag($validated['category_id'], $validated['tag']);
     }
 }
