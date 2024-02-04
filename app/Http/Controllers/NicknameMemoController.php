@@ -36,12 +36,6 @@ class NicknameMemoController extends Controller
         return $service->userMemoDetail($validated['nickname'], $validated['id']);
     }
 
-    public function memoListByCategory(PublicMemoListByCategoryRequest $request, PublicMemoService $service)
-    {
-        $validated = $request->validated();
-        return $service->memoListByCategory($validated['category_id']);
-    }
-
     public function userMemoListByCategory(PublicMemoService $service, $nickName, $categoryId)
     {
         return $service->userMemoListByCategory($nickName, $categoryId);

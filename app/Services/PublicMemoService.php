@@ -133,15 +133,17 @@ class PublicMemoService
         return MemoResource::make($memos);
     }
 
+    /**
+     * @param $categoryId
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
     public function memoListByCategory($categoryId): AnonymousResourceCollection
     {
         try {
-            $memos = Memo::where('category_id', $categoryId)
-                ->where('status', MemoStatusType::getValue('公開中'))
-                ->paginate(Pagination::DEFAULT_PER_PAGE);
+            $memos = $this->repository->publicMemoListByCategory($categoryId);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            DB::rollBack();
             throw $e;
         }
 

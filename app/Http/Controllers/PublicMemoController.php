@@ -27,6 +27,7 @@ class PublicMemoController extends Controller
      * @param PublicMemoShowRequest $request
      * @param PublicMemoService $service
      * @return MemoResource
+     * @throws Exception
      */
     public function show(PublicMemoShowRequest $request, PublicMemoService $service): MemoResource
     {
@@ -38,6 +39,7 @@ class PublicMemoController extends Controller
      * @param PublicMemoSearchRequest $request
      * @param PublicMemoService $service
      * @return AnonymousResourceCollection
+     * @throws Exception
      */
     public function search(PublicMemoSearchRequest $request, PublicMemoService $service): AnonymousResourceCollection
     {
@@ -46,17 +48,11 @@ class PublicMemoController extends Controller
     }
 
     /**
-     * @param PublicUserMemoDetailRequest $request
+     * @param PublicMemoListByCategoryRequest $request
      * @param PublicMemoService $service
-     * @return MemoResource
+     * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoDetail(PublicUserMemoDetailRequest $request, PublicMemoService $service): MemoResource
-    {
-        $validated = $request->validated();
-        return $service->userMemoDetail($validated['nickname'], $validated['id']);
-    }
-
     public function memoListByCategory(PublicMemoListByCategoryRequest $request, PublicMemoService $service)
     {
         $validated = $request->validated();

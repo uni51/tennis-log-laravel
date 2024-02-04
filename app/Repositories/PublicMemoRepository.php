@@ -6,6 +6,7 @@ namespace App\Repositories;
 use App\Consts\Pagination;
 use App\Enums\MemoStatusType;
 use App\Models\Memo;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class PublicMemoRepository
@@ -57,5 +58,16 @@ class PublicMemoRepository
         }
 
         return $query->with(['category:name,id'])->paginate(Pagination::DEFAULT_PER_PAGE);
+    }
+
+    /**
+     * @param int $categoryId
+     * @return LengthAwarePaginator
+     */
+    public function publicMemoListByCategory(int $categoryId): LengthAwarePaginator
+    {
+        return Memo::where('category_id', $categoryId)
+            ->where('status', MemoStatusType::getValue('公開中'))
+            ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 }
