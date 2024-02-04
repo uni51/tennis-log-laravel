@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class NicknameMemoRepository
 {
-
     /**
      * @param string $nickname
      * @return LengthAwarePaginator
@@ -44,20 +43,37 @@ class NicknameMemoRepository
             ->firstOrFail();
     }
 
-
     /**
-     * @param string $nickName
+     * @param string $nickname
      * @param int $categoryId
      * @return LengthAwarePaginator
      */
-    public function userMemoListByCategory(string $nickName, int $categoryId): LengthAwarePaginator
+    public function userMemoListByCategory(string $nickname, int $categoryId): LengthAwarePaginator
     {
-        $user = User::where('nickname', $nickName)->firstOrFail();
+        $user = User::where('nickname', $nickname)->firstOrFail();
 
         return Memo::with(['category:name,id'])
             ->where('user_id', $user->id)
             ->where('category_id', $categoryId)
             ->where('status', MemoStatusType::getValue('公開中'))
+            ->paginate(Pagination::DEFAULT_PER_PAGE);
+    }
+
+    /**
+     * @param string $nickname
+     * @param string $tag
+     * @return LengthAwarePaginator
+     */
+    public function memoListByTag(string $nickname, string $tag): LengthAwarePaginator
+    {
+        $user = User::where('nickname', $nickname)->firstOrFail();
+
+        return Memo::with(['category:name,id'])
+            ->where('user_id', $user->id)
+            ->whereHas('tags', function($q) use ($tag) {
+                $q->where('normalized', $tag);
+            })
+            ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 }

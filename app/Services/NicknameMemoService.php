@@ -62,15 +62,33 @@ class NicknameMemoService
     }
 
     /**
-     * @param string $nickName
+     * @param string $nickname
      * @param int $categoryId
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoListByCategory(string $nickName, int $categoryId): AnonymousResourceCollection
+    public function userMemoListByCategory(string $nickname, int $categoryId): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->userMemoListByCategory($nickName, $categoryId);
+            $memos = $this->repository->userMemoListByCategory($nickname, $categoryId);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+    /**
+     * @param string $nickname
+     * @param string $tag
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByTag(string $nickname, string $tag): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->memoListByTag($nickname, $tag);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;

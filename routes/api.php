@@ -76,6 +76,9 @@ Route::get('/public/{nickname}/memos/{id}', [NicknameMemoController::class, 'use
 Route::get('/public/{nickname}/memos/category/{category_id}',
     [NicknameMemoController::class, 'userMemoListByCategory'])
     ->name('get.public.nickname.memos.category');
+Route::get('/public/{nickname}/memos/tag/{tag}',
+    [NicknameMemoController::class, 'userMemoListByTag'])
+    ->name('get.public.nickname.memos.category');
 
 // ログインユーザー取得
 

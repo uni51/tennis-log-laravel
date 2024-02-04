@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\NicknameMemos\NicknameMemoListByTagRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoDetailRequest;
@@ -47,5 +48,20 @@ class NicknameMemoController extends Controller
     {
         $validated = $request->validated();
         return $service->userMemoListByCategory($validated['nickname'], $validated['category_id']);
+    }
+
+    /**
+     * タグ別 記事一覧取得API
+     *
+     * @param NicknameMemoListByTagRequest $request
+     * @param NicknameMemoService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function userMemoListByTag(NicknameMemoListByTagRequest $request, NicknameMemoService $service)
+    : AnonymousResourceCollection
+    {
+        $validated = $request->validated();
+        return $service->memoListByTag($validated['nickname'], $validated['tag']);
     }
 }
