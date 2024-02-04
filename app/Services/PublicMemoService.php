@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Consts\Pagination;
 use App\Enums\MemoStatusType;
 use App\Http\Requests\PublicMemoSearchRequest;
 use App\Http\Resources\MemoResource;
@@ -24,7 +25,7 @@ class PublicMemoService
                         ->where('status', MemoStatusType::getValue('公開中'))
                         ->orderBy('updated_at', 'desc')
                         ->orderBy('id', 'desc')
-                        ->paginate(6);
+                        ->paginate(Pagination::DEFAULT_PER_PAGE);
         } catch (Exception $e) {
             throw $e;
         }
@@ -51,7 +52,7 @@ class PublicMemoService
     public function search(string $input_keyword): AnonymousResourceCollection
     {
         $query = (new Memo)->newQuery();
-        $query->where('status', 1);
+        $query->where('status', MemoStatusType::getValue('公開中'));
 
         // search title and description for provided strings (space-separated)
         if ($input_keyword) {
@@ -67,26 +68,26 @@ class PublicMemoService
             });
         }
 
-        $memos = $query->with(['category:name,id'])->paginate(6);
+        $memos = $query->with(['category:name,id'])->paginate(Pagination::DEFAULT_PER_PAGE);
         return MemoResource::collection($memos);
     }
 
     /**
-     * @param string $nickName
+     * @param string $nickname
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoList(string $nickName): AnonymousResourceCollection
+    public function userMemoList(string $nickname): AnonymousResourceCollection
     {
         try {
             DB::beginTransaction();
 
-            $user = User::where('nickname', $nickName)->firstOrFail();
+            $user = User::where('nickname', $nickname)->firstOrFail();
 
             $memos = Memo::with(['category:name,id'])
                 ->where('user_id', $user->id)
-                ->where('status', 1)
-                ->paginate(6);
+                ->where('status', MemoStatusType::getValue('公開中'))
+                ->paginate(Pagination::DEFAULT_PER_PAGE);
 
             DB::commit();
         } catch (Exception $e) {
@@ -99,21 +100,21 @@ class PublicMemoService
     }
 
     /**
-     * @param string $nickName
+     * @param string $nickname
      * @param int $id
      * @return MemoResource
      * @throws Exception
      */
-    public function userMemoDetail(string $nickName, int $id): MemoResource
+    public function userMemoDetail(string $nickname, int $id): MemoResource
     {
         try {
             DB::beginTransaction();
 
-            $user = User::where('nickname', $nickName)->firstOrFail();
+            $user = User::where('nickname', $nickname)->firstOrFail();
 
             $memos = Memo::with(['category:name,id'])
                 ->where('user_id', $user->id)
-                ->where('status', 1)
+                ->where('status', MemoStatusType::getValue('公開中'))
                 ->where('id', $id)
                 ->firstOrFail();
 
@@ -127,12 +128,12 @@ class PublicMemoService
         return MemoResource::make($memos);
     }
 
-    public function memoListByCategory($categoryId)
+    public function memoListByCategory($categoryId): AnonymousResourceCollection
     {
         try {
             $memos = Memo::where('category_id', $categoryId)
-                ->where('status', 1)
-                ->paginate(6);
+                ->where('status', MemoStatusType::getValue('公開中'))
+                ->paginate(Pagination::DEFAULT_PER_PAGE);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             DB::rollBack();
@@ -152,8 +153,8 @@ class PublicMemoService
             $memos = Memo::with(['category:name,id'])
                 ->where('user_id', $user->id)
                 ->where('category_id', $categoryId)
-                ->where('status', 1)
-                ->paginate(6);
+                ->where('status', MemoStatusType::getValue('公開中'))
+                ->paginate(Pagination::DEFAULT_PER_PAGE);
 
             DB::commit();
         } catch (Exception $e) {

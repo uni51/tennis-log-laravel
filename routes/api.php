@@ -68,7 +68,7 @@ Route::get('/public/{nickname}/memos', [PublicMemoController::class, 'userMemoLi
 
 Route::get('/public/{nickname}/memos/{id}', [PublicMemoController::class, 'userMemoDetail'])
     ->name('get.public.nickname.memos.id');
-Route::get('/public/memos/category/{categoryId}', [PublicMemoController::class, 'memoListByCategory'])
+Route::get('/public/memos/category/{category_id}', [PublicMemoController::class, 'memoListByCategory'])
     ->name('get.public.memos.category');
 Route::get('/public/{nickname}/memos/category/{categoryId}',
     [PublicMemoController::class, 'userMemoListByCategory'])

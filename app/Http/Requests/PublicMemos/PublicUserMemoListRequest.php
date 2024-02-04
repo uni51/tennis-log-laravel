@@ -24,7 +24,7 @@ class PublicUserMemoListRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nickName' => ['required', 'string'],
+            'nickname' => ['required', 'string'],
         ];
     }
 
@@ -35,6 +35,6 @@ class PublicUserMemoListRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge(['nickName' => $this->route('nickName')]);
+        $this->merge(['nickname' => $this->route('nickname')]);
     }
 }
