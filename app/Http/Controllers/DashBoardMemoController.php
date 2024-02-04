@@ -13,7 +13,6 @@ use App\Http\Requests\DashboardMemoSearchRequest;
 use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;
 use App\Services\DashboardMemoService;
-use App\Services\MemoService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -50,7 +49,7 @@ class DashBoardMemoController extends Controller
     public function search(DashboardMemoSearchRequest $request, DashboardMemoService $service): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->dashboardMemoSearch($validated['q'], Auth::id());
+        return $service->dashboardMemoSearch(Auth::id(), $validated['q']);
     }
 
     /**
@@ -65,7 +64,7 @@ class DashBoardMemoController extends Controller
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByStatus($validated['status'], Auth::id());
+        return $service->memoListByStatus(Auth::id(), $validated['status']);
     }
 
     /**
@@ -82,7 +81,7 @@ class DashBoardMemoController extends Controller
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByCategory($validated['category_id'], Auth::id());
+        return $service->memoListByCategory(Auth::id(), $validated['category_id']);
     }
 
     /**
@@ -104,13 +103,13 @@ class DashBoardMemoController extends Controller
      * カテゴリーおよびタグによる記事一覧取得API
      *
      * @param DashboardMemosCategoryTagRequest $request
-     * @param MemoService $service
+     * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function memoListByCategoryAndTag(
         DashboardMemosCategoryTagRequest $request,
-        MemoService $service
+        DashboardMemoService $service
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();

@@ -106,11 +106,11 @@ class DashboardMemoRepository
     }
 
     /**
-     * @param int $categoryId
      * @param int $authUserId
+     * @param int $categoryId
      * @return LengthAwarePaginator
      */
-    public function memoListByCategory(int $categoryId, int $authUserId): LengthAwarePaginator
+    public function memoListByCategory(int $authUserId, int $categoryId): LengthAwarePaginator
     {
         return  Memo::with(['category:name,id'])
                     ->where('user_id', $authUserId)
@@ -120,11 +120,11 @@ class DashboardMemoRepository
     }
 
     /**
-     * @param string $keyword
      * @param int $authUserId
+     * @param string $keyword
      * @return LengthAwarePaginator
      */
-    public function dashboardMemoSearch(string $keyword, int $authUserId): LengthAwarePaginator
+    public function dashboardMemoSearch(int $authUserId, string $keyword): LengthAwarePaginator
     {
         $query = (new Memo)->newQuery();
         $query->where('user_id', $authUserId);
@@ -149,28 +149,46 @@ class DashboardMemoRepository
     }
 
     /**
+     * @param int $authUserId
      * @param int $status
-     * @param int $userId
      * @return LengthAwarePaginator
      */
-    public function memoListByStatus(int $status, int $userId): LengthAwarePaginator
+    public function memoListByStatus(int $authUserId, int $status): LengthAwarePaginator
     {
         return Memo::with(['category:name,id'])
-                ->where('user_id', $userId)
+                ->where('user_id', $authUserId)
                 ->where('status', $status)
                 ->orderBy('updated_at', 'desc')
                 ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 
     /**
+     * @param int $authUserId
      * @param string $tag
-     * @param int $userId
      * @return LengthAwarePaginator
      */
-    public function memoListByTag(string $tag, int $userId): LengthAwarePaginator
+    public function memoListByTag(int $authUserId, string $tag): LengthAwarePaginator
     {
         return Memo::with(['category:name,id'])
-            ->where('user_id', $userId)
+            ->where('user_id', $authUserId)
+            ->whereHas('tags', function($q) use ($tag) {
+                $q->where('normalized', $tag);
+            })
+            ->orderBy('updated_at', 'desc')
+            ->paginate(Pagination::DEFAULT_PER_PAGE);
+    }
+
+    /**
+     * @param int $authUserId
+     * @param int $categoryId
+     * @param string $tag
+     * @return LengthAwarePaginator
+     */
+    public function memoListByCategoryAndTag(int $authUserId, int $categoryId, string $tag): LengthAwarePaginator
+    {
+        return Memo::with(['category:name,id'])
+            ->where('user_id', $authUserId)
+            ->where('category_id', $categoryId)
             ->whereHas('tags', function($q) use ($tag) {
                 $q->where('normalized', $tag);
             })
