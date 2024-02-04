@@ -60,7 +60,14 @@ class PublicMemoController extends Controller
         return $service->memoListByCategory($validated['category_id']);
     }
 
-    public function memoListTag(PublicMemoListByTagRequest $request, PublicMemoService $service)
+    /**
+     * @param PublicMemoListByTagRequest $request
+     * @param PublicMemoService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByTag(PublicMemoListByTagRequest $request, PublicMemoService $service)
+    : AnonymousResourceCollection
     {
         $validated = $request->validated();
         return $service->memoListByTag($validated['tag']);

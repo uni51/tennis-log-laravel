@@ -59,7 +59,6 @@ Route::get('/public/memos', [PublicMemoController::class, 'allList'])
     ->name('get.public.memos');
 Route::get('/public/memos/category/{category_id}', [PublicMemoController::class, 'memoListByCategory'])
     ->name('get.public.memos.category');
-// TOOD: implement
 Route::get('/public/memos/tag/{tag}', [PublicMemoController::class, 'memoListByTag'])
     ->name('get.public.memos.category');
 Route::get('/public/memos/{id}', [PublicMemoController::class, 'show'])

@@ -56,7 +56,9 @@ class PublicMemoRepository
             });
         }
 
-        return $query->with(['category:name,id'])->paginate(Pagination::DEFAULT_PER_PAGE);
+        return $query->with(['category:name,id'])
+            ->orderBy('updated_at', 'desc')
+            ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 
     /**
@@ -67,6 +69,22 @@ class PublicMemoRepository
     {
         return Memo::where('category_id', $categoryId)
             ->where('status', MemoStatusType::getValue('公開中'))
+            ->orderBy('updated_at', 'desc')
+            ->paginate(Pagination::DEFAULT_PER_PAGE);
+    }
+
+    /**
+     * @param string $tag
+     * @return LengthAwarePaginator
+     */
+    public function publicMemoListByTag(string $tag): LengthAwarePaginator
+    {
+        return Memo::with(['category:name,id'])
+            ->where('status', MemoStatusType::getValue('公開中'))
+            ->whereHas('tags', function($q) use ($tag) {
+                $q->where('normalized', $tag);
+            })
+            ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 }

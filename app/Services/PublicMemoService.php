@@ -87,4 +87,21 @@ class PublicMemoService
 
         return MemoResource::collection($memos);
     }
+
+    /**
+     * @param string $tag
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByTag(string $tag): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->publicMemoListByTag($tag);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
 }
