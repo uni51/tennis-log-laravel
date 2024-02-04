@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Consts\Pagination;
 use App\Models\Memo;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class DashboardMemoRepository
 {
@@ -89,5 +91,19 @@ class DashboardMemoRepository
 //        $memo->status = $validated['status_id'];
         $memo->fill($validated);
         return $memo->save();
+    }
+
+    /**
+     * @param int $categoryId
+     * @param int $authUserId
+     * @return LengthAwarePaginator
+     */
+    public function memoListByCategory(int $categoryId, int $authUserId): LengthAwarePaginator
+    {
+        return  Memo::with(['category:name,id'])
+                    ->where('user_id', $authUserId)
+                    ->where('category_id', $categoryId)
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 }

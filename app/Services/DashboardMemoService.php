@@ -2,14 +2,17 @@
 
 namespace App\Services;
 
+use App\Consts\Pagination;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use App\Repositories\DashboardMemoRepository;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class DashboardMemoService
 {
@@ -124,5 +127,23 @@ class DashboardMemoService
         $memo = $this->validateUserPermission($id, $user, 'delete');
         $memo->delete();
         return response()->json(['message' => 'Memo deleted'], 200);
+    }
+
+    /**
+     * @param int $categoryId
+     * @param int $authUserId
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByCategory(int $categoryId, int $authUserId): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->memoListByCategory($categoryId, $authUserId);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
     }
 }

@@ -55,29 +55,6 @@ class MemoService
 
     /**
      * @param int $userId
-     * @param int $categoryId
-     * @return AnonymousResourceCollection
-     * @throws Exception
-     */
-    public function memoListByCategory(int $userId, int $categoryId): AnonymousResourceCollection
-    {
-        try {
-            $memos = Memo::with(['category:name,id'])
-                ->where('user_id', $userId)
-                ->where('category_id', $categoryId)
-                ->orderBy('updated_at', 'desc')
-                ->paginate(Pagination::DEFAULT_PER_PAGE);
-
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            throw $e;
-        }
-
-        return MemoResource::collection($memos);
-    }
-
-    /**
-     * @param int $userId
      * @param string $tag
      * @return AnonymousResourceCollection
      * @throws Exception

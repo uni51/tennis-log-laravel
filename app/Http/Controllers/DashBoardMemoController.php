@@ -72,17 +72,17 @@ class DashBoardMemoController extends Controller
      * カテゴリー別 記事一覧取得API
      *
      * @param DashboardMemosCategoryRequest $request
-     * @param MemoService $service
+     * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function memoListByCategory(
         DashboardMemosCategoryRequest $request,
-        MemoService $service
+        DashboardMemoService $service
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByCategory(Auth::id(), $validated['category_id']);
+        return $service->memoListByCategory($validated['category_id'], Auth::id());
     }
 
     /**
