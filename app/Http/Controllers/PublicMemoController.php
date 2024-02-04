@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PublicMemos\PublicMemoListByCategoryRequest;
 use App\Http\Requests\PublicMemos\PublicMemoShowRequest;
-use App\Http\Requests\PublicMemos\PublicUserMemoDetailRequest;
 use App\Http\Requests\PublicMemoSearchRequest;
 use App\Http\Resources\MemoResource;
 use App\Services\PublicMemoService;
@@ -54,6 +53,7 @@ class PublicMemoController extends Controller
      * @throws Exception
      */
     public function memoListByCategory(PublicMemoListByCategoryRequest $request, PublicMemoService $service)
+    : AnonymousResourceCollection
     {
         $validated = $request->validated();
         return $service->memoListByCategory($validated['category_id']);

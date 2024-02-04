@@ -3,10 +3,10 @@ namespace App\Services;
 
 use App\Consts\Pagination;
 use App\Enums\MemoStatusType;
-use App\Http\Requests\PublicMemoSearchRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use App\Models\User;
+use App\Repositories\NicknameMemoRepository;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +14,17 @@ use Illuminate\Support\Facades\Log;
 
 class NicknameMemoService
 {
+    private NicknameMemoRepository $repository;
 
+    /**
+     * コンストラクタ
+     *
+     * @param NicknameMemoRepository|null $repository
+     */
+    public function __construct(NicknameMemoRepository $repository = null)
+    {
+        $this->repository = $repository ?? app(NicknameMemoRepository::class);
+    }
 
     /**
      * @param string $nickname
@@ -24,19 +34,9 @@ class NicknameMemoService
     public function userMemoList(string $nickname): AnonymousResourceCollection
     {
         try {
-            DB::beginTransaction();
-
-            $user = User::where('nickname', $nickname)->firstOrFail();
-
-            $memos = Memo::with(['category:name,id'])
-                ->where('user_id', $user->id)
-                ->where('status', MemoStatusType::getValue('公開中'))
-                ->paginate(Pagination::DEFAULT_PER_PAGE);
-
-            DB::commit();
+            $memos = $this->repository->getUserMemoList($nickname);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            DB::rollBack();
             throw $e;
         }
 
@@ -52,39 +52,13 @@ class NicknameMemoService
     public function userMemoDetail(string $nickname, int $id): MemoResource
     {
         try {
-            DB::beginTransaction();
-
-            $user = User::where('nickname', $nickname)->firstOrFail();
-
-            $memos = Memo::with(['category:name,id'])
-                ->where('user_id', $user->id)
-                ->where('status', MemoStatusType::getValue('公開中'))
-                ->where('id', $id)
-                ->firstOrFail();
-
-            DB::commit();
+            $memo = $this->repository->getUserMemoDetail($nickname, $id);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            DB::rollBack();
             throw $e;
         }
 
-        return MemoResource::make($memos);
-    }
-
-    public function memoListByCategory($categoryId): AnonymousResourceCollection
-    {
-        try {
-            $memos = Memo::where('category_id', $categoryId)
-                ->where('status', MemoStatusType::getValue('公開中'))
-                ->paginate(Pagination::DEFAULT_PER_PAGE);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            DB::rollBack();
-            throw $e;
-        }
-
-        return MemoResource::collection($memos);
+        return MemoResource::make($memo);
     }
 
     public function userMemoListByCategory($nickName, $categoryId)

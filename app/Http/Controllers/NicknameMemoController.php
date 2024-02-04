@@ -2,41 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\NicknameMemos\NicknameUserMemoListRequest;
-use App\Http\Requests\PublicMemos\PublicMemoListByCategoryRequest;
-use App\Http\Requests\PublicMemos\PublicUserMemoDetailRequest;
+use App\Http\Requests\NicknameMemos\NicknameMemoListRequest;
+use App\Http\Requests\NicknameMemos\NicknameMemoDetailRequest;
 use App\Http\Resources\MemoResource;
-use App\Services\PublicMemoService;
+use App\Services\NicknameMemoService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class NicknameMemoController extends Controller
 {
     /**
-     * @param NicknameUserMemoListRequest $request
-     * @param PublicMemoService $service
+     * @param NicknameMemoListRequest $request
+     * @param NicknameMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoList(NicknameUserMemoListRequest $request, PublicMemoService $service): AnonymousResourceCollection
+    public function userMemoList(NicknameMemoListRequest $request, NicknameMemoService $service): AnonymousResourceCollection
     {
         $validated = $request->validated();
         return $service->userMemoList($validated['nickname']);
     }
 
     /**
-     * @param PublicUserMemoDetailRequest $request
-     * @param PublicMemoService $service
+     * @param NicknameMemoDetailRequest $request
+     * @param NicknameMemoService $service
      * @return MemoResource
      * @throws Exception
      */
-    public function userMemoDetail(PublicUserMemoDetailRequest $request, PublicMemoService $service): MemoResource
+    public function userMemoDetail(NicknameMemoDetailRequest $request, NicknameMemoService $service): MemoResource
     {
         $validated = $request->validated();
         return $service->userMemoDetail($validated['nickname'], $validated['id']);
     }
 
-    public function userMemoListByCategory(PublicMemoService $service, $nickName, $categoryId)
+    public function userMemoListByCategory(NicknameMemoService $service, $nickName, $categoryId)
     {
         return $service->userMemoListByCategory($nickName, $categoryId);
     }

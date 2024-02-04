@@ -4,7 +4,7 @@ namespace App\Http\Requests\NicknameMemos;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class NicknameUserMemoListRequest extends FormRequest
+class NicknameMemoListRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

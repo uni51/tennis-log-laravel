@@ -6,7 +6,6 @@ namespace App\Repositories;
 use App\Consts\Pagination;
 use App\Enums\MemoStatusType;
 use App\Models\Memo;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class PublicMemoRepository
