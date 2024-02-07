@@ -13,10 +13,12 @@ class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
+     *
+     * @return bool
      */
     public function authorize(): bool
     {
-        return true;
+        return true; // リクエストの許可を認可
     }
 
     /**
@@ -84,7 +86,12 @@ class LoginRequest extends FormRequest
         return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
     }
 
-    public function messages()
+    /**
+     * Get the validation error messages that apply to the request.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
     {
         return [
             'email.email' => '有効なメールアドレスを入力してください。',

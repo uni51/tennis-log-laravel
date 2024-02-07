@@ -13,22 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('memos', function (Blueprint $table) {
+        Schema::create('deleted_memos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
-                ->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('cascade')
-                ->comment('ユーザーID');
-            $table->foreignId('category_id')
-                ->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('restrict')
-                ->comment('カテゴリーID');
+            $table->unsignedBigInteger('user_id')->comment('ユーザーID');
+            $table->unsignedBigInteger('category_id')->comment('カテゴリーID');
             $table->string('title', 100)->comment('タイトル');
             $table->string('body', 3000)->comment('メモの内容');
             $table->unsignedTinyInteger('status')->default(0)->comment('記事のステータス: 0:下書き, 1:公開中, 2:シェア, 3:非公開, 4:削除');
-            $table->timestamps(); // created_at, updated_at
+            $table->boolean('force_deleted')->default(false);
+            $table->timestamps();
         });
     }
 
@@ -39,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('memos');
+        Schema::dropIfExists('deleted_memos');
     }
 };
