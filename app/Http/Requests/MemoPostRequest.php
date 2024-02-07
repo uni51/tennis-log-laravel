@@ -11,9 +11,9 @@ class MemoPostRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        return true;
+        return true; // リクエストの許可を認可
     }
 
     /**
@@ -21,18 +21,23 @@ class MemoPostRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'title'       => ['required', 'min:3', 'max:100'],
             'body'        => ['required', 'min:3', 'max:3000'],
             'category_id' => ['required', 'int', 'between:1,8'],
             'status_id'   => ['required', 'int', 'between:0,4'],
-            'tags'        => ['nullable'],
+            'tags'        => ['nullable', 'array'],
         ];
     }
 
-    public function attributes()
+    /**
+     * バリデーションエラーのカスタム属性の取得
+     *
+     * @return array
+     */
+    public function attributes(): array
     {
         return [
             'title' => 'タイトル',

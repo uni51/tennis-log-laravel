@@ -4,21 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * @property mixed $id
- * @method static where(string $string, string $nickName)
- */
-class User extends Authenticatable
+class DeletedUser extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-//    use \Askedio\SoftCascade\Traits\SoftCascadeTrait;
-
 
     /**
      * The attributes that are mass assignable.
@@ -26,12 +19,14 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'user_id',
         'firebase_uid',
         'name',
         'nickname',
         'email',
         'access_token',
         'expires_at',
+        'force_deleted',
     ];
 
     /**
@@ -52,16 +47,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-//    protected $softCascade = ['memos'];
-
-    public function providers(): HasMany
-    {
-        return $this->hasMany(OAuthProvider::class);
-    }
-
-    public function memos()
-    {
-        return $this->hasMany(Memo::class);
-    }
 }

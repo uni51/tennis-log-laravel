@@ -1,19 +1,22 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DashboardMemos\DashboardMemoDestroyRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoEditRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoShowRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoListByCategoryRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoListByCategoryTagRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoListByStatusRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoListByTagRequest;
 use App\Http\Requests\DashboardMemoSearchRequest;
-use App\Http\Requests\MemoEditRequest;
 use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;
-use App\Models\Memo;
-use App\Services\MemoService;
+use App\Services\DashboardMemoService;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DashBoardMemoController
@@ -26,124 +29,141 @@ class DashBoardMemoController extends Controller
     /**
      * メモの公開・非公開を問わずに、そのユーザーに紐づく記事一覧を取得するAPI
      *
+     * @param DashboardMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function list(MemoService $service)
+    public function list(DashboardMemoService $service): AnonymousResourceCollection
     {
-        // return Auth::guard('sanctum')->user();
-        // return Auth::user();
-        // ログインユーザーのID取得
-        $userId = Auth::id();
-        if (!$userId) {
-            throw new Exception('未ログインです。');
-        }
-        return $service->listMemoLinkedToUser($userId);
+        return $service->memoListByAuthUser(Auth::id());
     }
-
-    public function search(MemoService $service, DashboardMemoSearchRequest $request)
-    {
-        $userId = Auth::id();
-        if (!$userId) {
-            throw new Exception('未ログインです。');
-        }
-        $memos = $service->dashboardMemoSearch($userId, $request);
-
-        return MemoResource::collection($memos);
-    }
-
-
-    public function memoListByCategory(MemoService $service, $categoryId)
-    {
-        // ログインユーザーのID取得
-        $userId = Auth::id();
-        if (!$userId) {
-            throw new Exception('未ログインです。');
-        }
-
-        return $service->memoListByCategory($userId, $categoryId);
-    }
-
 
     /**
-     * メモの登録
-     * @param MemoPostRequest $request
-     * @return JsonResponse
+     * キーワードによる記事検索API
+     *
+     * @param DashboardMemoSearchRequest $request
+     * @param DashboardMemoService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
      */
-    public function create(MemoPostRequest $request): JsonResponse
+    public function search(DashboardMemoSearchRequest $request, DashboardMemoService $service): AnonymousResourceCollection
     {
-        try {
-            DB::beginTransaction();
-
-            // モデルクラスのインスタンス化
-            $memo = new Memo();
-            // パラメータのセット
-            $memo->user_id = Auth::id();
-            $memo->category_id = $request->category_id;
-            $memo->status = $request->status_id;
-            $memo->title = $request->title;
-            $memo->body = $request->body;
-            // モデルの保存
-            $memo->save();
-
-            // メモとタグの紐付け
-            if ($request->tags) {
-                $memo->retag($request->tags);
-            }
-
-            $memo->retag($request->tags);
-
-            DB::commit();
-
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-
-        return response()->json([
-            'message' => 'メモの登録に成功しました。'
-        ], 201);
+        $validated = $request->validated();
+        return $service->dashboardMemoSearch(Auth::id(), $validated['q']);
     }
 
-    public function show($id)
+    /**
+     * @param DashboardMemoListByStatusRequest $request
+     * @param DashboardMemoService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByStatus(
+        DashboardMemoListByStatusRequest $request,
+        DashboardMemoService $service
+    ): AnonymousResourceCollection
     {
-        $memo = Memo::findOrFail($id);
-
-        return new MemoResource($memo);
+        $validated = $request->validated();
+        return $service->memoListByStatus(Auth::id(), $validated['status']);
     }
 
-    public function edit(MemoEditRequest $request, $id)
+    /**
+     * カテゴリー別 記事一覧取得API
+     *
+     * @param DashboardMemoListByCategoryRequest $request
+     * @param DashboardMemoService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByCategory(
+        DashboardMemoListByCategoryRequest $request,
+        DashboardMemoService $service
+    ): AnonymousResourceCollection
     {
-        try {
-            DB::beginTransaction();
-
-            $memo = Memo::findOrFail($id);
-            // モデルの保存
-            $memo->update([
-                $memo->category_id = $request->category_id,
-                $memo->status = (int)$request->status_id,
-                $memo->title = $request->title,
-                $memo->body = $request->body,
-            ]);
-
-            // メモとタグの紐付け
-             $memo->retag($request->tags);
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-
-        return response()->json([
-            'message' => 'メモの編集に成功しました。'
-        ], 201);
+        $validated = $request->validated();
+        return $service->memoListByCategory(Auth::id(), $validated['category_id']);
     }
 
-    public function destroy($id)
+    /**
+     * タグ別 記事一覧取得API
+     *
+     * @param DashboardMemoListByTagRequest $request
+     * @param DashboardMemoService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByTag(DashboardMemoListByTagRequest $request, DashboardMemoService $service)
+    : AnonymousResourceCollection
     {
-        $memo = Memo::findOrFail($id);
-        $memo->delete();
-        return response()->json(['message' => 'Memo deleted'], 200);
+        $validated = $request->validated();
+        return $service->memoListByTag(Auth::id(), $validated['tag']);
+    }
+
+    /**
+     * カテゴリーおよびタグによる記事一覧取得API
+     *
+     * @param DashboardMemoListByCategoryTagRequest $request
+     * @param DashboardMemoService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByCategoryAndTag(
+        DashboardMemoListByCategoryTagRequest $request,
+        DashboardMemoService $service
+    ): AnonymousResourceCollection
+    {
+        $validated = $request->validated();
+        return $service->memoListByCategoryAndTag(Auth::id(), $validated['category_id'], $validated['tag']);
+    }
+
+    /**
+     * @param MemoPostRequest $request
+     * @param DashboardMemoService $service
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function create(MemoPostRequest $request, DashboardMemoService $service): JsonResponse
+    {
+        $validated = $request->validated();
+        return $service->create($validated);
+    }
+
+    /**
+     * @param DashboardMemoShowRequest $request
+     * @param DashboardMemoService $service
+     * @return MemoResource
+     * @throws Exception
+     */
+    public function show(DashboardMemoShowRequest $request, DashboardMemoService $service): MemoResource
+    {
+        $user = Auth::user();
+        $validated = $request->validated();
+        return $service->show($validated['id'], $user);
+    }
+
+    /**
+     * @param DashboardMemoEditRequest $request
+     * @param DashboardMemoService $service
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function edit(DashboardMemoEditRequest $request, DashboardMemoService $service): JsonResponse
+    {
+        $user = Auth::user();
+        $validated = $request->validated();
+        return $service->edit($validated, $user);
+    }
+
+    /**
+     * @param DashboardMemoDestroyRequest $request
+     * @param DashboardMemoService $service
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function destroy(DashboardMemoDestroyRequest $request, DashboardMemoService $service): JsonResponse
+    {
+        $user = Auth::user();
+        $validated = $request->validated();
+        return $service->destroy($validated['id'], $user);
     }
 }

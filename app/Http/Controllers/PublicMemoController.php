@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PublicMemos\PublicMemoListByCategoryTagRequest;
+use App\Http\Requests\PublicMemos\PublicMemoListByCategoryRequest;
+use App\Http\Requests\PublicMemos\PublicMemoListByTagRequest;
+use App\Http\Requests\PublicMemos\PublicMemoShowRequest;
 use App\Http\Requests\PublicMemoSearchRequest;
 use App\Http\Resources\MemoResource;
-use App\Models\Memo;
 use App\Services\PublicMemoService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -21,42 +24,70 @@ class PublicMemoController extends Controller
         return $service->allList();
     }
 
-    public function show($id)
+    /**
+     * @param PublicMemoShowRequest $request
+     * @param PublicMemoService $service
+     * @return MemoResource
+     * @throws Exception
+     */
+    public function show(PublicMemoShowRequest $request, PublicMemoService $service): MemoResource
     {
-        $memo = Memo::where('status', 1)->findOrFail($id);
-
-        return new MemoResource($memo);
-    }
-
-    public function search(PublicMemoService $service, PublicMemoSearchRequest $request)
-    {
-        $memos = $service->search($request);
-        return MemoResource::collection($memos);
+        $validated = $request->validated();
+        return $service->show($validated['id']);
     }
 
     /**
+     * @param PublicMemoSearchRequest $request
      * @param PublicMemoService $service
-     * @param $nickName
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoList(PublicMemoService $service, $nickName)
+    public function search(PublicMemoSearchRequest $request, PublicMemoService $service): AnonymousResourceCollection
     {
-        return $service->userMemoList($nickName);
+        $validated = $request->validated();
+        return $service->search($validated['q']);
     }
 
-    public function userMemoDetail(PublicMemoService $service, $nickName, $memoId)
+    /**
+     * @param PublicMemoListByCategoryRequest $request
+     * @param PublicMemoService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByCategory(PublicMemoListByCategoryRequest $request, PublicMemoService $service)
+    : AnonymousResourceCollection
     {
-        return $service->userMemoDetail($nickName, $memoId);
+        $validated = $request->validated();
+        return $service->memoListByCategory($validated['category_id']);
     }
 
-    public function memoListByCategory(PublicMemoService $service, $categoryId)
+    /**
+     * @param PublicMemoListByTagRequest $request
+     * @param PublicMemoService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByTag(PublicMemoListByTagRequest $request, PublicMemoService $service)
+    : AnonymousResourceCollection
     {
-        return $service->memoListByCategory($categoryId);
+        $validated = $request->validated();
+        return $service->memoListByTag($validated['tag']);
     }
 
-    public function userMemoListByCategory(PublicMemoService $service, $nickName, $categoryId)
+    /**
+     * カテゴリーおよびタグによる記事一覧取得API
+     *
+     * @param PublicMemoListByCategoryTagRequest $request
+     * @param PublicMemoService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByCategoryAndTag(
+        PublicMemoListByCategoryTagRequest $request,
+        PublicMemoService $service
+    ): AnonymousResourceCollection
     {
-        return $service->userMemoListByCategory($nickName, $categoryId);
+        $validated = $request->validated();
+        return $service->memoListByCategoryAndTag($validated['category_id'], $validated['tag']);
     }
 }

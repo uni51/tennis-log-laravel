@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Admin\UserManageService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Request;
 
 /**
  * Class UserManageController
@@ -28,5 +29,10 @@ class UserManageController extends Controller
         //    throw new Exception('未ログインです。');
         // }
         return $service->list();
+    }
+
+    public function disable(UserManageService $service, Request $request)
+    {
+        return $service->disable($request);
     }
 }
