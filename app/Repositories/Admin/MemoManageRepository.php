@@ -12,7 +12,19 @@ class MemoManageRepository extends BaseMemoRepository
     {
         return Memo::with(['category:name,id'])
             ->orderBy('updated_at', 'desc')
-            ->paginate(Pagination::DEFAULT_PER_PAGE);
+            ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
+    }
+
+    /**
+     * @param int $categoryId
+     * @return LengthAwarePaginator
+     */
+    public function memoListByCategory(int $categoryId): LengthAwarePaginator
+    {
+        return  Memo::with(['category:name,id'])
+            ->where('category_id', $categoryId)
+            ->orderBy('updated_at', 'desc')
+            ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
     }
 }
 

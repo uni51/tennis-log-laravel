@@ -49,4 +49,21 @@ class MemoManageService
 
         return new MemoResource($memo);
     }
+
+    /**
+     * @param int $categoryId
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByCategory(int $categoryId): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->memoListByCategory($categoryId);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
 }
