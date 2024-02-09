@@ -3,9 +3,10 @@ namespace App\Repositories\Admin;
 
 use App\Consts\Pagination;
 use App\Models\Memo;
+use App\Repositories\BaseMemoRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class MemoManageRepository
+class MemoManageRepository extends BaseMemoRepository
 {
     public function getMemoList(): LengthAwarePaginator
     {

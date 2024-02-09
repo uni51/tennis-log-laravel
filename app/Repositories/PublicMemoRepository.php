@@ -8,9 +8,8 @@ use App\Enums\MemoStatusType;
 use App\Models\Memo;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class PublicMemoRepository
+class PublicMemoRepository extends BaseMemoRepository
 {
-
     /**
      * @return LengthAwarePaginator
      */

@@ -11,7 +11,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
-class NicknameMemoRepository
+class NicknameMemoRepository extends BaseMemoRepository
 {
     /**
      * @param string $nickname

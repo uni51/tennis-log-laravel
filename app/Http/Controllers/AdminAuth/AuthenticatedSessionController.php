@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\AdminAuth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AdminAuth\AdminLoginRequest;
+use App\Http\Requests\Admin\AdminAuth\AdminLoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;

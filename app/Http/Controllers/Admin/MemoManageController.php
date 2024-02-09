@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\MemoManage\MemoManageShowRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
+use App\Repositories\DashboardMemoRepository;
 use App\Services\Admin\MemoManageService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -27,10 +29,14 @@ class MemoManageController extends Controller
         return $service->list();
     }
 
-    public function show($id)
+    /**
+     * @param MemoManageShowRequest $request
+     * @param MemoManageService $service
+     * @return MemoResource
+     */
+    public function show(MemoManageShowRequest $request, MemoManageService $service): MemoResource
     {
-        $memo = Memo::findOrFail($id);
-
-        return new MemoResource($memo);
+        $validated = $request->validated();
+        return $service->show($validated['id']);
     }
 }

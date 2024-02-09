@@ -2,6 +2,7 @@
 namespace App\Services\Admin;
 
 use App\Http\Resources\Admin\MemoManageResource;
+use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use App\Repositories\Admin\MemoManageRepository;
 use Exception;
@@ -36,5 +37,16 @@ class MemoManageService
         }
 
         return MemoManageResource::collection($memos);
+    }
+
+    /**
+     * @param int $id
+     * @return MemoResource
+     */
+    public function show(int $id): MemoResource
+    {
+        $memo = $this->repository->getMemoById($id);
+
+        return new MemoResource($memo);
     }
 }

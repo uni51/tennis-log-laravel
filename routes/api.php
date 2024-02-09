@@ -142,12 +142,15 @@ Route::group(['middleware' => 'auth:admin'], function () {
     Route::get('/admin', function (Request $request) {
         return $request->user();
     });
-    Route::get('/admin/users', [UserManageController::class, 'list'])
-        ->name('get.admin.users');
-    Route::post('/admin/users/disable', [UserManageController::class, 'disable'])
-        ->name('post.admin.users.disable');
+
     Route::get('/admin/memos', [MemoManageController::class, 'list'])
         ->name('get.admin.memos');
     Route::get('/admin/memos/{id}', [MemoManageController::class, 'show'])
         ->name('get.admin.memos.id');
+
+    Route::get('/admin/users', [UserManageController::class, 'list'])
+        ->name('get.admin.users');
+    Route::post('/admin/users/disable', [UserManageController::class, 'disable'])
+        ->name('post.admin.users.disable');
+
 });

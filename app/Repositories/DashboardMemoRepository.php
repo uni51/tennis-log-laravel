@@ -9,23 +9,22 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class DashboardMemoRepository
+class DashboardMemoRepository extends BaseMemoRepository
 {
-    /**
-     * @param int $id
-     * @return Memo|null
-     */
-    public function getMemoById(int $id): ?Memo
-    {
-        $memo = Memo::find($id);
-
-        if (!$memo) {
-            abort(404, '指定されたIDのメモが見つかりません。');
-        }
-
-        return $memo;
-    }
-
+//    /**
+//     * @param int $id
+//     * @return Memo|null
+//     */
+//    public function getMemoById(int $id): ?Memo
+//    {
+//        $memo = Memo::find($id);
+//
+//        if (!$memo) {
+//            abort(404, '指定されたIDのメモが見つかりません。');
+//        }
+//
+//        return $memo;
+//    }
 
     /**
      * @param array $validated
