@@ -137,6 +137,7 @@ class DashboardMemoService
         try {
             $memos = $this->repository->memoListByAuthUser($authUserId);
         } catch (Exception $e) {
+            Log::error($e->getMessage());
             throw $e;
         }
 
