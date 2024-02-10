@@ -69,18 +69,18 @@ Route::get('/public/memos/{id}', [PublicMemoController::class, 'show'])
 Route::get('/public/memos/search', [PublicMemoController::class, 'search'])
     ->name('get.public.memos.search');
 
-Route::get('/public/{nickname}/memos', [NicknameMemoController::class, 'userMemoList'])
+Route::get('/public/{nickname}/memos', [NicknameMemoController::class, 'nicknameMemoList'])
     ->name('get.public.nickname.memos');
 Route::get('/public/{nickname}/memos/{id}', [NicknameMemoController::class, 'userMemoDetail'])
     ->name('get.public.nickname.memos.id');
 Route::get('/public/{nickname}/memos/category/{category_id}',
-    [NicknameMemoController::class, 'userMemoListByCategory'])
+    [NicknameMemoController::class, 'nicknameMemoListByCategory'])
     ->name('get.public.nickname.memos.category');
 Route::get('/public/{nickname}/memos/tag/{tag}',
-    [NicknameMemoController::class, 'userMemoListByTag'])
+    [NicknameMemoController::class, 'nicknameMemoListByTag'])
     ->name('get.public.nickname.memos.tag');
 Route::get('/public/{nickname}/memos/category/{category_id}/tag/{tag}',
-    [NicknameMemoController::class, 'userMemoListByCategoryAndTag'])
+    [NicknameMemoController::class, 'nicknameMemoListByCategoryAndTag'])
     ->name('get.public.nickname.memos.category.tag');
 
 // ログインユーザー取得

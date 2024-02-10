@@ -16,7 +16,7 @@ class NicknameMemoRepository extends BaseMemoRepository
      * @param string $nickname
      * @return LengthAwarePaginator
      */
-    public function userMemoListByNickname(string $nickname): LengthAwarePaginator
+    public function nicknameMemoList(string $nickname): LengthAwarePaginator
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 
@@ -47,7 +47,7 @@ class NicknameMemoRepository extends BaseMemoRepository
      * @param int $categoryId
      * @return LengthAwarePaginator
      */
-    public function userMemoListByCategory(string $nickname, int $categoryId): LengthAwarePaginator
+    public function nicknameMemoListByCategory(string $nickname, int $categoryId): LengthAwarePaginator
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 
@@ -63,7 +63,7 @@ class NicknameMemoRepository extends BaseMemoRepository
      * @param string $tag
      * @return LengthAwarePaginator
      */
-    public function memoListByTag(string $nickname, string $tag): LengthAwarePaginator
+    public function nicknameMemoListByTag(string $nickname, string $tag): LengthAwarePaginator
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 
@@ -83,7 +83,7 @@ class NicknameMemoRepository extends BaseMemoRepository
      * @param string $tag
      * @return LengthAwarePaginator
      */
-    public function memoListByCategoryAndTag(string $nickname, int $categoryId, string $tag): LengthAwarePaginator
+    public function nicknameMemoListByCategoryAndTag(string $nickname, int $categoryId, string $tag): LengthAwarePaginator
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 

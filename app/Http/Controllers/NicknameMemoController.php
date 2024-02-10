@@ -21,10 +21,10 @@ class NicknameMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoList(NicknameMemoListRequest $request, NicknameMemoService $service): AnonymousResourceCollection
+    public function nicknameMemoList(NicknameMemoListRequest $request, NicknameMemoService $service): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->userMemoList($validated['nickname']);
+        return $service->nicknameMemoList($validated['nickname']);
     }
 
     /**
@@ -45,11 +45,11 @@ class NicknameMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoListByCategory(NicknameMemoListByCategoryRequest $request, NicknameMemoService $service)
+    public function nicknameMemoListByCategory(NicknameMemoListByCategoryRequest $request, NicknameMemoService $service)
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->userMemoListByCategory($validated['nickname'], $validated['category_id']);
+        return $service->nicknameMemoListByCategory($validated['nickname'], $validated['category_id']);
     }
 
     /**
@@ -60,11 +60,11 @@ class NicknameMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoListByTag(NicknameMemoListByTagRequest $request, NicknameMemoService $service)
+    public function nicknameMemoListByTag(NicknameMemoListByTagRequest $request, NicknameMemoService $service)
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByTag($validated['nickname'], $validated['tag']);
+        return $service->nicknameMemoListByTag($validated['nickname'], $validated['tag']);
     }
 
     /**
@@ -75,12 +75,12 @@ class NicknameMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoListByCategoryAndTag(
+    public function nicknameMemoListByCategoryAndTag(
         NicknameMemoListByCategoryTagRequest $request,
         NicknameMemoService $service
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByCategoryAndTag($validated['nickname'], $validated['category_id'], $validated['tag']);
+        return $service->nicknameMemoListByCategoryAndTag($validated['nickname'], $validated['category_id'], $validated['tag']);
     }
 }
