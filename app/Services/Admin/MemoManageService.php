@@ -100,7 +100,7 @@ class MemoManageService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoList(string $nickname): AnonymousResourceCollection
+    public function nicknameMemoList(string $nickname): AnonymousResourceCollection
     {
         try {
             $memos = $this->repository->nicknameMemoList($nickname);
@@ -119,7 +119,7 @@ class MemoManageService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoListByCategory(string $nickname, int $categoryId): AnonymousResourceCollection
+    public function nicknameMemoListByCategory(string $nickname, int $categoryId): AnonymousResourceCollection
     {
         try {
             $memos = $this->repository->nicknameMemoListByCategory($nickname, $categoryId);
@@ -137,7 +137,7 @@ class MemoManageService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByNicknameAndTag(string $nickname, string $tag): AnonymousResourceCollection
+    public function nicknameMemoListByTag(string $nickname, string $tag): AnonymousResourceCollection
     {
         try {
             $memos = $this->repository->nicknameMemoListByTag($nickname, $tag);
@@ -156,7 +156,7 @@ class MemoManageService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoListByCategoryAndTag(string $nickname, int $categoryId, string $tag): AnonymousResourceCollection
+    public function nicknameMemoListByCategoryAndTag(string $nickname, int $categoryId, string $tag): AnonymousResourceCollection
     {
         try {
             $memos = $this->repository->nicknameMemoListByCategoryAndTag($nickname, $categoryId, $tag);
