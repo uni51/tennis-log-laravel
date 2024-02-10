@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\MemoManage\MemoManageListByCategoryTagRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageListByTagRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListByCategoryRequest;
+use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListByCategoryTagRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListByTagRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageShowRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageListByCategoryRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryTagRequest;
+use App\Http\Requests\PublicMemos\PublicMemoListByCategoryTagRequest;
 use App\Http\Requests\PublicMemos\PublicMemoListByTagRequest;
 use App\Http\Resources\MemoResource;
 use App\Services\Admin\MemoManageService;
+use App\Services\NicknameMemoService;
 use App\Services\PublicMemoService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -70,6 +74,15 @@ class MemoManageController extends Controller
         return $service->memoListByTag($validated['tag']);
     }
 
+    public function memoListByCategoryAndTag(
+        MemoManageListByCategoryTagRequest $request,
+        MemoManageService $service
+    ): AnonymousResourceCollection
+    {
+        $validated = $request->validated();
+        return $service->memoListByCategoryAndTag($validated['category_id'], $validated['tag']);
+    }
+
     /**
      * @param MemoManageNicknameListRequest $request
      * @param MemoManageService $service
@@ -111,17 +124,17 @@ class MemoManageController extends Controller
     }
 
     /**
-     * @param NicknameMemoListByCategoryTagRequest $request
+     * @param MemoManageNicknameListByCategoryTagRequest $request
      * @param MemoManageService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function userMemoListByCategoryAndTag(
-        NicknameMemoListByCategoryTagRequest $request,
+        MemoManageNicknameListByCategoryTagRequest $request,
         MemoManageService $service
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByCategoryAndTag($validated['nickname'], $validated['category_id'], $validated['tag']);
+        return $service->userMemoListByCategoryAndTag($validated['nickname'], $validated['category_id'], $validated['tag']);
     }
 }

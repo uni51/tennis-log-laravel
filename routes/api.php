@@ -152,7 +152,7 @@ Route::group(['middleware' => 'auth:admin'], function () {
     Route::get('/admin/memos/tag/{tag}', [MemoManageController::class, 'memoListByTag'])
         ->name('get.admin.memos.category');
     Route::get('/admin/memos/category/{category_id}/tag/{tag}',
-        [MemoManageController::class, 'userMemoListByCategoryAndTag'])
+        [MemoManageController::class, 'memoListByCategoryAndTag'])
         ->name('get.admin.memos.category.tag');
 
     Route::get('/admin/{nickname}/memos', [MemoManageController::class, 'userMemoList'])
