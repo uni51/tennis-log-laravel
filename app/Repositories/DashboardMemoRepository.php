@@ -31,7 +31,7 @@ class DashboardMemoRepository extends BaseMemoRepository
      * @return void
      * @throws Exception
      */
-    public function createMemo(array $validated): void
+    public function dashboardMemoCreate(array $validated): void
     {
         try {
             DB::beginTransaction();

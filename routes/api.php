@@ -71,6 +71,7 @@ Route::get('/public/memos/search', [PublicMemoController::class, 'publicMemoSear
 
 Route::get('/public/{nickname}/memos', [NicknameMemoController::class, 'publicNicknameMemoList'])
     ->name('get.public.nickname.memos');
+
 Route::get('/public/{nickname}/memos/{id}', [NicknameMemoController::class, 'publicNicknameMemoDetail'])
     ->name('get.public.nickname.memos.id');
 Route::get('/public/{nickname}/memos/category/{category_id}',
@@ -97,9 +98,6 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
     Route::get('/dashboard/memos', [DashBoardMemoController::class, 'dashboardMemoList'])
         ->name('get.dashboard.memos');
-    // メモの新規作成
-    Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create'])
-        ->name('post.dashboard.memos');
 
     Route::get('/dashboard/memos/search', [DashBoardMemoController::class, 'dashboardMemoSearch'])
         ->name('get.dashboard.memos.search');
@@ -120,11 +118,14 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'dashboardMemoShow'])
         ->name('get.dashboard.memos.id');
 
+    // メモの新規作成
+    Route::post('/dashboard/memos', [DashBoardMemoController::class, 'dashboardMemoCreate'])
+        ->name('post.dashboard.memos');
     // メモの編集
-    Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'edit'])
+    Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'dashboardMemoEdit'])
         ->name('post.dashboard.memos.id');
 
-    Route::post('/dashboard/memos/{id}/delete', [DashBoardMemoController::class, 'destroy'])
+    Route::post('/dashboard/memos/{id}/delete', [DashBoardMemoController::class, 'dashboardMemoDestroy'])
         ->name('post.dashboard.memos.id.delete');
 
     Route::get('/user/delete', function () {

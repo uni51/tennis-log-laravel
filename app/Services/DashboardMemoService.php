@@ -53,9 +53,9 @@ class DashboardMemoService
      * @throws Exception
      * @return JsonResponse
      */
-    public function create(array $validated): JsonResponse
+    public function dashboardMemoCreate(array $validated): JsonResponse
     {
-        $this->repository->createMemo($validated);
+        $this->repository->dashboardMemoCreate($validated);
 
         return response()->json([
             'message' => 'メモの登録に成功しました。'
@@ -82,7 +82,7 @@ class DashboardMemoService
      * @throws Exception
      * @return JsonResponse
      */
-    public function edit(array $validated, Authenticatable $user): JsonResponse
+    public function dashboardMemoEdit(array $validated, Authenticatable $user): JsonResponse
     {
         $memo = $this->validateUserPermission($validated['id'], $user, 'update');
 
@@ -120,7 +120,7 @@ class DashboardMemoService
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(int $id, Authenticatable $user): JsonResponse
+    public function dashboardMemoDestroy(int $id, Authenticatable $user): JsonResponse
     {
         $memo = $this->validateUserPermission($id, $user, 'delete');
         $memo->delete();
