@@ -74,7 +74,19 @@ class MemoManageService
     public function memoListByTag(string $tag): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->userMemoListByTag($tag);
+            $memos = $this->repository->memoListByTag($tag);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+    public function memoListByCategoryAndTag(int $categoryId, string $tag): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->memoListByCategoryAndTag($categoryId, $tag);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
@@ -91,7 +103,7 @@ class MemoManageService
     public function userMemoList(string $nickname): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->userMemoListByNickname($nickname);
+            $memos = $this->repository->nicknameMemoList($nickname);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
@@ -110,7 +122,7 @@ class MemoManageService
     public function userMemoListByCategory(string $nickname, int $categoryId): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->userMemoListByCategory($nickname, $categoryId);
+            $memos = $this->repository->nicknameMemoListByCategory($nickname, $categoryId);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
@@ -128,7 +140,7 @@ class MemoManageService
     public function memoListByNicknameAndTag(string $nickname, string $tag): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->memoListByNicknameAndTag($nickname, $tag);
+            $memos = $this->repository->nicknameMemoListByTag($nickname, $tag);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
@@ -144,10 +156,10 @@ class MemoManageService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByCategoryAndTag(string $nickname, int $categoryId, string $tag): AnonymousResourceCollection
+    public function userMemoListByCategoryAndTag(string $nickname, int $categoryId, string $tag): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->memoListByCategoryAndTag($nickname, $categoryId, $tag);
+            $memos = $this->repository->nicknameMemoListByCategoryAndTag($nickname, $categoryId, $tag);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;

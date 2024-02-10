@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListByCategoryTagRequest;
+use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryTagRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListByTagRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListRequest;
@@ -69,13 +70,13 @@ class NicknameMemoController extends Controller
     /**
      * カテゴリーおよびタグによる記事一覧取得API
      *
-     * @param MemoManageNicknameListByCategoryTagRequest $request
+     * @param NicknameMemoListByCategoryTagRequest $request
      * @param NicknameMemoService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function userMemoListByCategoryAndTag(
-        MemoManageNicknameListByCategoryTagRequest $request,
+        NicknameMemoListByCategoryTagRequest $request,
         NicknameMemoService $service
     ): AnonymousResourceCollection
     {
