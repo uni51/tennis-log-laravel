@@ -34,9 +34,9 @@ class MemoManageController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function list(MemoManageService $service): AnonymousResourceCollection
+    public function adminMemoList(MemoManageService $service): AnonymousResourceCollection
     {
-        return $service->list();
+        return $service->adminMemoList();
     }
 
     /**
@@ -44,19 +44,25 @@ class MemoManageController extends Controller
      * @param MemoManageService $service
      * @return MemoResource
      */
-    public function show(MemoManageShowRequest $request, MemoManageService $service): MemoResource
+    public function adminMemoShow(MemoManageShowRequest $request, MemoManageService $service): MemoResource
     {
         $validated = $request->validated();
-        return $service->show($validated['id']);
+        return $service->adminMemoShow($validated['id']);
     }
 
-    public function memoListByCategory(
+    /**
+     * @param MemoManageListByCategoryRequest $request
+     * @param MemoManageService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function adminMemoListByCategory(
         MemoManageListByCategoryRequest $request,
         MemoManageService $service
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByCategory($validated['category_id']);
+        return $service->adminMemoListByCategory($validated['category_id']);
     }
 
     /**
@@ -67,20 +73,26 @@ class MemoManageController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByTag(MemoManageListByTagRequest $request, MemoManageService $service)
+    public function adminMemoListByTag(MemoManageListByTagRequest $request, MemoManageService $service)
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByTag($validated['tag']);
+        return $service->adminMemoListByTag($validated['tag']);
     }
 
-    public function memoListByCategoryAndTag(
+    /**
+     * @param MemoManageListByCategoryTagRequest $request
+     * @param MemoManageService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function adminMemoListByCategoryAndTag(
         MemoManageListByCategoryTagRequest $request,
         MemoManageService $service
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByCategoryAndTag($validated['category_id'], $validated['tag']);
+        return $service->adminMemoListByCategoryAndTag($validated['category_id'], $validated['tag']);
     }
 
     /**

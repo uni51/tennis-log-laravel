@@ -10,7 +10,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class MemoManageRepository extends BaseMemoRepository
 {
-    public function getMemoList(): LengthAwarePaginator
+    public function adminMemoList(): LengthAwarePaginator
     {
         return Memo::with(['category:name,id'])
             ->orderBy('updated_at', 'desc')
@@ -21,7 +21,7 @@ class MemoManageRepository extends BaseMemoRepository
      * @param int $categoryId
      * @return LengthAwarePaginator
      */
-    public function memoListByCategory(int $categoryId): LengthAwarePaginator
+    public function adminMemoListByCategory(int $categoryId): LengthAwarePaginator
     {
         return  Memo::with(['category:name,id'])
             ->where('category_id', $categoryId)
@@ -33,7 +33,7 @@ class MemoManageRepository extends BaseMemoRepository
      * @param string $tag
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function memoListByTag(string $tag): LengthAwarePaginator
+    public function adminMemoListByTag(string $tag): LengthAwarePaginator
     {
         return Memo::with(['category:name,id'])
             ->whereHas('tags', function($q) use ($tag) {
@@ -48,7 +48,7 @@ class MemoManageRepository extends BaseMemoRepository
      * @param string $tag
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function memoListByCategoryAndTag(int $categoryId, string $tag): LengthAwarePaginator
+    public function adminMemoListByCategoryAndTag(int $categoryId, string $tag): LengthAwarePaginator
     {
         return Memo::with(['category:name,id'])
             ->where('category_id', $categoryId)

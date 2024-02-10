@@ -144,16 +144,16 @@ Route::group(['middleware' => 'auth:admin'], function () {
         return $request->user();
     });
 
-    Route::get('/admin/memos', [MemoManageController::class, 'list'])
+    Route::get('/admin/memos', [MemoManageController::class, 'adminMemoList'])
         ->name('get.admin.memos');
-    Route::get('/admin/memos/{id}', [MemoManageController::class, 'show'])
+    Route::get('/admin/memos/{id}', [MemoManageController::class, 'adminMemoShow'])
         ->name('get.admin.memos.id');
-    Route::get('/admin/memos/category/{category_id}', [MemoManageController::class, 'memoListByCategory'])
+    Route::get('/admin/memos/category/{category_id}', [MemoManageController::class, 'adminMemoListByCategory'])
         ->name('get.admin.memos.category');
-    Route::get('/admin/memos/tag/{tag}', [MemoManageController::class, 'memoListByTag'])
+    Route::get('/admin/memos/tag/{tag}', [MemoManageController::class, 'adminMemoListByTag'])
         ->name('get.admin.memos.category');
     Route::get('/admin/memos/category/{category_id}/tag/{tag}',
-        [MemoManageController::class, 'memoListByCategoryAndTag'])
+        [MemoManageController::class, 'adminMemoListByCategoryAndTag'])
         ->name('get.admin.memos.category.tag');
 
     Route::get('/admin/{nickname}/memos', [MemoManageController::class, 'adminNicknameMemoList'])
