@@ -23,7 +23,7 @@ class NicknameMemoController extends Controller
     public function userMemoList(NicknameMemoListRequest $request, NicknameMemoService $service): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByNickname($validated['nickname']);
+        return $service->userMemoList($validated['nickname']);
     }
 
     /**

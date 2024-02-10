@@ -3,7 +3,6 @@ namespace App\Services\Admin;
 
 use App\Http\Resources\Admin\MemoManageResource;
 use App\Http\Resources\MemoResource;
-use App\Models\Memo;
 use App\Repositories\Admin\MemoManageRepository;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -67,10 +66,34 @@ class MemoManageService
         return MemoResource::collection($memos);
     }
 
-    public function memoListByNickname(string $nickname): AnonymousResourceCollection
+    /**
+     * @param string $nickname
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function userMemoList(string $nickname): AnonymousResourceCollection
     {
         try {
             $memos = $this->repository->userMemoListByNickname($nickname);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+
+    /**
+     * @param string $nickname
+     * @param int $categoryId
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function userMemoListByCategory(string $nickname, int $categoryId): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->userMemoListByCategory($nickname, $categoryId);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;

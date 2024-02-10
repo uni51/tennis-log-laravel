@@ -70,7 +70,7 @@ Route::get('/public/memos/search', [PublicMemoController::class, 'search'])
     ->name('get.public.memos.search');
 
 Route::get('/public/{nickname}/memos', [NicknameMemoController::class, 'userMemoList'])
-    ->name('get.public.memos.nickname');
+    ->name('get.public.nickname.memos');
 Route::get('/public/{nickname}/memos/{id}', [NicknameMemoController::class, 'userMemoDetail'])
     ->name('get.public.nickname.memos.id');
 Route::get('/public/{nickname}/memos/category/{category_id}',
@@ -151,7 +151,10 @@ Route::group(['middleware' => 'auth:admin'], function () {
         ->name('get.admin.memos.category');
 
     Route::get('/admin/{nickname}/memos', [MemoManageController::class, 'userMemoList'])
-        ->name('get.public.memos.nickname');
+        ->name('get.admin.nickname.memos');
+    Route::get('/admin/{nickname}/memos/category/{category_id}',
+        [MemoManageController::class, 'userMemoListByCategory'])
+        ->name('get.admin.nickname.memos.category');
 
     Route::get('/admin/users', [UserManageController::class, 'list'])
         ->name('get.admin.users');

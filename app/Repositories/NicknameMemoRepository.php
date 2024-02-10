@@ -8,7 +8,6 @@ use App\Enums\MemoStatusType;
 use App\Models\Memo;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 class NicknameMemoRepository extends BaseMemoRepository
@@ -73,6 +72,7 @@ class NicknameMemoRepository extends BaseMemoRepository
             ->whereHas('tags', function($q) use ($tag) {
                 $q->where('normalized', $tag);
             })
+            ->where('status', MemoStatusType::getValue('公開中'))
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
@@ -93,6 +93,7 @@ class NicknameMemoRepository extends BaseMemoRepository
             ->whereHas('tags', function($q) use ($tag) {
                 $q->where('normalized', $tag);
             })
+            ->where('status', MemoStatusType::getValue('公開中'))
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);
     }

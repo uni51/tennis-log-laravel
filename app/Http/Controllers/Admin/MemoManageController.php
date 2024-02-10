@@ -3,17 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListByCategoryRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageShowRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageListByCategoryRequest;
-use App\Http\Requests\NicknameMemos\NicknameMemoListRequest;
 use App\Http\Resources\MemoResource;
-use App\Models\Memo;
 use App\Services\Admin\MemoManageService;
 use App\Services\NicknameMemoService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Class MemoManageController
@@ -53,10 +51,28 @@ class MemoManageController extends Controller
         return $service->memoListByCategory($validated['category_id']);
     }
 
+    /**
+     * @param MemoManageNicknameListRequest $request
+     * @param MemoManageService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
     public function userMemoList(MemoManageNicknameListRequest $request, MemoManageService $service): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByNickname($validated['nickname']);
+        return $service->userMemoList($validated['nickname']);
     }
 
+    /**
+     * @param MemoManageNicknameListByCategoryRequest $request
+     * @param MemoManageService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function userMemoListByCategory(MemoManageNicknameListByCategoryRequest $request, MemoManageService $service)
+    : AnonymousResourceCollection
+    {
+        $validated = $request->validated();
+        return $service->userMemoListByCategory($validated['nickname'], $validated['category_id']);
+    }
 }

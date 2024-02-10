@@ -1,15 +1,10 @@
 <?php
 namespace App\Services;
 
-use App\Consts\Pagination;
-use App\Enums\MemoStatusType;
 use App\Http\Resources\MemoResource;
-use App\Models\Memo;
-use App\Models\User;
 use App\Repositories\NicknameMemoRepository;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class NicknameMemoService
@@ -31,7 +26,7 @@ class NicknameMemoService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByNickname(string $nickname): AnonymousResourceCollection
+    public function userMemoList(string $nickname): AnonymousResourceCollection
     {
         try {
             $memos = $this->repository->userMemoListByNickname($nickname);
