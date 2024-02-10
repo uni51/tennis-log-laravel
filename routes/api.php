@@ -95,29 +95,29 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     });
 
     // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
-    Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list'])
+    Route::get('/dashboard/memos', [DashBoardMemoController::class, 'dashboardMemoList'])
         ->name('get.dashboard.memos');
     // メモの新規作成
     Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create'])
         ->name('post.dashboard.memos');
 
-    Route::get('/dashboard/memos/search', [DashBoardMemoController::class, 'search'])
+    Route::get('/dashboard/memos/search', [DashBoardMemoController::class, 'dashboardMemoSearch'])
         ->name('get.dashboard.memos.search');
 
-    Route::get('/dashboard/memos/status/{status}', [DashBoardMemoController::class, 'memoListByStatus'])
+    Route::get('/dashboard/memos/status/{status}', [DashBoardMemoController::class, 'dashboardMemoListByStatus'])
         ->name('get.dashboard.memos.status');
 
-    Route::get('/dashboard/memos/category/{category_id}', [DashBoardMemoController::class, 'memoListByCategory'])
+    Route::get('/dashboard/memos/category/{category_id}', [DashBoardMemoController::class, 'dashboardMemoListByCategory'])
         ->name('get.dashboard.memos.category');
 
-    Route::get('/dashboard/memos/tag/{tag}', [DashBoardMemoController::class, 'memoListByTag'])
+    Route::get('/dashboard/memos/tag/{tag}', [DashBoardMemoController::class, 'dashboardMemoListByTag'])
         ->name('get.dashboard.memos.tag');
 
     Route::get('/dashboard/memos/category/{category_id}/tag/{tag}',
         [DashBoardMemoController::class, 'memoListByCategoryAndTag'])
         ->name('get.dashboard.memos.category.tag');
 
-    Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'show'])
+    Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'dashboardMemoShow'])
         ->name('get.dashboard.memos.id');
 
     // メモの編集

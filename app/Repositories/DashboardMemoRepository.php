@@ -94,7 +94,7 @@ class DashboardMemoRepository extends BaseMemoRepository
      * @param int $authUserId
      * @return LengthAwarePaginator
      */
-    public function memoListByAuthUser(int $authUserId): LengthAwarePaginator
+    public function dashboardMemoListByAuthUser(int $authUserId): LengthAwarePaginator
     {
         return Memo::with(['category:name,id'])
                 ->where('user_id', $authUserId)
@@ -107,7 +107,7 @@ class DashboardMemoRepository extends BaseMemoRepository
      * @param int $categoryId
      * @return LengthAwarePaginator
      */
-    public function memoListByCategory(int $authUserId, int $categoryId): LengthAwarePaginator
+    public function dashboardMemoListByCategory(int $authUserId, int $categoryId): LengthAwarePaginator
     {
         return  Memo::with(['category:name,id'])
                     ->where('user_id', $authUserId)
@@ -150,7 +150,7 @@ class DashboardMemoRepository extends BaseMemoRepository
      * @param int $status
      * @return LengthAwarePaginator
      */
-    public function memoListByStatus(int $authUserId, int $status): LengthAwarePaginator
+    public function dashboardMemoListByStatus(int $authUserId, int $status): LengthAwarePaginator
     {
         return Memo::with(['category:name,id'])
                 ->where('user_id', $authUserId)
@@ -164,7 +164,7 @@ class DashboardMemoRepository extends BaseMemoRepository
      * @param string $tag
      * @return LengthAwarePaginator
      */
-    public function memoListByTag(int $authUserId, string $tag): LengthAwarePaginator
+    public function dashboardMemoListByTag(int $authUserId, string $tag): LengthAwarePaginator
     {
         return Memo::with(['category:name,id'])
             ->where('user_id', $authUserId)
