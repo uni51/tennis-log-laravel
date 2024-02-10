@@ -100,10 +100,10 @@ class MemoManageService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function nicknameMemoList(string $nickname): AnonymousResourceCollection
+    public function adminNicknameMemoList(string $nickname): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->nicknameMemoList($nickname);
+            $memos = $this->repository->adminNicknameMemoList($nickname);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
@@ -119,10 +119,10 @@ class MemoManageService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function nicknameMemoListByCategory(string $nickname, int $categoryId): AnonymousResourceCollection
+    public function adminNicknameMemoListByCategory(string $nickname, int $categoryId): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->nicknameMemoListByCategory($nickname, $categoryId);
+            $memos = $this->repository->adminNicknameMemoListByCategory($nickname, $categoryId);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
@@ -137,10 +137,10 @@ class MemoManageService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function nicknameMemoListByTag(string $nickname, string $tag): AnonymousResourceCollection
+    public function adminNicknameMemoListByTag(string $nickname, string $tag): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->nicknameMemoListByTag($nickname, $tag);
+            $memos = $this->repository->adminNicknameMemoListByTag($nickname, $tag);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
@@ -156,10 +156,10 @@ class MemoManageService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function nicknameMemoListByCategoryAndTag(string $nickname, int $categoryId, string $tag): AnonymousResourceCollection
+    public function adminNicknameMemoListByCategoryAndTag(string $nickname, int $categoryId, string $tag): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->nicknameMemoListByCategoryAndTag($nickname, $categoryId, $tag);
+            $memos = $this->repository->adminNicknameMemoListByCategoryAndTag($nickname, $categoryId, $tag);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
