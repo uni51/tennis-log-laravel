@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListByCategoryRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageShowRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageListByCategoryRequest;
+use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryTagRequest;
 use App\Http\Resources\MemoResource;
 use App\Services\Admin\MemoManageService;
 use App\Services\NicknameMemoService;
@@ -74,5 +75,20 @@ class MemoManageController extends Controller
     {
         $validated = $request->validated();
         return $service->userMemoListByCategory($validated['nickname'], $validated['category_id']);
+    }
+
+    /**
+     * @param NicknameMemoListByCategoryTagRequest $request
+     * @param MemoManageService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function userMemoListByCategoryAndTag(
+        NicknameMemoListByCategoryTagRequest $request,
+        MemoManageService $service
+    ): AnonymousResourceCollection
+    {
+        $validated = $request->validated();
+        return $service->memoListByCategoryAndTag($validated['nickname'], $validated['category_id'], $validated['tag']);
     }
 }
