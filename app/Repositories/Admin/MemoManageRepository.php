@@ -2,7 +2,9 @@
 namespace App\Repositories\Admin;
 
 use App\Consts\Pagination;
+use App\Enums\MemoStatusType;
 use App\Models\Memo;
+use App\Models\User;
 use App\Repositories\BaseMemoRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -26,5 +28,19 @@ class MemoManageRepository extends BaseMemoRepository
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
     }
+
+    /**
+     * @param string $nickname
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function userMemoListByNickname(string $nickname): LengthAwarePaginator
+    {
+        $user = User::where('nickname', $nickname)->firstOrFail();
+
+        return Memo::with(['category:name,id'])
+            ->where('user_id', $user->id)
+            ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
+    }
+
 }
 

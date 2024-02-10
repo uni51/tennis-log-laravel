@@ -66,4 +66,16 @@ class MemoManageService
 
         return MemoResource::collection($memos);
     }
+
+    public function memoListByNickname(string $nickname): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->userMemoListByNickname($nickname);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
 }
