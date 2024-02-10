@@ -67,6 +67,23 @@ class MemoManageService
     }
 
     /**
+     * @param string $tag
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByTag(string $tag): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->userMemoListByTag($tag);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+    /**
      * @param string $nickname
      * @return AnonymousResourceCollection
      * @throws Exception
@@ -108,10 +125,10 @@ class MemoManageService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByTag(string $nickname, string $tag): AnonymousResourceCollection
+    public function memoListByNicknameAndTag(string $nickname, string $tag): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->memoListByTag($nickname, $tag);
+            $memos = $this->repository->memoListByNicknameAndTag($nickname, $tag);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;

@@ -2,6 +2,7 @@
 namespace App\Repositories\Admin;
 
 use App\Consts\Pagination;
+use App\Enums\MemoStatusType;
 use App\Models\Memo;
 use App\Models\User;
 use App\Repositories\BaseMemoRepository;
@@ -57,11 +58,25 @@ class MemoManageRepository extends BaseMemoRepository
     }
 
     /**
+     * @param string $tag
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function userMemoListByTag(string $tag): LengthAwarePaginator
+    {
+        return Memo::with(['category:name,id'])
+            ->whereHas('tags', function($q) use ($tag) {
+                $q->where('normalized', $tag);
+            })
+            ->orderBy('updated_at', 'desc')
+            ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
+    }
+
+    /**
      * @param string $nickname
      * @param string $tag
      * @return LengthAwarePaginator
      */
-    public function memoListByTag(string $nickname, string $tag): LengthAwarePaginator
+    public function memoListByNicknameAndTag(string $nickname, string $tag): LengthAwarePaginator
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 

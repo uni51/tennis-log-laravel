@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\MemoManage\MemoManageListByTagRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListByCategoryRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListByTagRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageShowRequest;
 use App\Http\Requests\Admin\MemoManage\MemoManageListByCategoryRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryTagRequest;
+use App\Http\Requests\PublicMemos\PublicMemoListByTagRequest;
 use App\Http\Resources\MemoResource;
 use App\Services\Admin\MemoManageService;
+use App\Services\PublicMemoService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -53,6 +56,21 @@ class MemoManageController extends Controller
     }
 
     /**
+     * タグ別 記事一覧取得API
+     *
+     * @param MemoManageListByTagRequest $request
+     * @param MemoManageService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function memoListByTag(MemoManageListByTagRequest $request, MemoManageService $service)
+    : AnonymousResourceCollection
+    {
+        $validated = $request->validated();
+        return $service->memoListByTag($validated['tag']);
+    }
+
+    /**
      * @param MemoManageNicknameListRequest $request
      * @param MemoManageService $service
      * @return AnonymousResourceCollection
@@ -89,7 +107,7 @@ class MemoManageController extends Controller
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByTag($validated['nickname'], $validated['tag']);
+        return $service->memoListByNicknameAndTag($validated['nickname'], $validated['tag']);
     }
 
     /**
