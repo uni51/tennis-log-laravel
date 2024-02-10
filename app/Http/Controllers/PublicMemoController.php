@@ -19,9 +19,9 @@ class PublicMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function allList(PublicMemoService $service): AnonymousResourceCollection
+    public function publicMemoList(PublicMemoService $service): AnonymousResourceCollection
     {
-        return $service->allList();
+        return $service->publicMemoList();
     }
 
     /**
@@ -30,10 +30,10 @@ class PublicMemoController extends Controller
      * @return MemoResource
      * @throws Exception
      */
-    public function show(PublicMemoShowRequest $request, PublicMemoService $service): MemoResource
+    public function publicMemoShow(PublicMemoShowRequest $request, PublicMemoService $service): MemoResource
     {
         $validated = $request->validated();
-        return $service->show($validated['id']);
+        return $service->publicMemoShow($validated['id']);
     }
 
     /**
@@ -42,10 +42,10 @@ class PublicMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function search(PublicMemoSearchRequest $request, PublicMemoService $service): AnonymousResourceCollection
+    public function publicMemoSearch(PublicMemoSearchRequest $request, PublicMemoService $service): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->search($validated['q']);
+        return $service->publicMemoSearch($validated['q']);
     }
 
     /**
@@ -54,11 +54,11 @@ class PublicMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByCategory(PublicMemoListByCategoryRequest $request, PublicMemoService $service)
+    public function publicMemoListByCategory(PublicMemoListByCategoryRequest $request, PublicMemoService $service)
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByCategory($validated['category_id']);
+        return $service->publicMemoListByCategory($validated['category_id']);
     }
 
     /**
@@ -67,11 +67,11 @@ class PublicMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByTag(PublicMemoListByTagRequest $request, PublicMemoService $service)
+    public function publicMemoListByTag(PublicMemoListByTagRequest $request, PublicMemoService $service)
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByTag($validated['tag']);
+        return $service->publicMemoListByTag($validated['tag']);
     }
 
     /**
@@ -82,12 +82,12 @@ class PublicMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByCategoryAndTag(
+    public function publicMemoListByCategoryAndTag(
         PublicMemoListByCategoryTagRequest $request,
         PublicMemoService $service
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByCategoryAndTag($validated['category_id'], $validated['tag']);
+        return $service->publicMemoListByCategoryAndTag($validated['category_id'], $validated['tag']);
     }
 }

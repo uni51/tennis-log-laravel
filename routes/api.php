@@ -55,18 +55,18 @@ Route::get('/profile/tennis_level', [TennisLevelController::class, 'tennisLevelL
     ->name('get.profile.tennis_level');
 
 // 公開中の記事一覧を取得するAPI
-Route::get('/public/memos', [PublicMemoController::class, 'allList'])
+Route::get('/public/memos', [PublicMemoController::class, 'publicMemoList'])
     ->name('get.public.memos');
-Route::get('/public/memos/category/{category_id}', [PublicMemoController::class, 'memoListByCategory'])
+Route::get('/public/memos/category/{category_id}', [PublicMemoController::class, 'publicMemoListByCategory'])
     ->name('get.public.memos.category');
-Route::get('/public/memos/tag/{tag}', [PublicMemoController::class, 'memoListByTag'])
+Route::get('/public/memos/tag/{tag}', [PublicMemoController::class, 'publicMemoListByTag'])
     ->name('get.public.memos.category');
 Route::get('/public/memos/category/{category_id}/tag/{tag}',
-    [PublicMemoController::class, 'memoListByCategoryAndTag'])
+    [PublicMemoController::class, 'publicMemoListByCategoryAndTag'])
     ->name('get.public.memos.category.tag');
-Route::get('/public/memos/{id}', [PublicMemoController::class, 'show'])
+Route::get('/public/memos/{id}', [PublicMemoController::class, 'publicMemoShow'])
     ->name('get.public.memos.id');
-Route::get('/public/memos/search', [PublicMemoController::class, 'search'])
+Route::get('/public/memos/search', [PublicMemoController::class, 'publicMemoSearch'])
     ->name('get.public.memos.search');
 
 Route::get('/public/{nickname}/memos', [NicknameMemoController::class, 'publicNicknameMemoList'])
