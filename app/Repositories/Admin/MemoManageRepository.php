@@ -2,7 +2,6 @@
 namespace App\Repositories\Admin;
 
 use App\Consts\Pagination;
-use App\Enums\MemoStatusType;
 use App\Models\Memo;
 use App\Models\User;
 use App\Repositories\BaseMemoRepository;
@@ -31,7 +30,7 @@ class MemoManageRepository extends BaseMemoRepository
 
     /**
      * @param string $nickname
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
     public function userMemoListByNickname(string $nickname): LengthAwarePaginator
     {
@@ -45,7 +44,7 @@ class MemoManageRepository extends BaseMemoRepository
     /**
      * @param string $nickname
      * @param int $categoryId
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
     public function userMemoListByCategory(string $nickname, int $categoryId): LengthAwarePaginator
     {
@@ -59,9 +58,27 @@ class MemoManageRepository extends BaseMemoRepository
 
     /**
      * @param string $nickname
+     * @param string $tag
+     * @return LengthAwarePaginator
+     */
+    public function memoListByTag(string $nickname, string $tag): LengthAwarePaginator
+    {
+        $user = User::where('nickname', $nickname)->firstOrFail();
+
+        return Memo::with(['category:name,id'])
+            ->where('user_id', $user->id)
+            ->whereHas('tags', function($q) use ($tag) {
+                $q->where('normalized', $tag);
+            })
+            ->orderBy('updated_at', 'desc')
+            ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
+    }
+
+    /**
+     * @param string $nickname
      * @param int $categoryId
      * @param string $tag
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
     public function memoListByCategoryAndTag(string $nickname, int $categoryId, string $tag): LengthAwarePaginator
     {

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListByCategoryTagRequest;
-use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryTagRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListByTagRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListRequest;
