@@ -16,7 +16,7 @@ class NicknameMemoRepository extends BaseMemoRepository
      * @param string $nickname
      * @return LengthAwarePaginator
      */
-    public function nicknameMemoList(string $nickname): LengthAwarePaginator
+    public function publicNicknameMemoList(string $nickname): LengthAwarePaginator
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 
@@ -31,7 +31,7 @@ class NicknameMemoRepository extends BaseMemoRepository
      * @param int $id
      * @return Builder | Memo
      */
-    public function userMemoDetailByNickname(string $nickname, int $id): Builder | Memo
+    public function publicNicknameMemoDetail(string $nickname, int $id): Builder | Memo
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 
@@ -47,7 +47,7 @@ class NicknameMemoRepository extends BaseMemoRepository
      * @param int $categoryId
      * @return LengthAwarePaginator
      */
-    public function nicknameMemoListByCategory(string $nickname, int $categoryId): LengthAwarePaginator
+    public function publicNicknameMemoListByCategory(string $nickname, int $categoryId): LengthAwarePaginator
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 
@@ -63,7 +63,7 @@ class NicknameMemoRepository extends BaseMemoRepository
      * @param string $tag
      * @return LengthAwarePaginator
      */
-    public function nicknameMemoListByTag(string $nickname, string $tag): LengthAwarePaginator
+    public function publicNicknameMemoListByTag(string $nickname, string $tag): LengthAwarePaginator
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 
@@ -83,7 +83,7 @@ class NicknameMemoRepository extends BaseMemoRepository
      * @param string $tag
      * @return LengthAwarePaginator
      */
-    public function nicknameMemoListByCategoryAndTag(string $nickname, int $categoryId, string $tag): LengthAwarePaginator
+    public function publicNicknameMemoListByCategoryAndTag(string $nickname, int $categoryId, string $tag): LengthAwarePaginator
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 
