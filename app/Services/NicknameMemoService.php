@@ -31,10 +31,10 @@ class NicknameMemoService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoList(string $nickname): AnonymousResourceCollection
+    public function memoListByNickname(string $nickname): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->userMemoList($nickname);
+            $memos = $this->repository->userMemoListByNickname($nickname);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
@@ -52,7 +52,7 @@ class NicknameMemoService
     public function userMemoDetail(string $nickname, int $id): MemoResource
     {
         try {
-            $memo = $this->repository->userMemoDetail($nickname, $id);
+            $memo = $this->repository->userMemoDetailByNickname($nickname, $id);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;

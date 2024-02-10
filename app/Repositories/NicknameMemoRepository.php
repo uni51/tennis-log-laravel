@@ -17,7 +17,7 @@ class NicknameMemoRepository extends BaseMemoRepository
      * @param string $nickname
      * @return LengthAwarePaginator
      */
-    public function userMemoList(string $nickname): LengthAwarePaginator
+    public function userMemoListByNickname(string $nickname): LengthAwarePaginator
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 
@@ -32,7 +32,7 @@ class NicknameMemoRepository extends BaseMemoRepository
      * @param int $id
      * @return Builder | Memo
      */
-    public function userMemoDetail(string $nickname, int $id): Builder | Memo
+    public function userMemoDetailByNickname(string $nickname, int $id): Builder | Memo
     {
         $user = User::where('nickname', $nickname)->firstOrFail();
 

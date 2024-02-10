@@ -8,11 +8,9 @@ use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoDetailRequest;
 use App\Http\Resources\MemoResource;
-use App\Services\DashboardMemoService;
 use App\Services\NicknameMemoService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Auth;
 
 class NicknameMemoController extends Controller
 {
@@ -25,7 +23,7 @@ class NicknameMemoController extends Controller
     public function userMemoList(NicknameMemoListRequest $request, NicknameMemoService $service): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->userMemoList($validated['nickname']);
+        return $service->memoListByNickname($validated['nickname']);
     }
 
     /**
