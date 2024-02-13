@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Admin\MemoManage;
 
+use App\Rules\ValidCategory;
 use Illuminate\Foundation\Http\FormRequest;
 
-class MemoManageListByTagRequest extends FormRequest
+class AdminMemoListByCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,12 +20,12 @@ class MemoManageListByTagRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
-            'tag' => [ 'required', 'string'],
+            'category_id' => [ 'required', 'int', new ValidCategory],
         ];
     }
 
@@ -35,6 +36,6 @@ class MemoManageListByTagRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge(['tag' => $this->route('tag')]);
+        $this->merge(['category_id' => $this->route('category_id')]);
     }
 }

@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests\Admin\MemoManage;
 
-use App\Rules\ValidCategory;
 use Illuminate\Foundation\Http\FormRequest;
 
-class MemoManageNicknameListByCategoryTagRequest extends FormRequest
+class AdminMemoDetailRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +24,7 @@ class MemoManageNicknameListByCategoryTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nickname' => ['required', 'string'],
-            'category_id' => ['required', 'int', new ValidCategory()],
-            'tag' => ['required', 'string'],
+            'id' => ['required', 'int'],
         ];
     }
 
@@ -38,10 +35,6 @@ class MemoManageNicknameListByCategoryTagRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge([
-            'nickname' => $this->route('nickname'),
-            'category_id' => $this->route('category_id'),
-            'tag' => $this->route('tag')
-        ]);
+        $this->merge(['id' => $this->route('id')]);
     }
 }

@@ -3,21 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\MemoManage\MemoManageListByCategoryTagRequest;
-use App\Http\Requests\Admin\MemoManage\MemoManageListByTagRequest;
-use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListByCategoryRequest;
-use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListByCategoryTagRequest;
-use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListByTagRequest;
-use App\Http\Requests\Admin\MemoManage\MemoManageNicknameListRequest;
-use App\Http\Requests\Admin\MemoManage\MemoManageShowRequest;
-use App\Http\Requests\Admin\MemoManage\MemoManageListByCategoryRequest;
-use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryTagRequest;
-use App\Http\Requests\PublicMemos\PublicMemoListByCategoryTagRequest;
-use App\Http\Requests\PublicMemos\PublicMemoListByTagRequest;
+use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryTagRequest;
+use App\Http\Requests\Admin\MemoManage\AdminMemoListByTagRequest;
+use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByCategoryRequest;
+use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByCategoryTagRequest;
+use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByTagRequest;
+use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListRequest;
+use App\Http\Requests\Admin\MemoManage\AdminMemoDetailRequest;
+use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryRequest;
 use App\Http\Resources\MemoResource;
 use App\Services\Admin\MemoManageService;
-use App\Services\NicknameMemoService;
-use App\Services\PublicMemoService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -40,24 +35,24 @@ class MemoManageController extends Controller
     }
 
     /**
-     * @param MemoManageShowRequest $request
+     * @param AdminMemoDetailRequest $request
      * @param MemoManageService $service
      * @return MemoResource
      */
-    public function adminMemoShow(MemoManageShowRequest $request, MemoManageService $service): MemoResource
+    public function adminMemoShow(AdminMemoDetailRequest $request, MemoManageService $service): MemoResource
     {
         $validated = $request->validated();
         return $service->adminMemoShow($validated['id']);
     }
 
     /**
-     * @param MemoManageListByCategoryRequest $request
+     * @param AdminMemoListByCategoryRequest $request
      * @param MemoManageService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function adminMemoListByCategory(
-        MemoManageListByCategoryRequest $request,
+        AdminMemoListByCategoryRequest $request,
         MemoManageService $service
     ): AnonymousResourceCollection
     {
@@ -68,12 +63,12 @@ class MemoManageController extends Controller
     /**
      * タグ別 記事一覧取得API
      *
-     * @param MemoManageListByTagRequest $request
+     * @param AdminMemoListByTagRequest $request
      * @param MemoManageService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function adminMemoListByTag(MemoManageListByTagRequest $request, MemoManageService $service)
+    public function adminMemoListByTag(AdminMemoListByTagRequest $request, MemoManageService $service)
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
@@ -81,13 +76,13 @@ class MemoManageController extends Controller
     }
 
     /**
-     * @param MemoManageListByCategoryTagRequest $request
+     * @param AdminMemoListByCategoryTagRequest $request
      * @param MemoManageService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function adminMemoListByCategoryAndTag(
-        MemoManageListByCategoryTagRequest $request,
+        AdminMemoListByCategoryTagRequest $request,
         MemoManageService $service
     ): AnonymousResourceCollection
     {
@@ -96,24 +91,24 @@ class MemoManageController extends Controller
     }
 
     /**
-     * @param MemoManageNicknameListRequest $request
+     * @param AdminNicknameMemoListRequest $request
      * @param MemoManageService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function adminNicknameMemoList(MemoManageNicknameListRequest $request, MemoManageService $service): AnonymousResourceCollection
+    public function adminNicknameMemoList(AdminNicknameMemoListRequest $request, MemoManageService $service): AnonymousResourceCollection
     {
         $validated = $request->validated();
         return $service->adminNicknameMemoList($validated['nickname']);
     }
 
     /**
-     * @param MemoManageNicknameListByCategoryRequest $request
+     * @param AdminNicknameMemoListByCategoryRequest $request
      * @param MemoManageService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function adminNicknameMemoListByCategory(MemoManageNicknameListByCategoryRequest $request, MemoManageService $service)
+    public function adminNicknameMemoListByCategory(AdminNicknameMemoListByCategoryRequest $request, MemoManageService $service)
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
@@ -123,12 +118,12 @@ class MemoManageController extends Controller
     /**
      * タグ別 記事一覧取得API
      *
-     * @param MemoManageNicknameListByTagRequest $request
+     * @param AdminNicknameMemoListByTagRequest $request
      * @param MemoManageService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function adminNicknameMemoListByTag(MemoManageNicknameListByTagRequest $request, MemoManageService $service)
+    public function adminNicknameMemoListByTag(AdminNicknameMemoListByTagRequest $request, MemoManageService $service)
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
@@ -136,13 +131,13 @@ class MemoManageController extends Controller
     }
 
     /**
-     * @param MemoManageNicknameListByCategoryTagRequest $request
+     * @param AdminNicknameMemoListByCategoryTagRequest $request
      * @param MemoManageService $service
      * @return AnonymousResourceCollection
      * @throws Exception
      */
     public function adminNicknameMemoListByCategoryAndTag(
-        MemoManageNicknameListByCategoryTagRequest $request,
+        AdminNicknameMemoListByCategoryTagRequest $request,
         MemoManageService $service
     ): AnonymousResourceCollection
     {

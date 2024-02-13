@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin\MemoManage;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MemoManageNicknameListByTagRequest extends FormRequest
+class AdminMemoListByTagRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,7 @@ class MemoManageNicknameListByTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nickname' => ['required', 'string'],
-            'tag' => ['required', 'string'],
+            'tag' => [ 'required', 'string'],
         ];
     }
 
@@ -36,9 +35,6 @@ class MemoManageNicknameListByTagRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge([
-            'nickname' => $this->route('nickname'),
-            'tag' => $this->route('tag')
-        ]);
+        $this->merge(['tag' => $this->route('tag')]);
     }
 }
