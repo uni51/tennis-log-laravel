@@ -44,7 +44,7 @@ class NicknameMemoService
      * @return MemoResource
      * @throws Exception
      */
-    public function publicNicknameMemoDetail(string $nickname, int $id): MemoResource
+    public function publicNicknameMemoShow(string $nickname, int $id): MemoResource
     {
         try {
             $memo = $this->repository->publicNicknameMemoDetail($nickname, $id);

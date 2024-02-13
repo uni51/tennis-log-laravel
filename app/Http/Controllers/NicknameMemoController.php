@@ -6,7 +6,7 @@ use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryTagRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListByTagRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListRequest;
-use App\Http\Requests\NicknameMemos\NicknameMemoDetailRequest;
+use App\Http\Requests\NicknameMemos\NicknameMemoShowRequest;
 use App\Http\Resources\MemoResource;
 use App\Services\NicknameMemoService;
 use Exception;
@@ -27,15 +27,15 @@ class NicknameMemoController extends Controller
     }
 
     /**
-     * @param NicknameMemoDetailRequest $request
+     * @param NicknameMemoShowRequest $request
      * @param NicknameMemoService $service
      * @return MemoResource
      * @throws Exception
      */
-    public function publicNicknameMemoDetail(NicknameMemoDetailRequest $request, NicknameMemoService $service): MemoResource
+    public function publicNicknameMemoShow(NicknameMemoShowRequest $request, NicknameMemoService $service): MemoResource
     {
         $validated = $request->validated();
-        return $service->publicNicknameMemoDetail($validated['nickname'], $validated['id']);
+        return $service->publicNicknameMemoShow($validated['nickname'], $validated['id']);
     }
 
     /**

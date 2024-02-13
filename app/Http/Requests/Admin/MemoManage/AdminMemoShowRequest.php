@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\NicknameMemos;
+namespace App\Http\Requests\Admin\MemoManage;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class NicknameMemoDetailRequest extends FormRequest
+class AdminMemoShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,6 @@ class NicknameMemoDetailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nickname' => ['required', 'string'],
             'id' => ['required', 'int'],
         ];
     }
@@ -36,9 +35,6 @@ class NicknameMemoDetailRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge([
-            'nickname' => $this->route('nickname'),
-            'id' => $this->route('id')
-        ]);
+        $this->merge(['id' => $this->route('id')]);
     }
 }

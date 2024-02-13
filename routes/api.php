@@ -72,7 +72,7 @@ Route::get('/public/memos/search', [PublicMemoController::class, 'publicMemoSear
 Route::get('/public/{nickname}/memos', [NicknameMemoController::class, 'publicNicknameMemoList'])
     ->name('get.public.nickname.memos');
 
-Route::get('/public/{nickname}/memos/{id}', [NicknameMemoController::class, 'publicNicknameMemoDetail'])
+Route::get('/public/{nickname}/memos/{id}', [NicknameMemoController::class, 'publicNicknameMemoShow'])
     ->name('get.public.nickname.memos.id');
 Route::get('/public/{nickname}/memos/category/{category_id}',
     [NicknameMemoController::class, 'publicNicknameMemoListByCategory'])
