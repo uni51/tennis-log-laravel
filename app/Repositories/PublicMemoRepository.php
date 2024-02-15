@@ -8,13 +8,12 @@ use App\Enums\MemoStatusType;
 use App\Models\Memo;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class PublicMemoRepository
+class PublicMemoRepository extends BaseMemoRepository
 {
-
     /**
      * @return LengthAwarePaginator
      */
-    public function allPublicList(): LengthAwarePaginator
+    public function publicMemoList(): LengthAwarePaginator
     {
         return Memo::with(['category:name,id'])
                 ->where('status', MemoStatusType::getValue('公開中'))
@@ -93,7 +92,7 @@ class PublicMemoRepository
      * @param string $tag
      * @return LengthAwarePaginator
      */
-    public function memoListByCategoryAndTag(int $categoryId, string $tag): LengthAwarePaginator
+    public function publicMemoListByCategoryAndTag(int $categoryId, string $tag): LengthAwarePaginator
     {
         return Memo::with(['category:name,id'])
             ->where('status', MemoStatusType::getValue('公開中'))

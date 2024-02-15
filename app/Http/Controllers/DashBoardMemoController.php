@@ -33,9 +33,9 @@ class DashBoardMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function list(DashboardMemoService $service): AnonymousResourceCollection
+    public function dashboardMemoList(DashboardMemoService $service): AnonymousResourceCollection
     {
-        return $service->memoListByAuthUser(Auth::id());
+        return $service->dashboardMemoListByAuthUser(Auth::id());
     }
 
     /**
@@ -46,7 +46,7 @@ class DashBoardMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function search(DashboardMemoSearchRequest $request, DashboardMemoService $service): AnonymousResourceCollection
+    public function dashboardMemoSearch(DashboardMemoSearchRequest $request, DashboardMemoService $service): AnonymousResourceCollection
     {
         $validated = $request->validated();
         return $service->dashboardMemoSearch(Auth::id(), $validated['q']);
@@ -58,13 +58,13 @@ class DashBoardMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByStatus(
+    public function dashboardMemoListByStatus(
         DashboardMemoListByStatusRequest $request,
         DashboardMemoService $service
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByStatus(Auth::id(), $validated['status']);
+        return $service->dashboardMemoListByStatus(Auth::id(), $validated['status']);
     }
 
     /**
@@ -75,13 +75,13 @@ class DashBoardMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByCategory(
+    public function dashboardMemoListByCategory(
         DashboardMemoListByCategoryRequest $request,
         DashboardMemoService $service
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByCategory(Auth::id(), $validated['category_id']);
+        return $service->dashboardMemoListByCategory(Auth::id(), $validated['category_id']);
     }
 
     /**
@@ -92,11 +92,11 @@ class DashBoardMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByTag(DashboardMemoListByTagRequest $request, DashboardMemoService $service)
+    public function dashboardMemoListByTag(DashboardMemoListByTagRequest $request, DashboardMemoService $service)
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByTag(Auth::id(), $validated['tag']);
+        return $service->dashboardMemoListByTag(Auth::id(), $validated['tag']);
     }
 
     /**
@@ -122,10 +122,10 @@ class DashBoardMemoController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function create(MemoPostRequest $request, DashboardMemoService $service): JsonResponse
+    public function dashboardMemoCreate(MemoPostRequest $request, DashboardMemoService $service): JsonResponse
     {
         $validated = $request->validated();
-        return $service->create($validated);
+        return $service->dashboardMemoCreate($validated);
     }
 
     /**
@@ -134,11 +134,11 @@ class DashBoardMemoController extends Controller
      * @return MemoResource
      * @throws Exception
      */
-    public function show(DashboardMemoShowRequest $request, DashboardMemoService $service): MemoResource
+    public function dashboardMemoShow(DashboardMemoShowRequest $request, DashboardMemoService $service): MemoResource
     {
         $user = Auth::user();
         $validated = $request->validated();
-        return $service->show($validated['id'], $user);
+        return $service->dashboardMemoShow($validated['id'], $user);
     }
 
     /**
@@ -147,11 +147,11 @@ class DashBoardMemoController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function edit(DashboardMemoEditRequest $request, DashboardMemoService $service): JsonResponse
+    public function dashboardMemoEdit(DashboardMemoEditRequest $request, DashboardMemoService $service): JsonResponse
     {
         $user = Auth::user();
         $validated = $request->validated();
-        return $service->edit($validated, $user);
+        return $service->dashboardMemoEdit($validated, $user);
     }
 
     /**
@@ -160,10 +160,10 @@ class DashBoardMemoController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function destroy(DashboardMemoDestroyRequest $request, DashboardMemoService $service): JsonResponse
+    public function dashboardMemoDestroy(DashboardMemoDestroyRequest $request, DashboardMemoService $service): JsonResponse
     {
         $user = Auth::user();
         $validated = $request->validated();
-        return $service->destroy($validated['id'], $user);
+        return $service->dashboardMemoDestroy($validated['id'], $user);
     }
 }
