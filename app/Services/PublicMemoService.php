@@ -26,10 +26,10 @@ class PublicMemoService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function allList(): AnonymousResourceCollection
+    public function publicMemoList(): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->allPublicList();
+            $memos = $this->repository->publicMemoList();
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
@@ -43,7 +43,7 @@ class PublicMemoService
      * @return MemoResource
      * @throws Exception
      */
-    public function show(int $id): MemoResource
+    public function publicMemoShow(int $id): MemoResource
     {
         try {
             $memo = $this->repository->publicMemoById($id);
@@ -60,7 +60,7 @@ class PublicMemoService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function search(string $input_keyword): AnonymousResourceCollection
+    public function publicMemoSearch(string $input_keyword): AnonymousResourceCollection
     {
         try {
             $memos = $this->repository->searchPublicMemoList($input_keyword);
@@ -76,7 +76,7 @@ class PublicMemoService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByCategory($categoryId): AnonymousResourceCollection
+    public function publicMemoListByCategory($categoryId): AnonymousResourceCollection
     {
         try {
             $memos = $this->repository->publicMemoListByCategory($categoryId);
@@ -93,7 +93,7 @@ class PublicMemoService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByTag(string $tag): AnonymousResourceCollection
+    public function publicMemoListByTag(string $tag): AnonymousResourceCollection
     {
         try {
             $memos = $this->repository->publicMemoListByTag($tag);
@@ -111,10 +111,10 @@ class PublicMemoService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function memoListByCategoryAndTag(int $categoryId, string $tag): AnonymousResourceCollection
+    public function publicMemoListByCategoryAndTag(int $categoryId, string $tag): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->memoListByCategoryAndTag($categoryId, $tag);
+            $memos = $this->repository->publicMemoListByCategoryAndTag($categoryId, $tag);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;

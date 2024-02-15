@@ -6,13 +6,11 @@ use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryTagRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListByTagRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListByCategoryRequest;
 use App\Http\Requests\NicknameMemos\NicknameMemoListRequest;
-use App\Http\Requests\NicknameMemos\NicknameMemoDetailRequest;
+use App\Http\Requests\NicknameMemos\NicknameMemoShowRequest;
 use App\Http\Resources\MemoResource;
-use App\Services\DashboardMemoService;
 use App\Services\NicknameMemoService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Auth;
 
 class NicknameMemoController extends Controller
 {
@@ -22,22 +20,22 @@ class NicknameMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoList(NicknameMemoListRequest $request, NicknameMemoService $service): AnonymousResourceCollection
+    public function publicNicknameMemoList(NicknameMemoListRequest $request, NicknameMemoService $service): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->userMemoList($validated['nickname']);
+        return $service->publicNicknameMemoList($validated['nickname']);
     }
 
     /**
-     * @param NicknameMemoDetailRequest $request
+     * @param NicknameMemoShowRequest $request
      * @param NicknameMemoService $service
      * @return MemoResource
      * @throws Exception
      */
-    public function userMemoDetail(NicknameMemoDetailRequest $request, NicknameMemoService $service): MemoResource
+    public function publicNicknameMemoShow(NicknameMemoShowRequest $request, NicknameMemoService $service): MemoResource
     {
         $validated = $request->validated();
-        return $service->userMemoDetail($validated['nickname'], $validated['id']);
+        return $service->publicNicknameMemoShow($validated['nickname'], $validated['id']);
     }
 
     /**
@@ -46,11 +44,11 @@ class NicknameMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoListByCategory(NicknameMemoListByCategoryRequest $request, NicknameMemoService $service)
+    public function publicNicknameMemoListByCategory(NicknameMemoListByCategoryRequest $request, NicknameMemoService $service)
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->userMemoListByCategory($validated['nickname'], $validated['category_id']);
+        return $service->publicNicknameMemoListByCategory($validated['nickname'], $validated['category_id']);
     }
 
     /**
@@ -61,11 +59,11 @@ class NicknameMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoListByTag(NicknameMemoListByTagRequest $request, NicknameMemoService $service)
+    public function publicNicknameMemoListByTag(NicknameMemoListByTagRequest $request, NicknameMemoService $service)
     : AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByTag($validated['nickname'], $validated['tag']);
+        return $service->publicNicknameMemoListByTag($validated['nickname'], $validated['tag']);
     }
 
     /**
@@ -76,12 +74,12 @@ class NicknameMemoController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function userMemoListByCategoryAndTag(
+    public function publicNicknameMemoListByCategoryAndTag(
         NicknameMemoListByCategoryTagRequest $request,
         NicknameMemoService $service
     ): AnonymousResourceCollection
     {
         $validated = $request->validated();
-        return $service->memoListByCategoryAndTag($validated['nickname'], $validated['category_id'], $validated['tag']);
+        return $service->publicNicknameMemoListByCategoryAndTag($validated['nickname'], $validated['category_id'], $validated['tag']);
     }
 }

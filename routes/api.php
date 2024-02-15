@@ -55,32 +55,33 @@ Route::get('/profile/tennis_level', [TennisLevelController::class, 'tennisLevelL
     ->name('get.profile.tennis_level');
 
 // 公開中の記事一覧を取得するAPI
-Route::get('/public/memos', [PublicMemoController::class, 'allList'])
+Route::get('/public/memos', [PublicMemoController::class, 'publicMemoList'])
     ->name('get.public.memos');
-Route::get('/public/memos/category/{category_id}', [PublicMemoController::class, 'memoListByCategory'])
+Route::get('/public/memos/category/{category_id}', [PublicMemoController::class, 'publicMemoListByCategory'])
     ->name('get.public.memos.category');
-Route::get('/public/memos/tag/{tag}', [PublicMemoController::class, 'memoListByTag'])
+Route::get('/public/memos/tag/{tag}', [PublicMemoController::class, 'publicMemoListByTag'])
     ->name('get.public.memos.category');
 Route::get('/public/memos/category/{category_id}/tag/{tag}',
-    [PublicMemoController::class, 'memoListByCategoryAndTag'])
+    [PublicMemoController::class, 'publicMemoListByCategoryAndTag'])
     ->name('get.public.memos.category.tag');
-Route::get('/public/memos/{id}', [PublicMemoController::class, 'show'])
+Route::get('/public/memos/{id}', [PublicMemoController::class, 'publicMemoShow'])
     ->name('get.public.memos.id');
-Route::get('/public/memos/search', [PublicMemoController::class, 'search'])
+Route::get('/public/memos/search', [PublicMemoController::class, 'publicMemoSearch'])
     ->name('get.public.memos.search');
 
-Route::get('/public/{nickname}/memos', [NicknameMemoController::class, 'userMemoList'])
-    ->name('get.public.memos.nickname');
-Route::get('/public/{nickname}/memos/{id}', [NicknameMemoController::class, 'userMemoDetail'])
+Route::get('/public/{nickname}/memos', [NicknameMemoController::class, 'publicNicknameMemoList'])
+    ->name('get.public.nickname.memos');
+
+Route::get('/public/{nickname}/memos/{id}', [NicknameMemoController::class, 'publicNicknameMemoShow'])
     ->name('get.public.nickname.memos.id');
 Route::get('/public/{nickname}/memos/category/{category_id}',
-    [NicknameMemoController::class, 'userMemoListByCategory'])
+    [NicknameMemoController::class, 'publicNicknameMemoListByCategory'])
     ->name('get.public.nickname.memos.category');
 Route::get('/public/{nickname}/memos/tag/{tag}',
-    [NicknameMemoController::class, 'userMemoListByTag'])
+    [NicknameMemoController::class, 'publicNicknameMemoListByTag'])
     ->name('get.public.nickname.memos.tag');
 Route::get('/public/{nickname}/memos/category/{category_id}/tag/{tag}',
-    [NicknameMemoController::class, 'userMemoListByCategoryAndTag'])
+    [NicknameMemoController::class, 'publicNicknameMemoListByCategoryAndTag'])
     ->name('get.public.nickname.memos.category.tag');
 
 // ログインユーザー取得
@@ -95,36 +96,36 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     });
 
     // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
-    Route::get('/dashboard/memos', [DashBoardMemoController::class, 'list'])
+    Route::get('/dashboard/memos', [DashBoardMemoController::class, 'dashboardMemoList'])
         ->name('get.dashboard.memos');
-    // メモの新規作成
-    Route::post('/dashboard/memos', [DashBoardMemoController::class, 'create'])
-        ->name('post.dashboard.memos');
 
-    Route::get('/dashboard/memos/search', [DashBoardMemoController::class, 'search'])
+    Route::get('/dashboard/memos/search', [DashBoardMemoController::class, 'dashboardMemoSearch'])
         ->name('get.dashboard.memos.search');
 
-    Route::get('/dashboard/memos/status/{status}', [DashBoardMemoController::class, 'memoListByStatus'])
+    Route::get('/dashboard/memos/status/{status}', [DashBoardMemoController::class, 'dashboardMemoListByStatus'])
         ->name('get.dashboard.memos.status');
 
-    Route::get('/dashboard/memos/category/{category_id}', [DashBoardMemoController::class, 'memoListByCategory'])
+    Route::get('/dashboard/memos/category/{category_id}', [DashBoardMemoController::class, 'dashboardMemoListByCategory'])
         ->name('get.dashboard.memos.category');
 
-    Route::get('/dashboard/memos/tag/{tag}', [DashBoardMemoController::class, 'memoListByTag'])
+    Route::get('/dashboard/memos/tag/{tag}', [DashBoardMemoController::class, 'dashboardMemoListByTag'])
         ->name('get.dashboard.memos.tag');
 
     Route::get('/dashboard/memos/category/{category_id}/tag/{tag}',
         [DashBoardMemoController::class, 'memoListByCategoryAndTag'])
         ->name('get.dashboard.memos.category.tag');
 
-    Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'show'])
+    Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'dashboardMemoShow'])
         ->name('get.dashboard.memos.id');
 
+    // メモの新規作成
+    Route::post('/dashboard/memos', [DashBoardMemoController::class, 'dashboardMemoCreate'])
+        ->name('post.dashboard.memos');
     // メモの編集
-    Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'edit'])
+    Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'dashboardMemoEdit'])
         ->name('post.dashboard.memos.id');
 
-    Route::post('/dashboard/memos/{id}/delete', [DashBoardMemoController::class, 'destroy'])
+    Route::post('/dashboard/memos/{id}/delete', [DashBoardMemoController::class, 'dashboardMemoDestroy'])
         ->name('post.dashboard.memos.id.delete');
 
     Route::get('/user/delete', function () {
@@ -142,12 +143,34 @@ Route::group(['middleware' => 'auth:admin'], function () {
     Route::get('/admin', function (Request $request) {
         return $request->user();
     });
+
+    Route::get('/admin/memos', [MemoManageController::class, 'adminMemoList'])
+        ->name('get.admin.memos');
+    Route::get('/admin/memos/{id}', [MemoManageController::class, 'adminMemoShow'])
+        ->name('get.admin.memos.id');
+    Route::get('/admin/memos/category/{category_id}', [MemoManageController::class, 'adminMemoListByCategory'])
+        ->name('get.admin.memos.category');
+    Route::get('/admin/memos/tag/{tag}', [MemoManageController::class, 'adminMemoListByTag'])
+        ->name('get.admin.memos.category');
+    Route::get('/admin/memos/category/{category_id}/tag/{tag}',
+        [MemoManageController::class, 'adminMemoListByCategoryAndTag'])
+        ->name('get.admin.memos.category.tag');
+
+    Route::get('/admin/{nickname}/memos', [MemoManageController::class, 'adminNicknameMemoList'])
+        ->name('get.admin.nickname.memos');
+    Route::get('/admin/{nickname}/memos/category/{category_id}',
+        [MemoManageController::class, 'adminNicknameMemoListByCategory'])
+        ->name('get.admin.nickname.memos.category');
+    Route::get('/admin/{nickname}/memos/tag/{tag}',
+        [MemoManageController::class, 'adminNicknameMemoListByTag'])
+        ->name('get.admin.nickname.memos.tag');
+    Route::get('/admin/{nickname}/memos/category/{category_id}/tag/{tag}',
+        [MemoManageController::class, 'adminNicknameMemoListByCategoryAndTag'])
+        ->name('get.admin.nickname.memos.category.tag');
+
     Route::get('/admin/users', [UserManageController::class, 'list'])
         ->name('get.admin.users');
     Route::post('/admin/users/disable', [UserManageController::class, 'disable'])
         ->name('post.admin.users.disable');
-    Route::get('/admin/memos', [MemoManageController::class, 'list'])
-        ->name('get.admin.memos');
-    Route::get('/admin/memos/{id}', [MemoManageController::class, 'show'])
-        ->name('get.admin.memos.id');
+
 });
