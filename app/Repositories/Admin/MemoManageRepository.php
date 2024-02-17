@@ -18,6 +18,33 @@ class MemoManageRepository extends BaseMemoRepository
     }
 
     /**
+     * @param string $keyword
+     * @return LengthAwarePaginator
+     */
+    public function adminMemoSearch(string $keyword): LengthAwarePaginator
+    {
+        $query = (new Memo)->newQuery();
+
+        // search title and description for provided strings (space-separated)
+        if ($keyword) {
+            $keywords = explode(' ', $keyword);
+
+            $query->where(function ($q) use ($keywords) {
+                foreach ($keywords as $keyword) {
+                    $q->where(function ($qq) use ($keyword) {
+                        $qq->orWhere('title', 'like', '%' . $keyword . '%')
+                            ->orWhere('body', 'like', '%' . $keyword . '%');
+                    });
+                }
+            });
+        }
+
+        return $query->with(['category:name,id'])
+            ->orderBy('updated_at', 'desc')
+            ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
+    }
+
+    /**
      * @param int $categoryId
      * @return LengthAwarePaginator
      */

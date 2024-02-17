@@ -3,12 +3,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DashboardMemos\DashboardMemoDestroyRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoEditRequest;
-use App\Http\Requests\DashboardMemos\DashboardMemoShowRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoListByCategoryRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoListByCategoryTagRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoListByStatusRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoListByTagRequest;
-use App\Http\Requests\DashboardMemoSearchRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoSearchRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoShowRequest;
 use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;
 use App\Services\DashboardMemoService;
@@ -16,7 +16,6 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class DashBoardMemoController
