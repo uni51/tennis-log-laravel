@@ -39,6 +39,23 @@ class MemoManageService
     }
 
     /**
+     * @param string $keyword
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function adminMemoSearch(string $keyword): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->adminMemoSearch($keyword);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoResource::collection($memos);
+    }
+
+    /**
      * @param int $id
      * @return MemoResource
      */

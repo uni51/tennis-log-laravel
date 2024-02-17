@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PublicMemos\PublicMemoListByCategoryTagRequest;
 use App\Http\Requests\PublicMemos\PublicMemoListByCategoryRequest;
+use App\Http\Requests\PublicMemos\PublicMemoListByCategoryTagRequest;
 use App\Http\Requests\PublicMemos\PublicMemoListByTagRequest;
+use App\Http\Requests\PublicMemos\PublicMemoSearchRequest;
 use App\Http\Requests\PublicMemos\PublicMemoShowRequest;
-use App\Http\Requests\PublicMemoSearchRequest;
 use App\Http\Resources\MemoResource;
 use App\Services\PublicMemoService;
 use Exception;
