@@ -1,14 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\DashboardMemos;
 
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Symfony\Component\HttpFoundation\Response;
 
-class PublicMemoSearchRequest extends FormRequest
+class DashboardMemoSearchRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

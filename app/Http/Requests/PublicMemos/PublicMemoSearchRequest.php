@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\PublicMemos;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DashboardMemoSearchRequest extends FormRequest
+class PublicMemoSearchRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

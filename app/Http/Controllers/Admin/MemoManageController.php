@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByTagRequest;
+use App\Http\Requests\Admin\MemoManage\AdminMemoSearchRequest;
+use App\Http\Requests\Admin\MemoManage\AdminMemoShowRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByCategoryRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByCategoryTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListRequest;
-use App\Http\Requests\Admin\MemoManage\AdminMemoShowRequest;
-use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryRequest;
 use App\Http\Resources\MemoResource;
 use App\Services\Admin\MemoManageService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class MemoManageController
@@ -32,6 +34,20 @@ class MemoManageController extends Controller
     public function adminMemoList(MemoManageService $service): AnonymousResourceCollection
     {
         return $service->adminMemoList();
+    }
+
+    /**
+     * キーワードによる記事検索API
+     *
+     * @param AdminMemoSearchRequest $request
+     * @param MemomanageService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function adminMemoSearch(AdminMemoSearchRequest $request, MemoManageService $service): AnonymousResourceCollection
+    {
+        $validated = $request->validated();
+        return $service->adminMemoSearch($validated['q']);
     }
 
     /**
