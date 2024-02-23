@@ -20,10 +20,12 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminsTableSeeder::class);
         $this->call(CatgoriesTableSeeder::class);
         $this->call(MemosTableSeeder::class);
+        $this->call(TaggableTagsTableSeeder::class);
         $this->call(TagsTableSeeder::class);
+        $this->call(MemoTagTableSeeder::class);
 
+        // cviebrock/eloquent-taggable 用の処理（taggable_taggablesテーブルへのデータ挿入）
         $dummyTags = Tag::get();
-
         $dummyMemos = Memo::get();
         foreach ($dummyMemos as $dummyMemo) {
             $dummyTags = $dummyTags->shuffle();

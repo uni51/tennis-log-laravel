@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Tag;
+use App\Models\MemoTag;
 
-class TagsTableSeeder extends Seeder
+class MemoTagTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,6 @@ class TagsTableSeeder extends Seeder
      */
     public function run()
     {
-        Tag::factory(20)->create();
+        MemoTag::factory(3000)->create();
     }
 }
