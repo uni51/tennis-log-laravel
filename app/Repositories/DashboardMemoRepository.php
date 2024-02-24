@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Consts\Pagination;
 use App\Models\Memo;
+use App\Models\Tag;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -36,7 +37,8 @@ class DashboardMemoRepository extends BaseMemoRepository
         try {
             DB::beginTransaction();
             $memo = $this->createNewMemo($validated);
-            $this->attachTagsToMemo($memo, $validated['tags'] ?? []);
+            // 配列をコレクションに変換してからeachメソッドを使用
+            $this->attachTagsToMemo($memo, $validated['tags']);
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -70,9 +72,15 @@ class DashboardMemoRepository extends BaseMemoRepository
      */
     private function attachTagsToMemo(Memo $memo, array $tags): void
     {
-        if (!empty($tags)) {
-            $memo->tag($tags);
-        }
+        // 配列をコレクションに変換してからeachメソッドを使用
+        collect($tags)->each(function ($tagName) use ($memo) {
+            $tag = Tag::firstOrCreate([
+                'name' => $tagName,
+                'normalized' => mb_convert_kana(strtolower($tagName), 'as', 'UTF-8'),
+                'created_by'=> Auth::id(),
+            ]);
+            $memo->tags()->attach($tag);
+        });
     }
 
     /**

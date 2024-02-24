@@ -10,6 +10,12 @@ class Tag extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'normalized',
+        'created_by',
+    ];
+
     public function memos(): BelongsToMany
     {
         return $this->belongsToMany(Memo::class, 'memo_tag')->withTimestamps();
