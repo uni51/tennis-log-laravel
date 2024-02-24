@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use App\Models\Memo;
 use Illuminate\Database\Seeder;
 use Cviebrock\EloquentTaggable\Models\Tag;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {

@@ -14,10 +14,13 @@ class CreateMemoTagTable extends Migration
     public function up(): void
     {
         Schema::create('memo_tag', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('memo_id')->references('id')->on('memos');
             $table->foreignId('tag_id')->references('id')->on('tags');
             $table->timestamps();
+
+            $table->unique(['memo_id', 'tag_id']);
+            $table->index(['memo_id', 'tag_id'], 'i_tag_fwd');
+            $table->index(['tag_id', 'memo_id'], 'i_tag_rev');
         });
     }
 

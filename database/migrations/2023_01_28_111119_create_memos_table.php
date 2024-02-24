@@ -26,7 +26,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('status')->default(0)->comment('記事のステータス');
             $table->boolean('is_appropriate')->default(true)->comment('内容が適切か');
             $table->foreignId('reviewed_by')->nullable()->comment('誰に審査されたか');
-            $table->boolean('fixed_after_warning')->default(true)->comment('警告後に修正されたか');
+            $table->boolean('fixed_after_warning')->nullable()->comment('警告後に修正されたか');
             $table->dateTime('fixed_at')->nullable()->comment('警告後に修正された日時');
             $table->timestamps(); // created_at, updated_at
         });
