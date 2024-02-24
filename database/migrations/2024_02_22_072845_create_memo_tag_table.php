@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 
-class CreateMemoTagTable extends Migration
+return new class extends Migration
 {
 
     /**
@@ -31,4 +31,4 @@ class CreateMemoTagTable extends Migration
     {
         Schema::dropIfExists('memo_tag');
     }
-}
+};

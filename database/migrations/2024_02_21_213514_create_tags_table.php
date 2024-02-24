@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 
-class CreateTagsTable extends Migration
+return new class extends Migration
 {
 
     /**
@@ -32,4 +32,4 @@ class CreateTagsTable extends Migration
     {
         Schema::dropIfExists('tags');
     }
-}
+};
