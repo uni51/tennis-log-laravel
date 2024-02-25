@@ -74,12 +74,43 @@ class DashboardMemoRepository extends BaseMemoRepository
     {
         // 配列をコレクションに変換してからeachメソッドを使用
         collect($tags)->each(function ($tagName) use ($memo) {
-            $tag = Tag::firstOrCreate([
-                'name' => $tagName,
-                'normalized' => mb_convert_kana(strtolower($tagName), 'as', 'UTF-8'),
-                'created_by'=> Auth::id(),
-            ]);
+            // タグ名の正規化
+            $normalizedTagName = $this->normalizeTagName($tagName);
+
+            // まず、現在のユーザーが作成した同名のタグが存在するか検索
+            $tag = Tag::where([
+                ['name', '=', $tagName],
+                ['normalized', '=', $normalizedTagName],
+                ['created_by', '=', Auth::id()], // 現在認証されているユーザーのIDと一致することを確認
+            ])->first();
+
+            // タグが存在しなければ、新しく作成
+            if (!$tag) {
+                $tag = Tag::create([
+                    'name' => $tagName,
+                    'normalized' => $normalizedTagName,
+                    'created_by' => Auth::id(), // 作成者を現在のユーザーに設定
+                ]);
+            }
             $memo->tags()->attach($tag);
+        });
+    }
+    public function syncTagsToMemo(Memo $memo, array $tags): void
+    {
+        $existMemoTags = $memo->tags;
+        $memo->tags()->detach();
+        $this->attachTagsToMemo($memo, $tags);
+        $this->deleteUnusedTags($existMemoTags);
+    }
+
+    private function deleteUnusedTags($existMemoTags): void
+    {
+        $existMemoTags->each(function ($tag) {
+            // タグが現在のユーザーによって作成されたものであること、
+            // そして他のメモには使用されていないことを確認
+            if ($tag->memos()->count() == 0 && $tag->created_by == Auth::id()) {
+                $tag->delete();
+            }
         });
     }
 

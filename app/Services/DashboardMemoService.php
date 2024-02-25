@@ -105,7 +105,7 @@ class DashboardMemoService
         try {
             DB::beginTransaction();
             $this->repository->updateMemo($memo, $validated);
-            $memo->retag($validated['tags']);
+            $this->repository->syncTagsToMemo($memo, $validated['tags']);
             DB::commit();
             return true;
         } catch (Exception $e) {

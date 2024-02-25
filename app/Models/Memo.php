@@ -42,6 +42,6 @@ class Memo extends Model
 
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class, 'memo_tag')->withTimestamps();
+        return $this->belongsToMany(Tag::class, 'memo_tag', 'memo_id', 'tag_id');
     }
 }
