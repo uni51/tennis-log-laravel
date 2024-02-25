@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Consts\Pagination;
+use App\Consts\TagConst;
 use App\Models\Memo;
 use App\Models\Tag;
 use Exception;
@@ -77,22 +78,25 @@ class DashboardMemoRepository extends BaseMemoRepository
             // タグ名の正規化
             $normalizedTagName = $this->normalizeTagName($tagName);
 
-            // まず、現在のユーザーが作成した同名のタグが存在するか検索
+            // 現在のユーザーまたはadminが作成したタグを検索
             $tag = Tag::where([
                 ['name', '=', $tagName],
                 ['normalized', '=', $normalizedTagName],
-                ['created_by', '=', Auth::id()], // 現在認証されているユーザーのIDと一致することを確認
-            ])->first();
+            ])->whereIn('created_by', [Auth::id(), TagConst::ADMIN_ID]) // Auth::id() または admin の ID
+            ->first();
 
-            // タグが存在しなければ、新しく作成
-            if (!$tag) {
+            // タグが存在しなければ、新しく作成（admin以外の場合）
+            if (!$tag && Auth::id() !== TagConst::ADMIN_ID) {
                 $tag = Tag::create([
                     'name' => $tagName,
                     'normalized' => $normalizedTagName,
-                    'created_by' => Auth::id(), // 作成者を現在のユーザーに設定
+                    'created_by' => Auth::id(),
                 ]);
             }
-            $memo->tags()->attach($tag);
+
+            if ($tag) {
+                $memo->tags()->attach($tag);
+            }
         });
     }
     public function syncTagsToMemo(Memo $memo, array $tags): void
@@ -106,9 +110,8 @@ class DashboardMemoRepository extends BaseMemoRepository
     private function deleteUnusedTags($existMemoTags): void
     {
         $existMemoTags->each(function ($tag) {
-            // タグが現在のユーザーによって作成されたものであること、
-            // そして他のメモには使用されていないことを確認
-            if ($tag->memos()->count() == 0 && $tag->created_by == Auth::id()) {
+            // タグが他のメモに使用されておらず、現在のユーザーが作成したもので、かつadminが作成したものではないことを確認
+            if ($tag->memos()->count() == 0 && $tag->created_by == Auth::id() && $tag->created_by !== TagConst::ADMIN_ID) {
                 $tag->delete();
             }
         });
