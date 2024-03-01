@@ -21,7 +21,7 @@ class MemoTagTableSeeder extends Seeder
         $tagIds = Tag::pluck('id')->all();
 
         // 仮に100回の挿入を試みる
-        for ($i = 0; $i < 10000; $i++) {
+        for ($i = 0; $i < 1000; $i++) {
             $memoId = $memoIds[array_rand($memoIds)];
             $tagId = $tagIds[array_rand($tagIds)];
 

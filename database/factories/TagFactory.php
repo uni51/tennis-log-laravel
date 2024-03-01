@@ -18,7 +18,6 @@ class TagFactory extends Factory
 
         return [
             'name' => $tag,
-            'normalized' => mb_strtolower($tag),
             'created_by' => User::inRandomOrder()->first()->id,
         ];
     }

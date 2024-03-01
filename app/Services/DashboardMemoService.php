@@ -110,6 +110,7 @@ class DashboardMemoService
             return true;
         } catch (Exception $e) {
             DB::rollBack();
+            Log::error($e->getMessage());
             return false;
         }
     }

@@ -79,11 +79,9 @@ class DashboardMemoRepository extends BaseMemoRepository
             $normalizedTagName = $this->normalizeTagName($tagName);
 
             // 現在のユーザーまたはadminが作成したタグを検索
-            $tag = Tag::where([
-                ['name', '=', $tagName],
-                ['normalized', '=', $normalizedTagName],
-            ])->whereIn('created_by', [Auth::id(), TagConst::ADMIN_ID]) // Auth::id() または admin の ID
-            ->first();
+            $tag = Tag::where('normalized', $normalizedTagName,)
+                    ->whereIn('created_by', [Auth::id(), TagConst::ADMIN_ID]) // Auth::id() または admin の ID
+                    ->first();
 
             // タグが存在しなければ、新しく作成（admin以外の場合）
             if (!$tag && Auth::id() !== TagConst::ADMIN_ID) {
@@ -101,20 +99,49 @@ class DashboardMemoRepository extends BaseMemoRepository
     }
     public function syncTagsToMemo(Memo $memo, array $tags): void
     {
-        $existMemoTags = $memo->tags;
-        $memo->tags()->detach();
-        $this->attachTagsToMemo($memo, $tags);
-        $this->deleteUnusedTags($existMemoTags);
+        // タグ名からタグのIDを取得し、存在しないものは新規作成
+        $tagIds = collect($tags)->map(function ($name) {
+            $normalizedTagName = $this->normalizeTagName($name); // タグ名の正規化
+            $tag = Tag::firstOrCreate([
+                'name' => $normalizedTagName,
+                'created_by' => Auth::id(),
+            ]);
+            return $tag->id;
+        })->all();
+
+        // syncメソッドでメモとタグのリレーションを更新
+        $memo->tags()->sync($tagIds);
+
+        // 既存のタグのupdated_atを更新
+//        $currentTime = now();
+//        $memo->tags()->each(function ($tag) use ($currentTime) {
+//            // memo_tag テーブルの updated_at を直接更新
+//            DB::table('memo_tag')
+//                ->where('memo_id', $tag->pivot->memo_id)
+//                ->where('tag_id', $tag->pivot->tag_id)
+//                ->update(['updated_at' => $currentTime]);
+//        });
+
+        // ここで不要になったタグを削除するロジックを追加する
+        // 注意: このロジックはアプリケーションの要件に応じて調整する必要があります
+        $this->deleteUnusedTags();
     }
 
-    private function deleteUnusedTags($existMemoTags): void
+    private function deleteUnusedTags(): void
     {
-        $existMemoTags->each(function ($tag) {
-            // タグが他のメモに使用されておらず、現在のユーザーが作成したもので、かつadminが作成したものではないことを確認
-            if ($tag->memos()->count() == 0 && $tag->created_by == Auth::id() && $tag->created_by !== TagConst::ADMIN_ID) {
-                $tag->delete();
-            }
-        });
+        // まず、使用されていない（他のメモに紐付いていない）、現在のユーザーによって作成された
+        // かつ、Adminユーザーによって作成されていないタグを検索します。
+        $unusedTagIds = Tag::whereDoesntHave('memos') // memosリレーションを持たないタグを選択
+        ->where('created_by', Auth::id()) // 現在のユーザーによって作成された
+        ->where('created_by', '!=', TagConst::ADMIN_ID) // Adminによって作成されていない
+        ->pluck('id'); // 不要なタグのIDを取得
+
+        // 条件に一致するタグを削除します。
+        // pluck('id')により取得したIDリストを使用してdelete()を呼び出すことで、
+        // 対象となるタグを一括で物理削除する
+        if ($unusedTagIds->isNotEmpty()) {
+            Tag::whereIn('id', $unusedTagIds)->delete();
+        }
     }
 
     /**
@@ -124,10 +151,6 @@ class DashboardMemoRepository extends BaseMemoRepository
      */
     public function updateMemo(Memo $memo, array $validated): bool
     {
-//        $memo->title = $validated['title'];
-//        $memo->body = $validated['body'];
-//        $memo->category_id = $validated['category_id'];
-//        $memo->status = $validated['status_id'];
         $memo->fill($validated);
         return $memo->save();
     }

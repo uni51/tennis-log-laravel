@@ -18,7 +18,6 @@ return new class extends Migration
             $table->boolean('force_deleted');
             $table->unsignedBigInteger('tag_id')->comment('タグID');
             $table->string('name');
-            $table->string('normalized');
             $table->foreignId('created_by')->nullable();
             $table->boolean('created_by_admin')->comment('管理者が作成したタグかどうか');
             $table->boolean('is_appropriate')->comment('内容が適切か');

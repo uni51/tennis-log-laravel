@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('memos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->comment('ユーザーID');
+            $table->foreignId('user_id')->comment('ユーザーID')
+                    ->constrained()
+                    ->onUpdate('cascade');
             $table->foreignId('category_id')->comment('カテゴリーID')
                     ->constrained()
                     ->onUpdate('cascade')
