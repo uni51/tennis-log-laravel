@@ -112,22 +112,12 @@ class DashboardMemoRepository extends BaseMemoRepository
         // syncメソッドでメモとタグのリレーションを更新
         $memo->tags()->sync($tagIds);
 
-        // 既存のタグのupdated_atを更新
-//        $currentTime = now();
-//        $memo->tags()->each(function ($tag) use ($currentTime) {
-//            // memo_tag テーブルの updated_at を直接更新
-//            DB::table('memo_tag')
-//                ->where('memo_id', $tag->pivot->memo_id)
-//                ->where('tag_id', $tag->pivot->tag_id)
-//                ->update(['updated_at' => $currentTime]);
-//        });
-
         // ここで不要になったタグを削除するロジックを追加する
         // 注意: このロジックはアプリケーションの要件に応じて調整する必要があります
         $this->deleteUnusedTags();
     }
 
-    private function deleteUnusedTags(): void
+    public function deleteUnusedTags(): void
     {
         // まず、使用されていない（他のメモに紐付いていない）、現在のユーザーによって作成された
         // かつ、Adminユーザーによって作成されていないタグを検索します。
@@ -137,8 +127,7 @@ class DashboardMemoRepository extends BaseMemoRepository
         ->pluck('id'); // 不要なタグのIDを取得
 
         // 条件に一致するタグを削除します。
-        // pluck('id')により取得したIDリストを使用してdelete()を呼び出すことで、
-        // 対象となるタグを一括で物理削除する
+        // pluck('id')により取得したIDリストを使用してdelete()を呼び出すことで、対象となるタグを一括で削除する
         if ($unusedTagIds->isNotEmpty()) {
             Tag::whereIn('id', $unusedTagIds)->delete();
         }

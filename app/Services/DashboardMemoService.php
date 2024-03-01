@@ -124,7 +124,9 @@ class DashboardMemoService
     public function dashboardMemoDestroy(int $id, Authenticatable $user): JsonResponse
     {
         $memo = $this->validateUserPermission($id, $user, 'delete');
+        $memo->tags()->detach(); // 中間テーブルのレコードを削除
         $memo->delete();
+        $this->repository->deleteUnusedTags();
         return response()->json(['message' => 'Memo deleted'], 200);
     }
 
