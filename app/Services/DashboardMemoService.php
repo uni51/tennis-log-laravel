@@ -105,11 +105,12 @@ class DashboardMemoService
         try {
             DB::beginTransaction();
             $this->repository->updateMemo($memo, $validated);
-            $memo->retag($validated['tags']);
+            $this->repository->syncTagsToMemo($memo, $validated['tags']);
             DB::commit();
             return true;
         } catch (Exception $e) {
             DB::rollBack();
+            Log::error($e->getMessage());
             return false;
         }
     }
@@ -123,7 +124,9 @@ class DashboardMemoService
     public function dashboardMemoDestroy(int $id, Authenticatable $user): JsonResponse
     {
         $memo = $this->validateUserPermission($id, $user, 'delete');
+        $memo->tags()->detach(); // 中間テーブルのレコードを削除
         $memo->delete();
+        $this->repository->deleteUnusedTags();
         return response()->json(['message' => 'Memo deleted'], 200);
     }
 
