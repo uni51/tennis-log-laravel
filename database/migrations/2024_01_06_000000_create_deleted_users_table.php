@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('deleted_users', function (Blueprint $table) {
             $table->id();
+            $table->boolean('force_deleted');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('firebase_uid')->nullable();
             $table->string('name')->nullable();
@@ -22,8 +23,10 @@ return new class extends Migration
             $table->string('email');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
+            $table->unsignedTinyInteger('times_warned')->comment('警告回数');
             $table->rememberToken();
-            $table->boolean('force_deleted')->default(false);
+            $table->dateTime('user_created_at')->comment('ユーザー作成日時');
+            $table->dateTime('user_updated_at')->comment('ユーザー更新日時');
             $table->timestamps();
         });
     }

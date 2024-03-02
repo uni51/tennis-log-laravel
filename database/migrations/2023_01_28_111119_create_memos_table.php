@@ -15,19 +15,21 @@ return new class extends Migration
     {
         Schema::create('memos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
-                ->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('cascade')
-                ->comment('ユーザーID');
-            $table->foreignId('category_id')
-                ->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('restrict')
-                ->comment('カテゴリーID');
+            $table->foreignId('user_id')->comment('ユーザーID')
+                    ->constrained()
+                    ->onUpdate('cascade');
+            $table->foreignId('category_id')->comment('カテゴリーID')
+                    ->constrained()
+                    ->onUpdate('cascade')
+                    ->onDelete('restrict');
+
             $table->string('title', 100)->comment('タイトル');
             $table->string('body', 3000)->comment('メモの内容');
-            $table->unsignedTinyInteger('status')->default(0)->comment('記事のステータス: 0:下書き, 1:公開中, 2:シェア, 3:非公開, 4:削除');
+            $table->unsignedTinyInteger('status')->default(0)->comment('記事のステータス');
+            $table->boolean('is_appropriate')->default(true)->comment('内容が適切か');
+            $table->foreignId('reviewed_by')->nullable()->comment('誰に審査されたか');
+            $table->boolean('fixed_after_warning')->nullable()->comment('警告後に修正されたか');
+            $table->dateTime('fixed_at')->nullable()->comment('警告後に修正された日時');
             $table->timestamps(); // created_at, updated_at
         });
     }

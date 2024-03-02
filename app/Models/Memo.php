@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Cviebrock\EloquentTaggable\Taggable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property int|mixed|string|null $user_id
@@ -21,7 +20,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Memo extends Model
 {
-    use HasFactory, Taggable;
+//    use HasFactory, Taggable;
+    use HasFactory;
 
     protected $fillable = [
         'user_id',
@@ -38,5 +38,11 @@ class Memo extends Model
 
     public function category() {
         return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'memo_tag', 'memo_id', 'tag_id')
+                    ->withTimestamps();
     }
 }

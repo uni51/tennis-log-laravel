@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2fc88f8ce6b06f943e2254307d37866b",
+    "content-hash": "15cfa3aa1446baf5b345f3dd2b2dc690",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -415,76 +415,6 @@
                 }
             ],
             "time": "2022-11-17T09:50:14+00:00"
-        },
-        {
-            "name": "cviebrock/eloquent-taggable",
-            "version": "9.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cviebrock/eloquent-taggable.git",
-                "reference": "eb288f1120fd43f251a8045d9b3b911fe3054337"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cviebrock/eloquent-taggable/zipball/eb288f1120fd43f251a8045d9b3b911fe3054337",
-                "reference": "eb288f1120fd43f251a8045d9b3b911fe3054337",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/config": "^9.0",
-                "illuminate/database": "^9.0",
-                "illuminate/support": "^9.0",
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "limedeck/phpunit-detailed-printer": "^6.0",
-                "orchestra/database": "^7.0",
-                "orchestra/testbench": "^7.18",
-                "phpunit/phpunit": "^9.5.10"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Cviebrock\\EloquentTaggable\\ServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Cviebrock\\EloquentTaggable\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Colin Viebrock",
-                    "email": "colin@viebrock.ca"
-                }
-            ],
-            "description": "Easy ability to tag your Eloquent models in Laravel 5.",
-            "homepage": "https://github.com/cviebrock/eloquent-taggable",
-            "keywords": [
-                "Taggable",
-                "eloquent",
-                "laravel",
-                "tag",
-                "tagging"
-            ],
-            "support": {
-                "issues": "https://github.com/cviebrock/eloquent-taggable/issues",
-                "source": "https://github.com/cviebrock/eloquent-taggable"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/cviebrock",
-                    "type": "github"
-                }
-            ],
-            "time": "2023-02-18T00:13:19+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -3811,6 +3741,67 @@
                 }
             ],
             "time": "2023-02-25T19:38:58+00:00"
+        },
+        {
+            "name": "predis/predis",
+            "version": "v2.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/predis/predis.git",
+                "reference": "b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/predis/predis/zipball/b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1",
+                "reference": "b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.3",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": "^8.0 || ~9.4.4"
+            },
+            "suggest": {
+                "ext-relay": "Faster connection with in-memory caching (>=0.6.2)"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Predis\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Till Krüss",
+                    "homepage": "https://till.im",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "A flexible and feature-complete Redis client for PHP.",
+            "homepage": "http://github.com/predis/predis",
+            "keywords": [
+                "nosql",
+                "predis",
+                "redis"
+            ],
+            "support": {
+                "issues": "https://github.com/predis/predis/issues",
+                "source": "https://github.com/predis/predis/tree/v2.2.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/tillkruss",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-09-13T16:42:03+00:00"
         },
         {
             "name": "psr/cache",
@@ -9941,7 +9932,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.1.2"
+        "php": "^8.1.2",
+        "ext-mbstring": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

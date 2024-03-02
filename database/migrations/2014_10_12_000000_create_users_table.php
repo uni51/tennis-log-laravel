@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
+            $table->unsignedTinyInteger('times_warned')->default(0)->comment('警告回数');
             $table->rememberToken();
             $table->timestamps(); // created_at, updated_at
         });
