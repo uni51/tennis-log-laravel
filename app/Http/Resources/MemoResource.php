@@ -24,7 +24,6 @@ class MemoResource extends JsonResource
             'category_name' => $this->category->name,
             'tag_list' => [
                 'tags' => $this->tags->pluck('name'),
-                'normalized' => $this->tags->pluck('name'),
             ],
             'status' => $this->status,
             'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('Y年m月d日'),
