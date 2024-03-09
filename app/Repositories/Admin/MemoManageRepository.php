@@ -34,7 +34,11 @@ class MemoManageRepository extends BaseMemoRepository
                 foreach ($keywords as $keyword) {
                     $q->where(function ($qq) use ($keyword) {
                         $qq->orWhere('title', 'like', '%' . $keyword . '%')
-                            ->orWhere('body', 'like', '%' . $keyword . '%');
+                            ->orWhere('body', 'like', '%' . $keyword . '%')
+                            // ニックネームでの検索を追加
+                            ->orWhereHas('user', function($q) use ($keyword) {
+                                $q->where('nickname', 'like', '%'.$keyword.'%');
+                            });
                     });
                 }
             });
