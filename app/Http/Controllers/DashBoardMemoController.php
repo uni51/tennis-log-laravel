@@ -12,6 +12,7 @@ use App\Http\Requests\DashboardMemos\DashboardMemoShowRequest;
 use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;
 use App\Services\DashboardMemoService;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -139,18 +140,50 @@ class DashBoardMemoController extends Controller
             return response()->json(['error' => '画像データが送信されていません。'], 400);
         }
 
-        // 画像ファイルの名前を生成（例: uniqueFileName.png）
-        $image_name = Str::random(10).'.'.$file->getClientOriginalExtension();
+        // ファイルサイズのチェック（例：1MBを超える場合はエラー）
+        $maxSize = 1 * 1024 * 1024; // 1MBをバイト単位で指定
+        if ($file->getSize() > $maxSize) {
+            return response()->json(['error' => 'ファイルサイズが大きすぎます。1MB以下のファイルを選択してください。'], 400);
+        }
 
-        // 画像を保存
-        $path = $file->storeAs('images', $image_name, 'public');
+        $originalUploadedFileUrl = Cloudinary::upload($file->getRealPath(), [
+            // 'folder' => 'your_folder_name', // 必要に応じて変更してください
+            'transformation' => [
+                'if' => 'w_gt_600', // 画像の横幅が600pxより大きい場合
+                'width' => 600, // 横幅を600pxにリサイズ
+                'crop' => 'limit', // 指定した横幅に合わせてリサイズ（アスペクト比を保持）
+                'else' => [
+                    'width' => 'auto', // 600px以下の場合は元のサイズを保持
+                    'crop' => 'scale',
+                ],
+            ],
+        ])->getSecurePath();
+        // 'upload/' という文字列の位置を見つける
+        $position = strpos($originalUploadedFileUrl, "upload/") + 7; // 'upload/'の後の位置を指定
+        // 'f_auto,q_auto' をURLに挿入
+        $modifiedUploadedFileUrl = substr_replace($originalUploadedFileUrl, "f_auto,q_auto/", $position, 0);
 
-        // 保存された画像のURLを生成
-        $url = config('app.url').Storage::url($path);
-
-        return response()->json(['imageUrl' => $url]);
+        return response()->json(['imageUrl' => $modifiedUploadedFileUrl]);
     }
 
+    public function dashboardMemoUploadStorageAppPublicImage(Request $request)
+    {
+        $file = $request->file('image');
+
+        // データがない場合はエラーを返す
+        if (!$file) {
+            return response()->json(['error' => '画像データが送信されていません。'], 400);
+        }
+
+        /* 以下は、storage/app/public/images配下に画像を格納する場合の処理 */
+        // 画像ファイルの名前を生成（例: uniqueFileName.png）
+         $image_name = Str::random(10).'.'.$file->getClientOriginalExtension();
+        // 画像を保存
+         $path = $file->storeAs('images', $image_name, 'public');
+        // 保存された画像のURLを生成
+         $url = config('app.url').Storage::url($path);
+         return response()->json(['imageUrl' => $url]);
+    }
 
     /**
      * @param DashboardMemoShowRequest $request
