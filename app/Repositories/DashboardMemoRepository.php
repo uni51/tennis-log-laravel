@@ -79,15 +79,14 @@ class DashboardMemoRepository extends BaseMemoRepository
             $normalizedTagName = $this->normalizeTagName($tagName);
 
             // 現在のユーザーまたはadminが作成したタグを検索
-            $tag = Tag::where('normalized', $normalizedTagName,)
+            $tag = Tag::where('name', $normalizedTagName,)
                     ->whereIn('created_by', [Auth::id(), TagConst::ADMIN_ID]) // Auth::id() または admin の ID
                     ->first();
 
             // タグが存在しなければ、新しく作成（admin以外の場合）
             if (!$tag && Auth::id() !== TagConst::ADMIN_ID) {
                 $tag = Tag::create([
-                    'name' => $tagName,
-                    'normalized' => $normalizedTagName,
+                    'name' => $normalizedTagName,
                     'created_by' => Auth::id(),
                 ]);
             }
