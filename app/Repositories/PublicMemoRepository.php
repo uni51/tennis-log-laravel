@@ -76,6 +76,7 @@ class PublicMemoRepository extends BaseMemoRepository
 
         return $query->with(['category:name,id'])
             ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 

@@ -85,8 +85,8 @@ class MemoManageService
         $memo->status = \App\Enums\MemoStatusType::WAITING_FOR_MODIFY;
         $memo->is_appropriate = false;
         $memo->reviewed_by = MemoConst::ADMIN;
-        // $memo->reviewed_at = now()->toDateTimeString();
-        // $memo->status_at_review = $memo->status;
+        $memo->reviewed_at = now()->toDateTimeString();
+        $memo->status_at_review = $memo->status;
         $memo->fixed_after_warning = false;
         $memo->save();
 

@@ -70,7 +70,6 @@ class MemoManageController extends Controller
     public function adminMemoRequestEdit(AdminMemoRequestEditRequest $request, MemoManageService $service): JsonResponse
     {
         $validated = $request->validated();
-//        return $service->adminMemoRequestEdit($validated['id']);
         return $service->adminMemoSetWaitingForModify($validated['id']);
     }
 
