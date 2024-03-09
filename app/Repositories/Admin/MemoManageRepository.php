@@ -14,6 +14,7 @@ class MemoManageRepository extends BaseMemoRepository
     {
         return Memo::with(['category:name,id'])
             ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
     }
 
@@ -96,6 +97,8 @@ class MemoManageRepository extends BaseMemoRepository
 
         return Memo::with(['category:name,id'])
             ->where('user_id', $user->id)
+            ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
     }
 
