@@ -127,10 +127,11 @@ return [
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
 //            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_db_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('REDIS_DB_PREFIX', 'laravel'), '_').'_db_'),
         ],
 
         'default' => [
+            // 'scheme' => 'tls', // UpstashのRedisのTLS接続用の設定
             'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),
             'username' => env('REDIS_USERNAME'),
@@ -140,6 +141,7 @@ return [
         ],
 
         'cache' => [
+            // 'scheme' => 'tls', // UpstashのRedisのTLS接続用の設定
             'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),
             'username' => env('REDIS_USERNAME'),

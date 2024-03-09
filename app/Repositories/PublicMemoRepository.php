@@ -7,6 +7,8 @@ use App\Consts\Pagination;
 use App\Enums\MemoStatusType;
 use App\Models\Memo;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
 
 class PublicMemoRepository extends BaseMemoRepository
 {
@@ -21,6 +23,19 @@ class PublicMemoRepository extends BaseMemoRepository
                 ->orderBy('id', 'desc')
                 ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
+
+//    public function publicMemoListWithRedis($pageName = 'page'): LengthAwarePaginator
+//    {
+//        $page = Paginator::resolveCurrentPage($pageName);
+//        // この場合、ページャの番号に応じてキャッシュする内容が変わるので、キャッシュのキーにページングの情報を含める必要がある
+//        return Cache::remember('public-memo-list-'.$page, 30, function () {
+//            return Memo::with(['category:name,id'])
+//                    ->where('status', MemoStatusType::getValue('公開中'))
+//                    ->orderBy('updated_at', 'desc')
+//                    ->orderBy('id', 'desc')
+//                    ->paginate(Pagination::DEFAULT_PER_PAGE);
+//        });
+//    }
 
     /**
      * @param int $id

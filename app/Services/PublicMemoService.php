@@ -30,6 +30,7 @@ class PublicMemoService
     {
         try {
             $memos = $this->repository->publicMemoList();
+            // $memos = $this->repository->publicMemoListWithRedis();
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
