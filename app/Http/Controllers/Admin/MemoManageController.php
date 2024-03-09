@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByTagRequest;
+use App\Http\Requests\Admin\MemoManage\AdminMemoRequestEditRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoSearchRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoShowRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByCategoryRequest;
@@ -16,7 +17,7 @@ use App\Http\Resources\MemoResource;
 use App\Services\Admin\MemoManageService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
 
 /**
  * Class MemoManageController
@@ -59,6 +60,18 @@ class MemoManageController extends Controller
     {
         $validated = $request->validated();
         return $service->adminMemoShow($validated['id']);
+    }
+
+    /**
+     * @param AdminMemoRequestEditRequest $request
+     * @param MemoManageService $service
+     * @return JsonResponse
+     */
+    public function adminMemoRequestEdit(AdminMemoRequestEditRequest $request, MemoManageService $service): JsonResponse
+    {
+        $validated = $request->validated();
+//        return $service->adminMemoRequestEdit($validated['id']);
+        return $service->adminMemoSetWaitingForModify($validated['id']);
     }
 
     /**

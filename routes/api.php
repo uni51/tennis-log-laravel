@@ -154,6 +154,10 @@ Route::group(['middleware' => 'auth:admin'], function () {
         ->name('get.admin.memos.search');
     Route::get('/admin/memos/{id}', [MemoManageController::class, 'adminMemoShow'])
         ->name('get.admin.memos.id');
+    Route::post('/admin/memos/{id}/request-edit', [MemoManageController::class, 'adminMemoRequestEdit'])
+        ->name('get.admin.memos.id.request-edit');
+
+
     Route::get('/admin/memos/category/{category_id}', [MemoManageController::class, 'adminMemoListByCategory'])
         ->name('get.admin.memos.category');
     Route::get('/admin/memos/tag/{tag}', [MemoManageController::class, 'adminMemoListByTag'])
@@ -173,6 +177,8 @@ Route::group(['middleware' => 'auth:admin'], function () {
     Route::get('/admin/{nickname}/memos/category/{category_id}/tag/{tag}',
         [MemoManageController::class, 'adminNicknameMemoListByCategoryAndTag'])
         ->name('get.admin.nickname.memos.category.tag');
+
+
 
     Route::get('/admin/users', [UserManageController::class, 'list'])
         ->name('get.admin.users');

@@ -9,7 +9,10 @@ final class MemoStatusType extends Enum {
     const DRAFT = 0; // 下書き
     const PUBLISHING = 1; // 公開中
     const SHARING = 2; // シェア
-    const UN_PUBLISHING = 3; // 非公開
+    const UN_PUBLISHING = 3; // 非公開（自分だけが閲覧可能）
+
+    const WAITING_FOR_MODIFY = 4; // 修正待ち
+    const MODIFIED = 5; // 修正済
 
 // ここから先を追加
     public static function getDescription($value): string
@@ -25,6 +28,9 @@ final class MemoStatusType extends Enum {
         }
         if ($value === self::UN_PUBLISHING) {
             return '非公開';
+        }
+        if ($value === self::WAITING_FOR_MODIFY) {
+            return '修正待ち';
         }
         return parent::getDescription($value);
     }
@@ -42,6 +48,9 @@ final class MemoStatusType extends Enum {
         }
         if ($key === '非公開') {
             return self::UN_PUBLISHING;
+        }
+        if ($key === '修正待ち') {
+            return self::WAITING_FOR_MODIFY;
         }
         return parent::getValue($key);
     }

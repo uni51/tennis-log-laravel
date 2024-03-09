@@ -1,12 +1,16 @@
 <?php
 namespace App\Services\Admin;
 
+use App\Consts\MemoConst;
 use App\Http\Resources\Admin\MemoManageResource;
 use App\Http\Resources\MemoResource;
 use App\Repositories\Admin\MemoManageRepository;
+use App\Mail\MemoEditRequest;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class MemoManageService
 {
@@ -64,6 +68,30 @@ class MemoManageService
         $memo = $this->repository->getMemoById($id);
 
         return new MemoResource($memo);
+    }
+
+    /**
+     * Update the memo's status to "Waiting for Modification".
+     *
+     * @param int $id Memo ID
+     * @return JsonResponse
+     */
+    public function adminMemoSetWaitingForModify(int $id): JsonResponse
+    {
+        $memo = $this->repository->getMemoById($id);
+        $user = $memo->user;
+
+        // Update the memo's status
+        $memo->status = \App\Enums\MemoStatusType::WAITING_FOR_MODIFY;
+        $memo->is_appropriate = false;
+        $memo->reviewed_by = MemoConst::ADMIN;
+        // $memo->reviewed_at = now()->toDateTimeString();
+        // $memo->status_at_review = $memo->status;
+        $memo->fixed_after_warning = false;
+        $memo->save();
+
+        Mail::to($user->email)->send(new MemoEditRequest($memo));
+        return response()->json(['message' => 'メモの修正リクエストを送信しました。']);
     }
 
     /**
