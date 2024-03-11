@@ -166,24 +166,27 @@ class DashBoardMemoController extends Controller
         return response()->json(['imageUrl' => $modifiedUploadedFileUrl]);
     }
 
-    public function dashboardMemoUploadStorageAppPublicImage(Request $request)
-    {
-        $file = $request->file('image');
-
-        // データがない場合はエラーを返す
-        if (!$file) {
-            return response()->json(['error' => '画像データが送信されていません。'], 400);
-        }
-
-        /* 以下は、storage/app/public/images配下に画像を格納する場合の処理 */
-        // 画像ファイルの名前を生成（例: uniqueFileName.png）
-         $image_name = Str::random(10).'.'.$file->getClientOriginalExtension();
-        // 画像を保存
-         $path = $file->storeAs('images', $image_name, 'public');
-        // 保存された画像のURLを生成
-         $url = config('app.url').Storage::url($path);
-         return response()->json(['imageUrl' => $url]);
-    }
+    /**
+     * 以下は、storage/app/public/images配下に画像を格納する場合の処理
+     */
+//    public function dashboardMemoUploadStorageAppPublicImage(Request $request)
+//    {
+//        $file = $request->file('image');
+//
+//        // データがない場合はエラーを返す
+//        if (!$file) {
+//            return response()->json(['error' => '画像データが送信されていません。'], 400);
+//        }
+//
+//        /* 以下は、storage/app/public/images配下に画像を格納する場合の処理 */
+//        // 画像ファイルの名前を生成（例: uniqueFileName.png）
+//         $image_name = Str::random(10).'.'.$file->getClientOriginalExtension();
+//        // 画像を保存
+//         $path = $file->storeAs('images', $image_name, 'public');
+//        // 保存された画像のURLを生成
+//         $url = config('app.url').Storage::url($path);
+//         return response()->json(['imageUrl' => $url]);
+//    }
 
     /**
      * @param DashboardMemoShowRequest $request

@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Services;
 
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use App\Repositories\DashboardMemoRepository;
+use App\Services\OpenAIService;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -15,23 +17,25 @@ use Illuminate\Support\Facades\Log;
 class DashboardMemoService
 {
     private DashboardMemoRepository $repository;
+    protected OpenAIService $openAIService;
 
     /**
      * コンストラクタ
      *
      * @param DashboardMemoRepository|null $repository
      */
-    public function __construct(DashboardMemoRepository $repository = null)
+    public function __construct(OpenAIService $openAIService, DashboardMemoRepository $repository = null)
     {
         $this->repository = $repository ?? app(DashboardMemoRepository::class);
+        $this->openAIService = $openAIService;
     }
 
     /**
      * @param int $memoId
      * @param Authenticatable $user
      * @param string $abilities
-     * @throws AuthorizationException
      * @return Memo
+     * @throws AuthorizationException
      */
     private function validateUserPermission(int $memoId, Authenticatable $user, string $abilities): Memo
     {
@@ -50,11 +54,13 @@ class DashboardMemoService
 
     /**
      * @param array $validated
-     * @throws Exception
      * @return JsonResponse
+     * @throws Exception
      */
     public function dashboardMemoCreate(array $validated): JsonResponse
     {
+        // $result = $this->openAIService->isNotTennisRelated($validated['body']);
+
         $this->repository->dashboardMemoCreate($validated);
 
         return response()->json([
@@ -78,13 +84,44 @@ class DashboardMemoService
     /**
      * @param array $validated
      * @param Authenticatable $user
-     * @throws AuthorizationException
-     * @throws Exception
      * @return JsonResponse
+     * @throws Exception
+     * @throws AuthorizationException
      */
     public function dashboardMemoEdit(array $validated, Authenticatable $user): JsonResponse
     {
         $memo = $this->validateUserPermission($validated['id'], $user, 'update');
+
+        // タイトルに不適切な表現（差別的、暴力的、性的な表現や誹謗中傷）が含まれているか
+        $isInappropriateTitle = $this->openAIService->checkForInappropriateContent($validated['title']);
+        if ($isInappropriateTitle) {
+            return response()->json([
+                'errors' => [
+                    'title' => ['不適切な表現が含まれています。修正してください。'],
+                ],
+            ], 422);
+        }
+
+        // 文章に不適切な表現（差別的、暴力的、性的な表現や誹謗中傷）が含まれているか
+        $isInappropriateBody = $this->openAIService->checkForInappropriateContent($validated['body']);
+
+        if ($isInappropriateBody) {
+            return response()->json([
+                'errors' => [
+                    'original-message' => ['不適切な表現が含まれています。修正してください。'],
+                ],
+            ], 422);
+        }
+
+        $isNotTennisRelated = $this->openAIService->isNotTennisRelated($validated['body']);
+
+        if ($isNotTennisRelated) {
+            return response()->json([
+                'errors' => [
+                    'original-message' => ['テニスに関する内容ではありません。修正してください。'],
+                ],
+            ], 422);
+        }
 
         if (!$this->processMemoUpdate($validated, $memo)) {
             throw new Exception('メモの編集に失敗しました。');

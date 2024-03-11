@@ -3,6 +3,7 @@
 namespace App\Http\Requests\DashboardMemos;
 
 use App\Enums\MemoStatusType;
+use App\Rules\AppropriateContent;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DashboardMemoEditRequest extends FormRequest
@@ -26,8 +27,8 @@ class DashboardMemoEditRequest extends FormRequest
     {
         return [
             'id' => ['required', 'int'],
-            'title' => ['required'],
-            'body' => ['required'],
+            'title' => ['required', 'min:3', new AppropriateContent()],
+            'body' => ['required', 'min:3', new AppropriateContent()],
             'category_id' => ['required', 'int'],
             'tags' => ['nullable', 'array'],
             'status_id' => ['required', 'int', 'between:'.MemoStatusType::DRAFT.','.MemoStatusType::UN_PUBLISHING],
