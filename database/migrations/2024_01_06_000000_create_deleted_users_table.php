@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('email');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
+            $table->unsignedInteger('inappropriate_posts_count')->default(0)->comment('不適切な投稿の回数');
             $table->unsignedTinyInteger('times_warned')->comment('警告回数');
             $table->rememberToken();
             $table->dateTime('user_created_at')->comment('ユーザー作成日時');

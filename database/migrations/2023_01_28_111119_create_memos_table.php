@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('title', 100)->comment('タイトル');
             $table->string('body', 3000)->comment('メモの内容');
             $table->unsignedTinyInteger('status')->default(0)->comment('記事のステータス');
-            $table->boolean('is_appropriate')->default(true)->comment('内容が適切か');
+            $table->boolean('is_inappropriate')->default(false)->comment('内容が不適切か');
             $table->unsignedTinyInteger('reviewed_by')->nullable()->comment('誰に審査されたか');
             $table->dateTime('reviewed_at')->nullable()->comment('審査された日時');
             $table->unsignedTinyInteger('status_at_review')->nullable()->comment('審査された時点での記事のステータス');
