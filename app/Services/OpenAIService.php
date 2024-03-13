@@ -57,7 +57,10 @@ class OpenAIService
         $data = [
             'model' => 'gpt-3.5-turbo',
             'messages' => [
-                ['role' => 'user', 'content' => "この文章に不適切な表現（差別的、暴力的、性的な表現や誹謗中傷）が含まれていますか。yes or noで答えてください。\n\n" . $targetContent]
+                [
+                    'role' => 'user',
+                    'content' => "以下の文章に不適切な表現（差別的、暴力的、性的な表現や誹謗中傷）が含まれていますか。yes or noで答えてください。\n\n" . $targetContent
+                ]
             ],
         ];
 

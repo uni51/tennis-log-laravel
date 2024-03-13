@@ -92,35 +92,12 @@ class DashboardMemoService
     {
         $memo = $this->validateUserPermission($validated['id'], $user, 'update');
 
-        // タイトルに不適切な表現（差別的、暴力的、性的な表現や誹謗中傷）が含まれているか
-        $isInappropriateTitle = $this->openAIService->checkForInappropriateContent($validated['title']);
-        if ($isInappropriateTitle) {
-            return response()->json([
-                'errors' => [
-                    'title' => ['不適切な表現が含まれています。修正してください。'],
-                ],
-            ], 422);
-        }
+        // サービスインスタンスの取得
+        $contentInspectionService = app()->make(ContentInspectionService::class);
 
-        // 文章に不適切な表現（差別的、暴力的、性的な表現や誹謗中傷）が含まれているか
-        $isInappropriateBody = $this->openAIService->checkForInappropriateContent($validated['body']);
-
-        if ($isInappropriateBody) {
-            return response()->json([
-                'errors' => [
-                    'original-message' => ['不適切な表現が含まれています。修正してください。'],
-                ],
-            ], 422);
-        }
-
-        $isNotTennisRelated = $this->openAIService->isNotTennisRelated($validated['body']);
-
-        if ($isNotTennisRelated) {
-            return response()->json([
-                'errors' => [
-                    'original-message' => ['テニスに関する内容ではありません。修正してください。'],
-                ],
-            ], 422);
+        $resultOfInappropriateness = $contentInspectionService->inspectContentAndRespond($validated, $user, $memo);
+        if ($resultOfInappropriateness) {
+            return $resultOfInappropriateness;
         }
 
         if (!$this->processMemoUpdate($validated, $memo)) {

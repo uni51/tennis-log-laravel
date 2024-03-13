@@ -30,6 +30,6 @@ class SendNotTennisRelatedNotificationListener
         // 管理者メールアドレス TODO: 管理者のメールアドレスを要変更
         $adminEmail = 'admin@example.com';
         // 送信先アドレスにメールを送信
-        Mail::to($adminEmail)->send(new NotTennisRelatedMail($event->content));
+        Mail::to($adminEmail)->send(new NotTennisRelatedMail($event->content, $event->user, $event->memo));
     }
 }

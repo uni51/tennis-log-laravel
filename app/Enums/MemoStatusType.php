@@ -10,11 +10,11 @@ final class MemoStatusType extends Enum {
     const PUBLISHING = 1; // 公開中
     const SHARING = 2; // シェア
     const UN_PUBLISHING = 3; // 非公開（自分だけが閲覧可能）
+    const Examination_Required = 4; // 審査待ち
 
-    const WAITING_FOR_MODIFY = 4; // 修正待ち
-    const MODIFIED = 5; // 修正済
+    const WAITING_FOR_MODIFY = 5; // 修正待ち
 
-// ここから先を追加
+    // ここから先を追加
     public static function getDescription($value): string
     {
         if ($value === self::DRAFT) {
