@@ -25,26 +25,26 @@ class OpenAIService
         ];
     }
 
-    public function generalInquiries($question, $targetContent)
-    {
-        $headers = $this->getDefaultHeaders();
-
-        $data = [
-            "model" => "gpt-3.5-turbo",
-            "messages" => [
-                ["role" => "system", "content" => $question],
-                ["role" => "user", "content" => $targetContent]
-            ]
-        ];
-
-        $response = Http::withHeaders($headers)->post($this->url, $data);
-
-        if ($response->json('error')) {
-            return $response->json('error')['message'];
-        }
-
-        return $response->json('choices')[0]['message']['content'];
-    }
+//    public function generalInquiries($question, $targetContent)
+//    {
+//        $headers = $this->getDefaultHeaders();
+//
+//        $data = [
+//            "model" => "gpt-3.5-turbo",
+//            "messages" => [
+//                ["role" => "system", "content" => $question],
+//                ["role" => "user", "content" => $targetContent]
+//            ]
+//        ];
+//
+//        $response = Http::withHeaders($headers)->post($this->url, $data);
+//
+//        if ($response->json('error')) {
+//            return $response->json('error')['message'];
+//        }
+//
+//        return $response->json('choices')[0]['message']['content'];
+//    }
 
     /**
      * @param string $targetContent

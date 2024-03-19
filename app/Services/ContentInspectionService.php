@@ -45,11 +45,9 @@ class ContentInspectionService
         $isNotTennisRelated = $this->openAIService->isNotTennisRelated($combinedContent);
 
         if ($isNotTennisRelated) {
-            // 管理者メールアドレス TODO: 管理者のメールアドレスを要変更
-            $adminEmail = 'admin@example.com';
-
-            // TODO: ユーザーの情報を含めてメールを送信する
-            $content = "タイトル: {$validated['title']}\n本文: {$validated['body']}\nタグ: " . implode(', ', $validated['tags']);
+            $content = "<p>タイトル: {$validated['title']}</p>
+<p>本文: {$validated['body']}</p>
+<p>タグ: " . implode(', ', $validated['tags'])."</p>";
 
             // 管理者にメール送信
             // Mail::to($adminEmail)->send(new NotTennisRelatedEmail($content));

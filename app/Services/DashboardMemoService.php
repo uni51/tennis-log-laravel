@@ -95,6 +95,7 @@ class DashboardMemoService
         // サービスインスタンスの取得
         $contentInspectionService = app()->make(ContentInspectionService::class);
 
+        // ChatGPTによる不適切な表現、およびテニスに関連しない内容のチェック
         $resultOfInappropriateness = $contentInspectionService->inspectContentAndRespond($validated, $user, $memo);
         if ($resultOfInappropriateness) {
             return $resultOfInappropriateness;
