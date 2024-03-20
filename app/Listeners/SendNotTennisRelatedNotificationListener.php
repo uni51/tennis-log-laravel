@@ -22,10 +22,10 @@ class SendNotTennisRelatedNotificationListener
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
      * @return void
      */
-    public function handle($event)
+    public function handle(object $event): void
     {
         // 管理者メールアドレス TODO: 管理者のメールアドレスを要変更
         $adminEmail = 'admin@example.com';
