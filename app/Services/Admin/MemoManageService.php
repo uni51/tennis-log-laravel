@@ -89,6 +89,7 @@ class MemoManageService
         $memo->is_waiting_for_fix = true; // 修正待ち状態にする
         $memo->reviewed_by = MemoConst::ADMIN; // 管理者による審査
         $memo->reviewed_at = now()->toDateTimeString();
+        $memo->timestamps = false; // updated_at が更新されないようにする
         $memo->save();
 
         Mail::to($user->email)->send(new MemoEditRequest($memo));

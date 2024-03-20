@@ -5,13 +5,11 @@ namespace App\Services;
 use App\Events\NotTennisRelatedNotificationEvent;
 use App\Models\User;
 use App\Models\Memo;
-use App\Mail\NotTennisRelatedMail;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Mail;
 
 class ContentInspectionService
 {
-    protected $openAIService;
+    protected OpenAIService $openAIService;
 
     public function __construct(OpenAIService $openAIService)
     {
@@ -57,6 +55,14 @@ class ContentInspectionService
         ], 422);
     }
 
+    /**
+     * テニスに関連のない記事ということを管理者にメール送信する
+     *
+     * @param array $validated
+     * @param Memo $memo
+     * @param User $user
+     * @return void
+     */
     public function notifyAdminNotTennisRelatedEmail(array $validated, Memo $memo, User $user): void
     {
             $content = "<p>タイトル: {$validated['title']}</p>
