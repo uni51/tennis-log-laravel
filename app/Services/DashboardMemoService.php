@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Consts\MemoConst;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
+use App\Models\User;
 use App\Repositories\DashboardMemoRepository;
 use App\Services\OpenAIService;
 use Exception;
@@ -96,12 +98,12 @@ class DashboardMemoService
         $contentInspectionService = app()->make(ContentInspectionService::class);
 
         // ChatGPTによる不適切な表現、およびテニスに関連しない内容のチェック
-        $resultOfInappropriateness = $contentInspectionService->inspectContentAndRespond($validated, $user, $memo);
+        $resultOfInappropriateness = $contentInspectionService->inspectContentAndRespond($validated, $user);
         if ($resultOfInappropriateness) {
             return $resultOfInappropriateness;
         }
 
-        if (!$this->processMemoUpdate($validated, $memo)) {
+        if (!$this->processMemoUpdate($validated, $memo, $user)) {
             throw new Exception('メモの編集に失敗しました。');
         }
 
@@ -113,12 +115,28 @@ class DashboardMemoService
     /**
      * @param array $validated
      * @param Memo $memo
+     * @param Authenticatable $user
      * @return bool
      */
-    private function processMemoUpdate(array $validated, Memo $memo): bool
+    private function processMemoUpdate(array $validated, Memo $memo, Authenticatable $user): bool
     {
+        $isNotTennisRelated = $this->openAIService->isNotTennisRelated(
+            $validated['title'] . "\n" . $validated['body'] . "\n" . implode("\n", $validated['tags']));
         try {
             DB::beginTransaction();
+            if ($isNotTennisRelated) {
+                // サービスインスタンスの取得
+                $contentInspectionService = app()->make(ContentInspectionService::class);
+                // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
+                $contentInspectionService->notifyAdminNotTennisRelatedEmail($validated, $memo, $user);
+                /* テニスに関連のないメモとChatGPTに判断された場合は、一旦ユーザーの指定したステータスのまま、
+                管理者でレビューするために以下の情報をセット */
+                $validated['is_not_tennis_related'] = true;
+                $validated['is_waiting_for_admin_review'] = true;
+                $validated['reviewed_by'] = MemoConst::ChatGPT;
+                $validated['reviewed_at'] = now()->toDateTimeString();
+                $validated['status_at_review'] = $validated['status_id'];
+            }
             $this->repository->updateMemo($memo, $validated);
             $this->repository->syncTagsToMemo($memo, $validated['tags']);
             DB::commit();

@@ -178,11 +178,8 @@ Route::group(['middleware' => 'auth:admin'], function () {
         [MemoManageController::class, 'adminNicknameMemoListByCategoryAndTag'])
         ->name('get.admin.nickname.memos.category.tag');
 
-
-
     Route::get('/admin/users', [UserManageController::class, 'list'])
         ->name('get.admin.users');
     Route::post('/admin/users/disable', [UserManageController::class, 'disable'])
         ->name('post.admin.users.disable');
-
 });

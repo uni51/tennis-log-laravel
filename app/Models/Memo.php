@@ -29,6 +29,11 @@ class Memo extends Model
         'title',
         'body',
         'status',
+        'is_not_tennis_related',
+        'is_waiting_for_admin_review',
+        'reviewed_by',
+        'reviewed_at',
+        'status_at_review',
     ];
 
     public function user(): BelongsTo

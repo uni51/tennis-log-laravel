@@ -18,7 +18,7 @@ class ContentInspectionService
         $this->openAIService = $openAIService;
     }
 
-    public function inspectContentAndRespond(array $validated, User $user, ?Memo $memo): ?JsonResponse
+    public function inspectContentAndRespond(array $validated, User $user): ?JsonResponse
     {
         // タイトルの不適切な表現のチェック
         if ($this->openAIService->checkForInappropriateContent($validated['title'])) {
@@ -37,32 +37,12 @@ class ContentInspectionService
             }
         }
 
-        // テニスに関する内容ではないかどうかの判定は、title, body, tag の全てを一緒にして行う
-        // タイトル、本文、タグを結合
-        $combinedContent = $validated['title'] . "\n" . $validated['body'] . "\n" . implode("\n", $validated['tags']);
-
-        // 結合したテキストがテニスに関連する内容かどうかを判断
-        $isNotTennisRelated = $this->openAIService->isNotTennisRelated($combinedContent);
-
-        if ($isNotTennisRelated) {
-            $content = "<p>タイトル: {$validated['title']}</p>
-<p>本文: {$validated['body']}</p>
-<p>タグ: " . implode(', ', $validated['tags'])."</p>";
-
-            // 管理者にメール送信
-            // Mail::to($adminEmail)->send(new NotTennisRelatedEmail($content));
-            event(new NotTennisRelatedNotificationEvent($content, $user, $memo));
-
-            // 通常の処理を続けるか、適切なレスポンスを返す
-        }
-
         // 全てのチェックが通った場合
         return null;
     }
 
     /**
-     * エラーレスポンスを生成する
-     *
+     * @param User $user
      * @param string $field
      * @param string $message
      * @return JsonResponse
@@ -75,5 +55,15 @@ class ContentInspectionService
         return response()->json([
             'errors' => [$field => [$message]],
         ], 422);
+    }
+
+    public function notifyAdminNotTennisRelatedEmail(array $validated, Memo $memo, User $user): void
+    {
+            $content = "<p>タイトル: {$validated['title']}</p>
+<p>本文: {$validated['body']}</p>
+<p>タグ: " . implode(', ', $validated['tags'])."</p>";
+
+            // テニスに関連のない記事の場合は、管理者にメール送信
+            event(new NotTennisRelatedNotificationEvent($content, $user, $memo));
     }
 }
