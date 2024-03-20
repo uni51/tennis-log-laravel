@@ -2,6 +2,7 @@
 namespace App\Services\Admin;
 
 use App\Consts\MemoConst;
+use App\Enums\MemoStatusType;
 use App\Http\Resources\Admin\MemoManageResource;
 use App\Http\Resources\MemoResource;
 use App\Repositories\Admin\MemoManageRepository;
@@ -71,7 +72,7 @@ class MemoManageService
     }
 
     /**
-     * Update the memo's status to "Waiting for Modification".
+     * 管理者による審査の結果、メモの内容が不適切と判断された場合の、管理者によるメモの修正依頼（記事の掲載を一時停止にする）
      *
      * @param int $id Memo ID
      * @return JsonResponse
@@ -82,12 +83,12 @@ class MemoManageService
         $user = $memo->user;
 
         // Update the memo's status
-        $memo->status = \App\Enums\MemoStatusType::WAITING_FOR_MODIFY;
-        $memo->is_appropriate = false;
-        $memo->reviewed_by = MemoConst::ADMIN;
+        $memo->status = MemoStatusType::WAITING_FOR_FIX;
+        $memo->is_inappropriate = true; // 内容が不適切か
+        $memo->is_waiting_for_admin_review = false; // レビュー済なので、審査待ち状態を解除
+        $memo->is_waiting_for_fix = true; // 修正待ち状態にする
+        $memo->reviewed_by = MemoConst::ADMIN; // 管理者による審査
         $memo->reviewed_at = now()->toDateTimeString();
-        $memo->status_at_review = $memo->status;
-        $memo->fixed_after_warning = false;
         $memo->save();
 
         Mail::to($user->email)->send(new MemoEditRequest($memo));

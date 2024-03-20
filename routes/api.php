@@ -154,9 +154,8 @@ Route::group(['middleware' => 'auth:admin'], function () {
         ->name('get.admin.memos.search');
     Route::get('/admin/memos/{id}', [MemoManageController::class, 'adminMemoShow'])
         ->name('get.admin.memos.id');
-    Route::post('/admin/memos/{id}/request-edit', [MemoManageController::class, 'adminMemoRequestEdit'])
+    Route::post('/admin/memos/{id}/request-modify', [MemoManageController::class, 'adminMemoRequestModify'])
         ->name('get.admin.memos.id.request-edit');
-
 
     Route::get('/admin/memos/category/{category_id}', [MemoManageController::class, 'adminMemoListByCategory'])
         ->name('get.admin.memos.category');

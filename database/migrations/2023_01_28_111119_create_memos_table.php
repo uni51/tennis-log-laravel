@@ -26,9 +26,9 @@ return new class extends Migration
             $table->string('body', 3000)->comment('メモの内容');
             $table->unsignedTinyInteger('status')->default(0)->comment('記事のステータス');
             $table->boolean('is_not_tennis_related')->default(false)->comment('テニスに関連していない'); // ●
-            $table->boolean('is_inappropriate')->default(false)->comment('内容が不適切か');
+            $table->boolean('is_inappropriate')->default(false)->comment('内容が不適切か'); // ●
             $table->boolean('is_waiting_for_admin_review')->default(false)->comment('審査待ちかどうか'); // ●
-            $table->boolean('is_waiting_for_fix')->default(false)->comment('修正待ちかどうか');
+            $table->boolean('is_waiting_for_fix')->default(false)->comment('修正待ちかどうか'); // ●
             $table->unsignedTinyInteger('reviewed_by')->nullable()->comment('誰に審査されたか。ChatGPT:1、管理者:2'); // ●
             $table->dateTime('reviewed_at')->nullable()->comment('審査された日時'); // ●
             $table->unsignedTinyInteger('status_at_review')->nullable()->comment('審査に引っかかった時点での記事のステータス'); // ●

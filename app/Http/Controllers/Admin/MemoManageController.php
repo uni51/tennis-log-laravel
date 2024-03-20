@@ -67,7 +67,7 @@ class MemoManageController extends Controller
      * @param MemoManageService $service
      * @return JsonResponse
      */
-    public function adminMemoRequestEdit(AdminMemoRequestEditRequest $request, MemoManageService $service): JsonResponse
+    public function adminMemoRequestModify(AdminMemoRequestEditRequest $request, MemoManageService $service): JsonResponse
     {
         $validated = $request->validated();
         return $service->adminMemoSetWaitingForModify($validated['id']);
