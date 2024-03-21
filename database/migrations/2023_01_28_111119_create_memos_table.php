@@ -32,6 +32,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('reviewed_by')->nullable()->comment('誰に審査されたか。ChatGPT:1、管理者:2'); // ●
             $table->dateTime('reviewed_at')->nullable()->comment('審査された日時'); // ●
             $table->unsignedTinyInteger('status_at_review')->nullable()->comment('審査に引っかかった時点での記事のステータス'); // ●
+            $table->unsignedTinyInteger('times_notified_to_fix')->default(0)->comment('修正依頼通知回数');
             $table->boolean('fixed_after_warning')->default(false)->comment('警告後に修正されたか');
             $table->unsignedTinyInteger('approved_by')->nullable()->comment('誰に承認されたか。ChatGPT:1、管理者:2');
             $table->dateTime('approved_at')->nullable()->comment('修正を承認された日時');
