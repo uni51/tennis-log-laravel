@@ -57,18 +57,18 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
     /**
      * @param int $id
-     * @return MemoResource
+     * @return MemoManageResource
      */
-    public function adminMemoShow(int $id): MemoResource
+    public function adminMemoShow(int $id): MemoManageResource
     {
         $memo = $this->repository->getMemoById($id);
 
-        return new MemoResource($memo);
+        return new MemoManageResource($memo);
     }
 
     /**
@@ -110,7 +110,7 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
     /**
@@ -127,7 +127,7 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
     /**
@@ -145,7 +145,7 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
     /**
@@ -162,7 +162,7 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
 
@@ -181,7 +181,7 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
     /**
@@ -199,7 +199,7 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
     /**
@@ -218,6 +218,6 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 }

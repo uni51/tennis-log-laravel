@@ -13,6 +13,7 @@ use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByCategoryRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByCategoryTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListRequest;
+use App\Http\Resources\Admin\MemoManageResource;
 use App\Http\Resources\MemoResource;
 use App\Services\Admin\MemoManageService;
 use Exception;
@@ -54,9 +55,9 @@ class MemoManageController extends Controller
     /**
      * @param AdminMemoShowRequest $request
      * @param MemoManageService $service
-     * @return MemoResource
+     * @return MemoManageResource
      */
-    public function adminMemoShow(AdminMemoShowRequest $request, MemoManageService $service): MemoResource
+    public function adminMemoShow(AdminMemoShowRequest $request, MemoManageService $service): MemoManageResource
     {
         $validated = $request->validated();
         return $service->adminMemoShow($validated['id']);
