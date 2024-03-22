@@ -39,6 +39,16 @@ class MemoManageController extends Controller
     }
 
     /**
+     * @param MemoManageService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function adminMemoReviewList(MemoManageService $service): AnonymousResourceCollection
+    {
+        return $service->adminMemoReviewList();
+    }
+
+    /**
      * キーワードによる記事検索API
      *
      * @param AdminMemoSearchRequest $request

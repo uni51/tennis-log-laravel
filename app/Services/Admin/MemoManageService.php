@@ -45,6 +45,22 @@ class MemoManageService
     }
 
     /**
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function adminMemoReviewList(): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->adminMemoReviewList();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoManageResource::collection($memos);
+    }
+
+    /**
      * @param string $keyword
      * @return AnonymousResourceCollection
      * @throws Exception

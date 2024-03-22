@@ -18,6 +18,15 @@ class MemoManageRepository extends BaseMemoRepository
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
     }
 
+    public function adminMemoReviewList(): LengthAwarePaginator
+    {
+        return Memo::with(['category:name,id'])
+            ->where('is_waiting_for_admin_review', true)
+            ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
+    }
+
     /**
      * @param string $keyword
      * @return LengthAwarePaginator

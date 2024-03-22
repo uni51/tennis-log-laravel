@@ -150,6 +150,8 @@ Route::group(['middleware' => 'auth:admin'], function () {
 
     Route::get('/admin/memos', [MemoManageController::class, 'adminMemoList'])
         ->name('get.admin.memos');
+    Route::get('/admin/memos/review', [MemoManageController::class, 'adminMemoReviewList'])
+        ->name('get.admin.memos.review');
     Route::get('/admin/memos/search', [MemoManageController::class, 'adminMemoSearch'])
         ->name('get.admin.memos.search');
     Route::get('/admin/memos/{id}', [MemoManageController::class, 'adminMemoShow'])
