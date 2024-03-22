@@ -10,6 +10,7 @@ use App\Mail\MemoEditRequest;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -82,18 +83,30 @@ class MemoManageService
         $memo = $this->repository->getMemoById($id);
         $user = $memo->user;
 
-        // Update the memo's status
-        $memo->status = MemoStatusType::WAITING_FOR_FIX;
-        $memo->is_inappropriate = true; // 内容が不適切か
-        $memo->is_waiting_for_admin_review = false; // レビュー済なので、審査待ち状態を解除
-        $memo->is_waiting_for_fix = true; // 修正待ち状態にする
-        $memo->reviewed_by = MemoConst::ADMIN; // 管理者による審査
-        $memo->reviewed_at = now()->toDateTimeString();
-        $memo->timestamps = false; // updated_at が更新されないようにする
-        $memo->save();
+        try {
+            DB::beginTransaction();
+            // Update the memo's status
+            $memo->status = MemoStatusType::WAITING_FOR_FIX;
+            $memo->is_inappropriate = true; // 内容が不適切か
+            $memo->is_waiting_for_admin_review = false; // レビュー済なので、審査待ち状態を解除
+            $memo->is_waiting_for_fix = true; // 修正待ち状態にする
+            $memo->reviewed_by = MemoConst::ADMIN; // 管理者による審査
+            $memo->reviewed_at = now()->toDateTimeString();
+            $memo->times_notified_to_fix = $memo->times_notified_to_fix + 1; // 修正依頼通知回数をカウントアップ
+            $memo->timestamps = false; // updated_at が更新されないようにする
+            $memo->save();
 
-        Mail::to($user->email)->send(new MemoEditRequest($memo));
-        return response()->json(['message' => 'メモの修正リクエストを送信しました。']);
+            $user->increment('total_times_notified_to_fix'); // 総修正依頼通知回数をカウントアップ
+
+            DB::commit();
+
+            Mail::to($user->email)->send(new MemoEditRequest($memo));
+            return response()->json(['message' => 'メモの修正リクエストを送信しました。']);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'メモの修正リクエストに失敗しました。'], 500);
+        }
     }
 
     /**
