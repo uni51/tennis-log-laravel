@@ -79,7 +79,7 @@ class MemoManageRepository extends BaseMemoRepository
     {
         return Memo::with(['category:name,id'])
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
@@ -95,7 +95,7 @@ class MemoManageRepository extends BaseMemoRepository
         return Memo::with(['category:name,id'])
             ->where('category_id', $categoryId)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
@@ -143,7 +143,7 @@ class MemoManageRepository extends BaseMemoRepository
         return Memo::with(['category:name,id'])
             ->where('user_id', $user->id)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
@@ -163,7 +163,7 @@ class MemoManageRepository extends BaseMemoRepository
             ->where('user_id', $user->id)
             ->where('category_id', $categoryId)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);

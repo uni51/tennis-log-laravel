@@ -101,7 +101,7 @@ class PublicMemoRepository extends BaseMemoRepository
         return Memo::with(['category:name,id'])
             ->where('status', MemoStatusType::getValue('公開中'))
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);
@@ -118,7 +118,7 @@ class PublicMemoRepository extends BaseMemoRepository
             ->where('status', MemoStatusType::getValue('公開中'))
             ->where('category_id', $categoryId)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);

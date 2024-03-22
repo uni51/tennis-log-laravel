@@ -28,6 +28,7 @@ class BaseMemoRepository
      */
     protected function normalizeTagName(string $tagName): string
     {
+        // 'a'は全角英数字を半角に変換することを意味し、's'は全角スペースを半角スペースに変換することを意味する
         return mb_convert_kana(strtolower($tagName), 'as', 'UTF-8');
     }
 }

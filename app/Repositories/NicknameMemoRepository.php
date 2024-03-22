@@ -70,7 +70,7 @@ class NicknameMemoRepository extends BaseMemoRepository
         return Memo::with(['category:name,id'])
             ->where('user_id', $user->id)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->where('status', MemoStatusType::getValue('公開中'))
             ->orderBy('updated_at', 'desc')
@@ -91,7 +91,7 @@ class NicknameMemoRepository extends BaseMemoRepository
             ->where('user_id', $user->id)
             ->where('category_id', $categoryId)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->where('status', MemoStatusType::getValue('公開中'))
             ->orderBy('updated_at', 'desc')

@@ -222,7 +222,7 @@ class DashboardMemoRepository extends BaseMemoRepository
         return Memo::with(['category:name,id'])
             ->where('user_id', $authUserId)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);
@@ -240,7 +240,7 @@ class DashboardMemoRepository extends BaseMemoRepository
             ->where('user_id', $authUserId)
             ->where('category_id', $categoryId)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);
