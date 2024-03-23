@@ -124,13 +124,13 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     Route::post('/dashboard/memos', [DashBoardMemoController::class, 'dashboardMemoCreate'])
         ->name('post.dashboard.memos');
     Route::post('/dashboard/memos/upload-image', [DashBoardMemoController::class, 'dashboardMemoUploadImage'])
-        ->name('post.dashboard.memos.id');
+        ->name('post.dashboard.memos.upload-image');
     // メモの編集
     Route::post('/dashboard/memos/{id}', [DashBoardMemoController::class, 'dashboardMemoEdit'])
         ->name('post.dashboard.memos.id');
 
-    Route::post('/dashboard/memos/{id}/delete', [DashBoardMemoController::class, 'dashboardMemoDestroy'])
-        ->name('post.dashboard.memos.id.delete');
+    Route::post('/dashboard/memos/delete/{id}', [DashBoardMemoController::class, 'dashboardMemoDestroy'])
+        ->name('post.dashboard.memos.delete');
 
     Route::get('/user/delete', function () {
         $user = Auth::user();
@@ -157,12 +157,14 @@ Route::group(['middleware' => 'auth:admin'], function () {
     Route::get('/admin/memos/{id}', [MemoManageController::class, 'adminMemoShow'])
         ->name('get.admin.memos.id');
     Route::post('/admin/memos/{id}/request-modify', [MemoManageController::class, 'adminMemoRequestModify'])
-        ->name('get.admin.memos.id.request-edit');
+        ->name('post.admin.memos.id.request-edit');
+    Route::post('/admin/memos/delete/{id}', [MemoManageController::class, 'adminMemoDestroy'])
+        ->name('post.admin.memos.delete');
 
     Route::get('/admin/memos/category/{category_id}', [MemoManageController::class, 'adminMemoListByCategory'])
         ->name('get.admin.memos.category');
     Route::get('/admin/memos/tag/{tag}', [MemoManageController::class, 'adminMemoListByTag'])
-        ->name('get.admin.memos.category');
+        ->name('get.admin.memos.tag');
     Route::get('/admin/memos/category/{category_id}/tag/{tag}',
         [MemoManageController::class, 'adminMemoListByCategoryAndTag'])
         ->name('get.admin.memos.category.tag');
