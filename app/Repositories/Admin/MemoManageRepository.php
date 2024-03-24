@@ -202,6 +202,8 @@ class MemoManageRepository extends BaseMemoRepository
                 'approved_at' => $memo->approved_at,
                 'memo_created_at' => $memo->created_at,
                 'memo_updated_at' => $memo->updated_at,
+                'created_at' => now()->format('Y-m-d H:i:s'),
+                'updated_at' => now()->format('Y-m-d H:i:s'),
             ]);
 
             // memo_tag テーブルから該当メモに関連するタグのレコードを取得し、deleted_memo_tag へ移動

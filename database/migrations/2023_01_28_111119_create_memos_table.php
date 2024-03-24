@@ -31,8 +31,9 @@ return new class extends Migration
             $table->dateTime('admin_reviewed_at')->nullable()->comment('管理者に審査された日時');
             $table->unsignedTinyInteger('status_at_review')->nullable()->comment('審査に引っかかった時点での記事のステータス');
             $table->unsignedTinyInteger('times_notified_to_fix')->default(0)->comment('修正依頼通知回数');
-            $table->unsignedTinyInteger('times_attempt_to_fix_after_notified')->default(0)->comment('通知後に修正を試みた回数');
-            $table->dateTime('approved_at')->nullable()->comment('修正を承認された日時');
+            $table->unsignedTinyInteger('times_attempt_to_fix')->default(0)->comment('通知後に修正を試みた回数');
+            $table->unsignedTinyInteger('approved_by')->default(0)->comment('記事の承認者');
+            $table->dateTime('approved_at')->nullable()->comment('承認された日時');
             $table->timestamps(); // created_at, updated_at
         });
     }

@@ -5,6 +5,7 @@ use App\Consts\TagConst;
 use App\Models\Memo;
 use App\Models\Tag;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class BaseMemoRepository
@@ -49,8 +50,8 @@ class BaseMemoRepository
                 'tag_id' => $memoTag->tag_id,
                 'memo_tag_created_at' => $memoTag->created_at,
                 'memo_tag_updated_at' => $memoTag->updated_at,
-                'created_at' => now()->toDateTimeString(),
-                'updated_at' => now()->toDateTimeString(),
+                'created_at' => now()->format('Y-m-d H:i:s'),
+                'updated_at' => now()->format('Y-m-d H:i:s'),
             ];
         })->toArray();
 
@@ -76,10 +77,10 @@ class BaseMemoRepository
                 'tag_id' => $unusedTag['id'],
                 'name' => $unusedTag['name'],
                 'created_by' => $unusedTag['created_by'],
-                'tag_created_at' => $unusedTag['created_at'],
-                'tag_updated_at' => $unusedTag['updated_at'],
-                'created_at' => now()->toDateTimeString(),
-                'updated_at' => now()->toDateTimeString(),
+                'tag_created_at' => Carbon::parse($unusedTag['created_at'])->format('Y-m-d H:i:s'),
+                'tag_updated_at' => Carbon::parse($unusedTag['updated_at'])->format('Y-m-d H:i:s'),
+                'created_at' => now()->format('Y-m-d H:i:s'),
+                'updated_at' => now()->format('Y-m-d H:i:s'),
             ];
         }, $unusedTags);
 

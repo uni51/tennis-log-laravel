@@ -5,7 +5,6 @@ use App\Enums\MemoAdminReviewStatusType;
 use App\Enums\MemoChatGptReviewStatusType;
 use App\Enums\MemoStatusType;
 use App\Http\Resources\Admin\MemoManageResource;
-use App\Models\DeletedUser;
 use App\Repositories\Admin\MemoManageRepository;
 use App\Mail\MemoEditRequest;
 use Exception;
@@ -110,7 +109,7 @@ class MemoManageService
             $memo->status = MemoStatusType::WAITING_FOR_FIX; // 修正待ち
             $memo->chatgpt_review_status = MemoChatGptReviewStatusType::VERIFIED_BY_ADMIN; // 管理者による審査済み
             $memo->admin_review_status = MemoAdminReviewStatusType::WAITING_FOR_FIX; // 修正依頼中
-            $memo->admin_reviewed_at = now()->toDateTimeString(); // 管理者による審査日時
+            $memo->admin_reviewed_at = now()->format('Y-m-d H:i:s'); // 管理者による審査日時
             if (isset($lastMemoStatus)) {
                 $memo->status_at_review = $lastMemoStatus;
             }

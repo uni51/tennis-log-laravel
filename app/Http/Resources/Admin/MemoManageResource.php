@@ -24,7 +24,6 @@ class MemoManageResource extends JsonResource
             'category_name' => $this->category->name,
             'tag_list' => [
                 'tags' => $this->tags->pluck('name'),
-                'normalized' => $this->tags->pluck('normalized'),
             ],
             'status' => $this->status,
             'admin_review_status' => $this->admin_review_status,
