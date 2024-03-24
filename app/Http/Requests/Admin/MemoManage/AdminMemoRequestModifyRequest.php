@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin\MemoManage;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AdminMemoRequestEditRequest extends FormRequest
+class AdminMemoRequestModifyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

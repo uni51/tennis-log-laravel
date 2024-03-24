@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\MemoManage\AdminMemoDestroyRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByTagRequest;
-use App\Http\Requests\Admin\MemoManage\AdminMemoRequestEditRequest;
+use App\Http\Requests\Admin\MemoManage\AdminMemoRequestModifyRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoSearchRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoShowRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByCategoryRequest;
@@ -14,7 +15,6 @@ use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByCategoryTagRequest
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListRequest;
 use App\Http\Resources\Admin\MemoManageResource;
-use App\Http\Resources\MemoResource;
 use App\Services\Admin\MemoManageService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -74,14 +74,20 @@ class MemoManageController extends Controller
     }
 
     /**
-     * @param AdminMemoRequestEditRequest $request
+     * @param AdminMemoRequestModifyRequest $request
      * @param MemoManageService $service
      * @return JsonResponse
      */
-    public function adminMemoRequestModify(AdminMemoRequestEditRequest $request, MemoManageService $service): JsonResponse
+    public function adminMemoRequestModify(AdminMemoRequestModifyRequest $request, MemoManageService $service): JsonResponse
     {
         $validated = $request->validated();
         return $service->adminMemoSetWaitingForModify($validated['id']);
+    }
+
+    public function adminMemoDestroy(AdminMemoDestroyRequest $request, MemoManageService $service): JsonResponse
+    {
+        $validated = $request->validated();
+        return $service->adminMemoDestroy($validated['id']);
     }
 
     /**

@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Consts\MemoConst;
+use App\Enums\MemoAdminReviewStatusType;
+use App\Enums\MemoChatGptReviewStatusType;
+use App\Enums\MemoStatusType;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
-use App\Models\User;
 use App\Repositories\DashboardMemoRepository;
-use App\Services\OpenAIService;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -125,21 +125,24 @@ class DashboardMemoService
         try {
             DB::beginTransaction();
             if ($isNotTennisRelated) {
-                // サービスインスタンスの取得
-                $contentInspectionService = app()->make(ContentInspectionService::class);
-                // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
-                $contentInspectionService->notifyAdminNotTennisRelatedEmail($validated, $memo, $user);
-                /* テニスに関連のないメモとChatGPTに判断された場合は、一旦ユーザーの指定したステータスのまま、
-                管理者でレビューするために以下の情報をセット */
-                $validated['is_not_tennis_related'] = true;
-                $validated['is_waiting_for_admin_review'] = true;
-                $validated['reviewed_by'] = MemoConst::ChatGPT;
-                $validated['reviewed_at'] = now()->toDateTimeString();
-                $validated['status_at_review'] = $validated['status_id'];
+                /* テニスに関連のないメモとChatGPTに判断された場合は、管理者でレビューするために以下の情報をセット */
+                $validated['chatgpt_review_status'] = MemoChatGptReviewStatusType::NG_CHAT_GPT_REVIEW;
+                $validated['chatgpt_review_at'] = now()->toDateTimeString();
+                $validated['admin_review_status'] = MemoAdminReviewStatusType::REVIEW_REQUIRED;
+            } else {
+                $validated['chatgpt_review_status'] = MemoChatGptReviewStatusType::PASSED_CHAT_GPT_REVIEW;
+                $validated['chatgpt_review_at'] = now()->toDateTimeString();
             }
             $this->repository->updateMemo($memo, $validated);
             $this->repository->syncTagsToMemo($memo, $validated['tags']);
             DB::commit();
+
+            if ($isNotTennisRelated) {
+                // サービスインスタンスの取得
+                $contentInspectionService = app()->make(ContentInspectionService::class);
+                // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
+                $contentInspectionService->notifyAdminNotTennisRelatedEmail($validated, $memo, $user);
+            }
             return true;
         } catch (Exception $e) {
             DB::rollBack();

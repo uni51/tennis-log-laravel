@@ -2,7 +2,7 @@
 namespace App\Repositories\Admin;
 
 use App\Consts\Pagination;
-use App\Enums\MemoStatusType;
+use App\Enums\MemoAdminReviewStatusType;
 use App\Models\Memo;
 use App\Models\User;
 use App\Repositories\BaseMemoRepository;
@@ -21,7 +21,7 @@ class MemoManageRepository extends BaseMemoRepository
     public function adminMemoReviewList(): LengthAwarePaginator
     {
         return Memo::with(['category:name,id'])
-            ->where('is_waiting_for_admin_review', true)
+            ->where('admin_review_status', MemoAdminReviewStatusType::REVIEW_REQUIRED)
             ->orderBy('updated_at', 'desc')
             ->orderBy('id', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);

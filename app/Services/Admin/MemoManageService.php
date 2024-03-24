@@ -1,10 +1,10 @@
 <?php
 namespace App\Services\Admin;
 
-use App\Consts\MemoConst;
+use App\Enums\MemoAdminReviewStatusType;
+use App\Enums\MemoChatGptReviewStatusType;
 use App\Enums\MemoStatusType;
 use App\Http\Resources\Admin\MemoManageResource;
-use App\Http\Resources\MemoResource;
 use App\Repositories\Admin\MemoManageRepository;
 use App\Mail\MemoEditRequest;
 use Exception;
@@ -102,12 +102,10 @@ class MemoManageService
         try {
             DB::beginTransaction();
             // Update the memo's status
-            $memo->status = MemoStatusType::WAITING_FOR_FIX;
-            $memo->is_inappropriate = true; // 内容が不適切か
-            $memo->is_waiting_for_admin_review = false; // レビュー済なので、審査待ち状態を解除
-            $memo->is_waiting_for_fix = true; // 修正待ち状態にする
-            $memo->reviewed_by = MemoConst::ADMIN; // 管理者による審査
-            $memo->reviewed_at = now()->toDateTimeString();
+            $memo->status = MemoStatusType::WAITING_FOR_FIX; // 修正待ち
+            $memo->chatgpt_review_status = MemoChatGptReviewStatusType::VERIFIED_BY_ADMIN; // 管理者による審査済み
+            $memo->admin_review_status = MemoAdminReviewStatusType::WAITING_FOR_FIX; // 修正依頼中
+            $memo->admin_reviewed_at = now()->toDateTimeString(); // 管理者による審査日時
             $memo->times_notified_to_fix = $memo->times_notified_to_fix + 1; // 修正依頼通知回数をカウントアップ
             $memo->timestamps = false; // updated_at が更新されないようにする
             $memo->save();
@@ -123,6 +121,13 @@ class MemoManageService
             Log::error($e->getMessage());
             return response()->json(['error' => 'メモの修正リクエストに失敗しました。'], 500);
         }
+    }
+
+    public function adminMemoDestroy(int $id): JsonResponse
+    {
+        $memo = $this->repository->getMemoById($id);
+        $memo->delete();
+        return response()->json(['message' => 'Memo deleted'], 200);
     }
 
     /**

@@ -29,11 +29,9 @@ class Memo extends Model
         'title',
         'body',
         'status',
-        'is_not_tennis_related',
-        'is_waiting_for_admin_review',
-        'reviewed_by',
-        'reviewed_at',
-        'status_at_review',
+        'chatgpt_review_status',
+        'chatgpt_reviewed_at',
+        'admin_review_status',
     ];
 
     public function user(): BelongsTo

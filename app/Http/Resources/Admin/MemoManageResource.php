@@ -27,7 +27,7 @@ class MemoManageResource extends JsonResource
                 'normalized' => $this->tags->pluck('normalized'),
             ],
             'status' => $this->status,
-            'is_waiting_for_admin_review' => $this->is_waiting_for_admin_review,
+            'admin_review_status' => $this->admin_review_status,
             'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('Y年m月d日'),
             'updated_at' => Carbon::createFromFormat('Y-m-d H:i:s', $this->updated_at)->format('Y年m月d日'),
         ];
