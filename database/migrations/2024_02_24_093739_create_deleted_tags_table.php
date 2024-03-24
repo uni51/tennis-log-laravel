@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('tag_id')->comment('タグID');
             $table->string('name');
             $table->foreignId('created_by')->nullable();
-            $table->boolean('created_by_admin')->comment('管理者が作成したタグかどうか');
+            $table->boolean('created_by_admin')->default(false)->comment('管理者が作成したタグかどうか');
 //            $table->boolean('is_appropriate')->comment('内容が適切か');
 //            $table->foreignId('reviewed_by')->nullable()->comment('誰に審査されたか');
 //            $table->dateTime('reviewed_at')->nullable()->comment('審査された日時');

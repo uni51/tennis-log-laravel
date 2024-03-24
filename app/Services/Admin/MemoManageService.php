@@ -5,6 +5,7 @@ use App\Enums\MemoAdminReviewStatusType;
 use App\Enums\MemoChatGptReviewStatusType;
 use App\Enums\MemoStatusType;
 use App\Http\Resources\Admin\MemoManageResource;
+use App\Models\DeletedUser;
 use App\Repositories\Admin\MemoManageRepository;
 use App\Mail\MemoEditRequest;
 use Exception;
@@ -97,6 +98,10 @@ class MemoManageService
     public function adminMemoSetWaitingForModify(int $id): JsonResponse
     {
         $memo = $this->repository->getMemoById($id);
+        if ($memo->status !== MemoStatusType::WAITING_FOR_FIX) {
+            $lastMemoStatus = $memo->status;
+        }
+
         $user = $memo->user;
 
         try {
@@ -106,6 +111,9 @@ class MemoManageService
             $memo->chatgpt_review_status = MemoChatGptReviewStatusType::VERIFIED_BY_ADMIN; // 管理者による審査済み
             $memo->admin_review_status = MemoAdminReviewStatusType::WAITING_FOR_FIX; // 修正依頼中
             $memo->admin_reviewed_at = now()->toDateTimeString(); // 管理者による審査日時
+            if (isset($lastMemoStatus)) {
+                $memo->status_at_review = $lastMemoStatus;
+            }
             $memo->times_notified_to_fix = $memo->times_notified_to_fix + 1; // 修正依頼通知回数をカウントアップ
             $memo->timestamps = false; // updated_at が更新されないようにする
             $memo->save();
@@ -126,8 +134,11 @@ class MemoManageService
     public function adminMemoDestroy(int $id): JsonResponse
     {
         $memo = $this->repository->getMemoById($id);
-        $memo->delete();
-        return response()->json(['message' => 'Memo deleted'], 200);
+        if ($this->repository->adminMemoDestroy($memo)) {
+            return response()->json(['message' => 'メモを強制的に削除しました。'], 200);
+        } else {
+            return response()->json(['error' => 'メモの強制削除に失敗しました。'], 500);
+        }
     }
 
     /**

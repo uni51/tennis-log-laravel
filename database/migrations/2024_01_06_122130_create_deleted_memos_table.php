@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('deleted_memos', function (Blueprint $table) {
             $table->id();
-            $table->boolean('force_deleted');
+            $table->boolean('force_deleted')->default(false)->comment('強制削除されたかどうか');
             $table->unsignedBigInteger('memo_id')->comment('メモID');
             $table->unsignedBigInteger('user_id')->comment('ユーザーID');
             $table->unsignedBigInteger('category_id')->comment('カテゴリーID');
@@ -26,6 +26,7 @@ return new class extends Migration
             $table->dateTime('chatgpt_reviewed_at')->nullable()->comment('ChatGPTに審査された日時');
             $table->unsignedTinyInteger('admin_review_status')->default(0)->comment('管理者による審査のステータス');
             $table->dateTime('admin_reviewed_at')->nullable()->comment('管理者に審査された日時');
+            $table->unsignedTinyInteger('status_at_review')->nullable()->comment('審査に引っかかった時点での記事のステータス');
             $table->unsignedTinyInteger('times_notified_to_fix')->default(0)->comment('修正依頼通知回数');
             $table->unsignedTinyInteger('times_attempt_to_fix_after_notified')->default(0)->comment('通知後に修正を試みた回数');
             $table->dateTime('approved_at')->nullable()->comment('修正を承認された日時');

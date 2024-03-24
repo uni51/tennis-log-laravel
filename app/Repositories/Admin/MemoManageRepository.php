@@ -2,11 +2,17 @@
 namespace App\Repositories\Admin;
 
 use App\Consts\Pagination;
+use App\Consts\TagConst;
 use App\Enums\MemoAdminReviewStatusType;
 use App\Models\Memo;
+use App\Models\Tag;
 use App\Models\User;
 use App\Repositories\BaseMemoRepository;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MemoManageRepository extends BaseMemoRepository
 {
@@ -167,6 +173,52 @@ class MemoManageRepository extends BaseMemoRepository
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
+    }
+
+    /**
+     * @param Memo $memo
+     * @return bool
+     */
+    public function adminMemoDestroy(Memo $memo): bool
+    {
+        DB::beginTransaction();
+        try {
+            // DeletedMemoテーブルにデータを移動
+            DB::table('deleted_memos')->insert([
+                'force_deleted' => true,
+                'memo_id'       => $memo->id,
+                'user_id'       => $memo->user_id,
+                'category_id'   => $memo->category_id,
+                'title'         => $memo->title,
+                'body'          => $memo->body,
+                'status'        => $memo->status,
+                'chatgpt_review_status' => $memo->chatgpt_review_status,
+                'chatgpt_reviewed_at'   => $memo->chatgpt_reviewed_at,
+                'admin_review_status'   => $memo->admin_review_status,
+                'admin_reviewed_at'     => $memo->admin_reviewed_at,
+                'status_at_review'      => $memo->status_at_review,
+                'times_notified_to_fix' => $memo->times_notified_to_fix,
+                'times_attempt_to_fix_after_notified' => $memo->times_attempt_to_fix_after_notified,
+                'approved_at' => $memo->approved_at,
+                'memo_created_at' => $memo->created_at,
+                'memo_updated_at' => $memo->updated_at,
+            ]);
+
+            // memo_tag テーブルから該当メモに関連するタグのレコードを取得し、deleted_memo_tag へ移動
+            $this->deleteMemoTags($memo);
+            // Tagテーブルから使用されていないタグを削除
+            $this->deleteUnusedTagsBelongsToUser($memo->user);
+            // メモ自体を削除
+            $memo->delete();
+            DB::commit();
+
+            return true;
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+
+            return false;
+        }
     }
 }
 

@@ -127,11 +127,11 @@ class DashboardMemoService
             if ($isNotTennisRelated) {
                 /* テニスに関連のないメモとChatGPTに判断された場合は、管理者でレビューするために以下の情報をセット */
                 $validated['chatgpt_review_status'] = MemoChatGptReviewStatusType::NG_CHAT_GPT_REVIEW;
-                $validated['chatgpt_review_at'] = now()->toDateTimeString();
+                $validated['chatgpt_reviewed_at'] = now()->toDateTimeString();
                 $validated['admin_review_status'] = MemoAdminReviewStatusType::REVIEW_REQUIRED;
             } else {
                 $validated['chatgpt_review_status'] = MemoChatGptReviewStatusType::PASSED_CHAT_GPT_REVIEW;
-                $validated['chatgpt_review_at'] = now()->toDateTimeString();
+                $validated['chatgpt_reviewed_at'] = now()->toDateTimeString();
             }
             $this->repository->updateMemo($memo, $validated);
             $this->repository->syncTagsToMemo($memo, $validated['tags']);
