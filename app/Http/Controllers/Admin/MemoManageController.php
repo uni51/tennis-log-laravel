@@ -7,7 +7,7 @@ use App\Http\Requests\Admin\MemoManage\AdminMemoDestroyRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByTagRequest;
-use App\Http\Requests\Admin\MemoManage\AdminMemoRequestModifyRequest;
+use App\Http\Requests\Admin\MemoManage\AdminMemoRequestFixRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoSearchRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoShowRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByCategoryRequest;
@@ -43,10 +43,16 @@ class MemoManageController extends Controller
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function adminMemoReviewList(MemoManageService $service): AnonymousResourceCollection
+    public function adminMemoWaitingReviewList(MemoManageService $service): AnonymousResourceCollection
     {
-        return $service->adminMemoReviewList();
+        return $service->adminMemoWaitingReviewList();
     }
+
+    public function adminMemoWaitingFixList(MemoManageService $service): AnonymousResourceCollection
+    {
+        return $service->adminMemoWaitingFixList();
+    }
+
 
     /**
      * キーワードによる記事検索API
@@ -74,14 +80,14 @@ class MemoManageController extends Controller
     }
 
     /**
-     * @param AdminMemoRequestModifyRequest $request
+     * @param AdminMemoRequestFixRequest $request
      * @param MemoManageService $service
      * @return JsonResponse
      */
-    public function adminMemoRequestModify(AdminMemoRequestModifyRequest $request, MemoManageService $service): JsonResponse
+    public function adminMemoRequestFix(AdminMemoRequestFixRequest $request, MemoManageService $service): JsonResponse
     {
         $validated = $request->validated();
-        return $service->adminMemoSetWaitingForModify($validated['id']);
+        return $service->adminMemoSetWaitingForFix($validated['id']);
     }
 
     public function adminMemoDestroy(AdminMemoDestroyRequest $request, MemoManageService $service): JsonResponse

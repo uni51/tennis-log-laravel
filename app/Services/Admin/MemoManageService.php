@@ -48,10 +48,22 @@ class MemoManageService
      * @return AnonymousResourceCollection
      * @throws Exception
      */
-    public function adminMemoReviewList(): AnonymousResourceCollection
+    public function adminMemoWaitingReviewList(): AnonymousResourceCollection
     {
         try {
-            $memos = $this->repository->adminMemoReviewList();
+            $memos = $this->repository->adminMemoWaitingReviewList();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoManageResource::collection($memos);
+    }
+
+    public function adminMemoWaitingFixList(): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->adminMemoWaitingFixList();
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw $e;
@@ -94,7 +106,7 @@ class MemoManageService
      * @param int $id Memo ID
      * @return JsonResponse
      */
-    public function adminMemoSetWaitingForModify(int $id): JsonResponse
+    public function adminMemoSetWaitingForFix(int $id): JsonResponse
     {
         $memo = $this->repository->getMemoById($id);
         if ($memo->status !== MemoStatusType::WAITING_FOR_FIX) {

@@ -97,7 +97,7 @@ class DashboardMemoService
         // サービスインスタンスの取得
         $contentInspectionService = app()->make(ContentInspectionService::class);
 
-        // ChatGPTによる不適切な表現、およびテニスに関連しない内容のチェック
+        // ChatGPTによる内容に不適切な表現がないかのチェック
         $resultOfInappropriateness = $contentInspectionService->inspectContentAndRespond($validated, $user);
         if ($resultOfInappropriateness) {
             return $resultOfInappropriateness;
@@ -120,6 +120,7 @@ class DashboardMemoService
      */
     private function processMemoUpdate(array $validated, Memo $memo, Authenticatable $user): bool
     {
+        // ChatGPTによるテニスに関連しない内容かどうかのチェック
         $isNotTennisRelated = $this->openAIService->isNotTennisRelated(
             $validated['title'] . "\n" . $validated['body'] . "\n" . implode("\n", $validated['tags']));
         try {
