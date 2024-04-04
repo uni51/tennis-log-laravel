@@ -150,15 +150,15 @@ Route::group(['middleware' => 'auth:admin'], function () {
 
     Route::get('/admin/memos', [MemoManageController::class, 'adminMemoList'])
         ->name('get_admin_memos');
-    Route::get('/admin/memos/waiting_review', [MemoManageController::class, 'adminMemoWaitingReviewList'])
+    Route::get('/admin/memos/waiting/review', [MemoManageController::class, 'adminMemoWaitingReviewList'])
         ->name('get_admin_memos_waiting_review');
-    Route::get('/admin/memos/waiting_fix', [MemoManageController::class, 'adminMemoWaitingFixList'])
+    Route::get('/admin/memos/waiting/fix', [MemoManageController::class, 'adminMemoWaitingFixList'])
         ->name('get_admin_memos_waiting_fix');
     Route::get('/admin/memos/search', [MemoManageController::class, 'adminMemoSearch'])
         ->name('get_admin_memos_search');
     Route::get('/admin/memos/{id}', [MemoManageController::class, 'adminMemoShow'])
         ->name('get_admin_memos_id');
-    Route::post('/admin/memos/request_fix/{id}', [MemoManageController::class, 'adminMemoRequestFix'])
+    Route::post('/admin/memos/request/fix/{id}', [MemoManageController::class, 'adminMemoRequestFix'])
         ->name('post_admin_memos_request_fix');
     Route::post('/admin/memos/delete/{id}', [MemoManageController::class, 'adminMemoDestroy'])
         ->name('post_admin_memos_delete');
