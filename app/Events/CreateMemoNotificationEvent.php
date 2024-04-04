@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Events;
 
 use App\Models\Memo;
@@ -12,7 +11,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\User;
 
-class NotTennisRelatedNotificationEvent
+class CreateMemoNotificationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

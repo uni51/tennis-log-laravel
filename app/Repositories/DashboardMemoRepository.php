@@ -28,12 +28,13 @@ class DashboardMemoRepository extends BaseMemoRepository
 //        return $memo;
 //    }
 
+
     /**
      * @param array $validated
-     * @return void
+     * @return Memo
      * @throws Exception
      */
-    public function dashboardMemoCreate(array $validated): void
+    public function dashboardMemoCreate(array $validated): Memo
     {
         try {
             DB::beginTransaction();
@@ -41,6 +42,7 @@ class DashboardMemoRepository extends BaseMemoRepository
             // 配列をコレクションに変換してからeachメソッドを使用
             $this->attachTagsToMemo($memo, $validated['tags']);
             DB::commit();
+            return $memo;
         } catch (Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage());

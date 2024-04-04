@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Events\NotTennisRelatedNotificationEvent;
 use App\Models\User;
-use App\Models\Memo;
 use Illuminate\Http\JsonResponse;
 
 class ContentInspectionService
@@ -16,7 +14,7 @@ class ContentInspectionService
         $this->openAIService = $openAIService;
     }
 
-    public function inspectContentAndRespond(array $validated, User $user): ?JsonResponse
+    public function validateIsInappropriate(array $validated, User $user): ?JsonResponse
     {
         // タイトルの不適切な表現のチェック
         if ($this->openAIService->checkForInappropriateContent($validated['title'])) {
@@ -53,23 +51,5 @@ class ContentInspectionService
         return response()->json([
             'errors' => [$field => [$message]],
         ], 422);
-    }
-
-    /**
-     * テニスに関連のない記事ということを管理者にメール送信する
-     *
-     * @param array $validated
-     * @param Memo $memo
-     * @param User $user
-     * @return void
-     */
-    public function notifyAdminNotTennisRelatedEmail(array $validated, Memo $memo, User $user): void
-    {
-            $content = "<p>タイトル: {$validated['title']}</p>
-<p>本文: {$validated['body']}</p>
-<p>タグ: " . implode(', ', $validated['tags'])."</p>";
-
-            // テニスに関連のない記事の場合は、管理者にメール送信
-            event(new NotTennisRelatedNotificationEvent($content, $user, $memo));
     }
 }

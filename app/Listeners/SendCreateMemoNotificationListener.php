@@ -5,13 +5,13 @@ namespace App\Listeners;
 use App\Lib\DomainHelper;
 use App\Lib\Environment;
 use App\Lib\SendMailHelper;
+use App\Mail\CreateMemoMail;
 use Exception;
-use App\Mail\NotTennisRelatedMail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
-class SendNotTennisRelatedNotificationListener
+class SendCreateMemoNotificationListener
 {
     /**
      * Create the event listener.
@@ -38,7 +38,7 @@ class SendNotTennisRelatedNotificationListener
 
         try {
             // 送信先アドレスにメールを送信
-            Mail::to($adminEmail)->send(new NotTennisRelatedMail($event->content, $event->user, $event->memo, $domain));
+            Mail::to($adminEmail)->send(new CreateMemoMail($event->content, $event->user, $event->memo, $domain));
         } catch (\Exception $e) {
             // メール送信に失敗した場合は、ログにエラーを出力
             logger()->error($e->getMessage());

@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Traits\ServiceInstanceTrait;
 use App\Enums\MemoAdminReviewStatusType;
 use App\Enums\MemoChatGptReviewStatusType;
-use App\Enums\MemoStatusType;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use App\Repositories\DashboardMemoRepository;
@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Log;
 
 class DashboardMemoService
 {
+    use ServiceInstanceTrait;
+
     private DashboardMemoRepository $repository;
     protected OpenAIService $openAIService;
 
@@ -53,17 +55,47 @@ class DashboardMemoService
         return $memo;
     }
 
-
     /**
+     * @param Authenticatable $user
      * @param array $validated
      * @return JsonResponse
      * @throws Exception
      */
-    public function dashboardMemoCreate(array $validated): JsonResponse
+    public function dashboardMemoCreate(array $validated, Authenticatable $user): JsonResponse
     {
-        // $result = $this->openAIService->isNotTennisRelated($validated['body']);
+        // サービスインスタンスの取得
+        $contentInspectionService = $this->getServiceInstance(ContentInspectionService::class);
+        // ChatGPTによる内容に不適切な表現がないかのチェック
+        $validateErrorResponse = $contentInspectionService->validateIsInappropriate($validated, $user);
+        if ($validateErrorResponse) {
+            return $validateErrorResponse;
+        }
+        // ChatGPTによるテニスに関連しない内容かどうかのチェック
+        $isNotTennisRelated = $this->checkIsNotTennisRelated($validated);
 
-        $this->repository->dashboardMemoCreate($validated);
+        if ($isNotTennisRelated) {
+            /* テニスに関連のないメモとChatGPTに判断された場合は、管理者でレビューするために以下の情報をセット */
+            $validated['chatgpt_review_status'] = MemoChatGptReviewStatusType::NG_CHAT_GPT_REVIEW;
+            $validated['chatgpt_reviewed_at'] = now()->format('Y-m-d H:i:s');
+            $validated['admin_review_status'] = MemoAdminReviewStatusType::REVIEW_REQUIRED;
+        } else {
+            $validated['chatgpt_review_status'] = MemoChatGptReviewStatusType::PASSED_CHAT_GPT_REVIEW;
+            $validated['chatgpt_reviewed_at'] = now()->format('Y-m-d H:i:s');
+        }
+
+        $memo = $this->repository->dashboardMemoCreate($validated);
+
+        if ($isNotTennisRelated) {
+            // サービスインスタンスの取得
+            $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
+            // テニスに関連のないメモとChatGPTに判断された場合は、管理者にその旨をメール送信
+            $notifyToAdminService->notifyAdminNotTennisRelatedEmail($validated, $memo, $user);
+        } else {
+            // サービスインスタンスの取得
+            $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
+            // テニスに関連するメモとChatGPTに判断された場合は、管理者に新規投稿があったことのメール送信
+            $notifyToAdminService->notifyAdminCreateMemoEmail($validated, $memo, $user);
+        }
 
         return response()->json([
             'message' => 'メモの登録に成功しました。'
@@ -95,12 +127,11 @@ class DashboardMemoService
         $memo = $this->validateUserPermission($validated['id'], $user, 'update');
 
         // サービスインスタンスの取得
-        $contentInspectionService = app()->make(ContentInspectionService::class);
-
+        $contentInspectionService = $this->getServiceInstance(ContentInspectionService::class);
         // ChatGPTによる内容に不適切な表現がないかのチェック
-        $resultOfInappropriateness = $contentInspectionService->inspectContentAndRespond($validated, $user);
-        if ($resultOfInappropriateness) {
-            return $resultOfInappropriateness;
+        $validateErrorResponse = $contentInspectionService->validateIsInappropriate($validated, $user);
+        if ($validateErrorResponse) {
+            return $validateErrorResponse;
         }
 
         if (!$this->processMemoUpdate($validated, $memo, $user)) {
@@ -121,8 +152,7 @@ class DashboardMemoService
     private function processMemoUpdate(array $validated, Memo $memo, Authenticatable $user): bool
     {
         // ChatGPTによるテニスに関連しない内容かどうかのチェック
-        $isNotTennisRelated = $this->openAIService->isNotTennisRelated(
-            $validated['title'] . "\n" . $validated['body'] . "\n" . implode("\n", $validated['tags']));
+        $isNotTennisRelated = $this->checkIsNotTennisRelated($validated);
         try {
             DB::beginTransaction();
             if ($isNotTennisRelated) {
@@ -136,20 +166,26 @@ class DashboardMemoService
             }
             $this->repository->updateMemo($memo, $validated);
             $this->repository->syncTagsToMemo($memo, $validated['tags']);
-            DB::commit();
-
             if ($isNotTennisRelated) {
                 // サービスインスタンスの取得
-                $contentInspectionService = app()->make(ContentInspectionService::class);
+                $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
                 // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
-                $contentInspectionService->notifyAdminNotTennisRelatedEmail($validated, $memo, $user);
+                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($validated, $memo, $user);
             }
+            DB::commit();
             return true;
         } catch (Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage());
             return false;
         }
+    }
+
+    private function checkIsNotTennisRelated(array $validated): bool
+    {
+        return $this->openAIService->isNotTennisRelated(
+            $validated['title'] . "\n" . $validated['body'] . "\n" . implode("\n", $validated['tags'])
+        );
     }
 
     /**

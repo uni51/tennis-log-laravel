@@ -127,8 +127,9 @@ class DashBoardMemoController extends Controller
      */
     public function dashboardMemoCreate(MemoPostRequest $request, DashboardMemoService $service): JsonResponse
     {
+        $user = Auth::user();
         $validated = $request->validated();
-        return $service->dashboardMemoCreate($validated);
+        return $service->dashboardMemoCreate($validated, $user);
     }
 
     public function dashboardMemoUploadImage(Request $request)
