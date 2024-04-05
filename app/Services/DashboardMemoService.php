@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\MemoStatusType;
+use App\Lib\MemoHelper;
 use App\Traits\ServiceInstanceTrait;
 use App\Enums\MemoAdminReviewStatusType;
 use App\Enums\MemoChatGptReviewStatusType;
@@ -70,29 +72,23 @@ class DashboardMemoService
         if ($validateErrorResponse) {
             return $validateErrorResponse;
         }
-        // ChatGPTによるテニスに関連しない内容かどうかのチェック
-        $isNotTennisRelated = $this->checkIsNotTennisRelated($validated);
 
-        if ($isNotTennisRelated) {
-            /* テニスに関連のないメモとChatGPTに判断された場合は、管理者でレビューするために以下の情報をセット */
-            $validated['chatgpt_review_status'] = MemoChatGptReviewStatusType::NG_CHAT_GPT_REVIEW;
-            $validated['chatgpt_reviewed_at'] = now()->format('Y-m-d H:i:s');
-            $validated['admin_review_status'] = MemoAdminReviewStatusType::REVIEW_REQUIRED;
-        } else {
-            $validated['chatgpt_review_status'] = MemoChatGptReviewStatusType::PASSED_CHAT_GPT_REVIEW;
-            $validated['chatgpt_reviewed_at'] = now()->format('Y-m-d H:i:s');
+        // 「下書き」以外のステータスの場合、ChatGPTによるテニスに関連しない内容かどうかのチェック
+        $isNotTennisRelated = false;
+        if ($validated['status_id'] !== MemoStatusType::getValue('下書き')) {
+            $isNotTennisRelated = $this->checkIsNotTennisRelated($validated);
+            $validated = MemoHelper::setReviewValueByChatGpt($validated, $isNotTennisRelated);
         }
 
         $memo = $this->repository->dashboardMemoCreate($validated);
 
+        $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
         if ($isNotTennisRelated) {
             // サービスインスタンスの取得
-            $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
             // テニスに関連のないメモとChatGPTに判断された場合は、管理者にその旨をメール送信
             $notifyToAdminService->notifyAdminNotTennisRelatedEmail($validated, $memo, $user);
         } else {
             // サービスインスタンスの取得
-            $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
             // テニスに関連するメモとChatGPTに判断された場合は、管理者に新規投稿があったことのメール送信
             $notifyToAdminService->notifyAdminCreateMemoEmail($validated, $memo, $user);
         }
@@ -151,28 +147,24 @@ class DashboardMemoService
      */
     private function processMemoUpdate(array $validated, Memo $memo, Authenticatable $user): bool
     {
-        // ChatGPTによるテニスに関連しない内容かどうかのチェック
-        $isNotTennisRelated = $this->checkIsNotTennisRelated($validated);
+        $isNotTennisRelated = false;
+        // 「下書き」以外のステータスの場合、ChatGPTによるテニスに関連しない内容かどうかのチェック
+        if ($validated['status_id'] !== MemoStatusType::getValue('下書き')) {
+            $isNotTennisRelated = $this->checkIsNotTennisRelated($validated);
+            $validated = MemoHelper::setReviewValueByChatGpt($validated, $isNotTennisRelated);
+        }
+
         try {
             DB::beginTransaction();
-            if ($isNotTennisRelated) {
-                /* テニスに関連のないメモとChatGPTに判断された場合は、管理者でレビューするために以下の情報をセット */
-                $validated['chatgpt_review_status'] = MemoChatGptReviewStatusType::NG_CHAT_GPT_REVIEW;
-                $validated['chatgpt_reviewed_at'] = now()->format('Y-m-d H:i:s');
-                $validated['admin_review_status'] = MemoAdminReviewStatusType::REVIEW_REQUIRED;
-            } else {
-                $validated['chatgpt_review_status'] = MemoChatGptReviewStatusType::PASSED_CHAT_GPT_REVIEW;
-                $validated['chatgpt_reviewed_at'] = now()->format('Y-m-d H:i:s');
-            }
             $this->repository->updateMemo($memo, $validated);
             $this->repository->syncTagsToMemo($memo, $validated['tags']);
+            DB::commit();
             if ($isNotTennisRelated) {
                 // サービスインスタンスの取得
                 $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
                 // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
                 $notifyToAdminService->notifyAdminNotTennisRelatedEmail($validated, $memo, $user);
             }
-            DB::commit();
             return true;
         } catch (Exception $e) {
             DB::rollBack();
