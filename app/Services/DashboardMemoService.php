@@ -86,11 +86,11 @@ class DashboardMemoService
         if ($isNotTennisRelated) {
             // サービスインスタンスの取得
             // テニスに関連のないメモとChatGPTに判断された場合は、管理者にその旨をメール送信
-            $notifyToAdminService->notifyAdminNotTennisRelatedEmail($validated, $memo, $user);
+            $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user);
         } else {
             // サービスインスタンスの取得
             // テニスに関連するメモとChatGPTに判断された場合は、管理者に新規投稿があったことのメール送信
-            $notifyToAdminService->notifyAdminCreateMemoEmail($validated, $memo, $user);
+            $notifyToAdminService->notifyAdminCreateMemoEmail($memo, $user);
         }
 
         return response()->json([
@@ -163,7 +163,7 @@ class DashboardMemoService
                 // サービスインスタンスの取得
                 $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
                 // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
-                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($validated, $memo, $user);
+                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user);
             }
             return true;
         } catch (Exception $e) {

@@ -6,7 +6,9 @@ use App\Enums\MemoChatGptReviewStatusType;
 use App\Enums\MemoStatusType;
 use App\Http\Resources\Admin\MemoManageResource;
 use App\Repositories\Admin\MemoManageRepository;
-use App\Mail\MemoEditRequest;
+use App\Mail\MemoFixRequest;
+use App\Services\NotifyToUserService;
+use App\Traits\ServiceInstanceTrait;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -16,6 +18,8 @@ use Illuminate\Support\Facades\Mail;
 
 class MemoManageService
 {
+    use ServiceInstanceTrait;
+
     private MemoManageRepository $repository;
 
     /**
@@ -134,7 +138,10 @@ class MemoManageService
 
             DB::commit();
 
-            Mail::to($user->email)->send(new MemoEditRequest($memo));
+            $notifyToAdminService = $this->getServiceInstance(NotifyToUserService::class);
+            // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
+            $notifyToAdminService->notifyUserMemoFixRequestEmail($memo, $user);
+
             return response()->json(['message' => 'メモの修正リクエストを送信しました。']);
         } catch (Exception $e) {
             DB::rollBack();

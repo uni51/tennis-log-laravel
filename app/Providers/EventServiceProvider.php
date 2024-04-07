@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Events\CreateMemoAdminNotificationEvent;
+use App\Events\MemoFixRequestUserNotificationEvent;
 use App\Events\NotTennisRelatedAdminNotificationEvent;
 use App\Listeners\SendCreateMemoAdminNotificationListener;
+use App\Listeners\SendMemoFixRequestUserNotificationListener;
 use App\Listeners\SendNotTennisRelatedAdminNotificationListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -27,6 +29,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         CreateMemoAdminNotificationEvent::class => [
             SendCreateMemoAdminNotificationListener::class,
+        ],
+        MemoFixRequestUserNotificationEvent::class => [
+            SendMemoFixRequestUserNotificationListener::class,
         ],
     ];
 
