@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Enums\MemoStatusType;
 use App\Models\Memo;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -36,7 +37,9 @@ class CreateMemoMail extends Mailable
 
     public function build()
     {
-        return $this->subject('メモの新規投稿通知')
+        $statusLabel = MemoStatusType::getDescription($this->memo->status);
+
+        return $this->subject('メモの新規投稿通知' . '(' . $statusLabel . ')')
             ->view('emails.to_admin.create_memo_notification')
             ->with([
                 'content' => $this->content,

@@ -3,6 +3,8 @@ namespace App\Repositories;
 
 use App\Consts\Pagination;
 use App\Consts\TagConst;
+use App\Enums\MemoAdminReviewStatusType;
+use App\Enums\MemoChatGptReviewStatusType;
 use App\Models\Memo;
 use App\Models\Tag;
 use Exception;
@@ -13,22 +15,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class DashboardMemoRepository extends BaseMemoRepository
 {
-//    /**
-//     * @param int $id
-//     * @return Memo|null
-//     */
-//    public function getMemoById(int $id): ?Memo
-//    {
-//        $memo = Memo::find($id);
-//
-//        if (!$memo) {
-//            abort(404, '指定されたIDのメモが見つかりません。');
-//        }
-//
-//        return $memo;
-//    }
-
-
     /**
      * @param array $validated
      * @return Memo
@@ -61,9 +47,12 @@ class DashboardMemoRepository extends BaseMemoRepository
         return Memo::create([
             'user_id' => Auth::id(),
             'category_id' => $data['category_id'],
-            'status' => $data['status_id'],
             'title' => $data['title'],
             'body' => $data['body'],
+            'status' => $data['status_id'],
+            'chatgpt_review_status' => $data['chatgpt_review_status'] ?? MemoChatGptReviewStatusType::NOT_REVIEWED,
+            'chatgpt_reviewed_at' => $data['chatgpt_reviewed_at'] ?? null,
+            'admin_review_status'=> $data['admin_review_status'] ?? MemoAdminReviewStatusType::NOT_REVIEWED,
         ]);
     }
 
