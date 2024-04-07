@@ -11,7 +11,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NotTennisRelatedMail extends Mailable
+class NotTennisRelatedToAdminMail extends Mailable
 {
     use Queueable, SerializesModels;
 

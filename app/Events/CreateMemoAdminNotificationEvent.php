@@ -18,6 +18,7 @@ class CreateMemoAdminNotificationEvent
     public string $content;
     public User $user;
     public Memo $memo;
+
     /**
      * Create a new event instance.
      *

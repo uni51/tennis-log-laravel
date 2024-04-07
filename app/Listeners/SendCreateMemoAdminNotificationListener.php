@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Lib\DomainHelper;
 use App\Lib\Environment;
 use App\Lib\SendMailHelper;
-use App\Mail\CreateMemoMail;
+use App\Mail\CreateMemoToAdminMail;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -38,7 +38,7 @@ class SendCreateMemoAdminNotificationListener
 
         try {
             // 送信先アドレスにメールを送信
-            Mail::to($adminEmail)->send(new CreateMemoMail($event->content, $event->user, $event->memo, $domain));
+            Mail::to($adminEmail)->send(new CreateMemoToAdminMail($event->content, $event->user, $event->memo, $domain));
         } catch (\Exception $e) {
             // メール送信に失敗した場合は、ログにエラーを出力
             logger()->error($e->getMessage());
