@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Events\CreateMemoNotificationEvent;
+use App\Events\CreateMemoAdminNotificationEvent;
 use App\Events\NotTennisRelatedNotificationEvent;
 use App\Models\Memo;
 use App\Models\User;
@@ -24,7 +24,7 @@ class NotifyToAdminService
 <p>タグ: " . implode(', ', $validated['tags']) . "</p>";
 
         // テニスに関連のない記事の場合は、管理者にメール送信
-        event(new CreateMemoNotificationEvent($content, $user, $memo));
+        event(new CreateMemoAdminNotificationEvent($content, $user, $memo));
     }
 
     /**

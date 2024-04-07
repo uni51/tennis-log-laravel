@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use App\Events\CreateMemoNotificationEvent;
+use App\Events\CreateMemoAdminNotificationEvent;
 use App\Events\NotTennisRelatedNotificationEvent;
-use App\Listeners\SendCreateMemoNotificationListener;
+use App\Listeners\SendCreateMemoAdminNotificationListener;
 use App\Listeners\SendNotTennisRelatedNotificationListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -25,8 +25,8 @@ class EventServiceProvider extends ServiceProvider
         NotTennisRelatedNotificationEvent::class => [
             SendNotTennisRelatedNotificationListener::class,
         ],
-        CreateMemoNotificationEvent::class => [
-            SendCreateMemoNotificationListener::class,
+        CreateMemoAdminNotificationEvent::class => [
+            SendCreateMemoAdminNotificationListener::class,
         ],
     ];
 

@@ -109,6 +109,7 @@ class MemoManageService
     public function adminMemoSetWaitingForFix(int $id): JsonResponse
     {
         $memo = $this->repository->getMemoById($id);
+        // メモのステータスが「修正待ち」以外の場合は、変更前のステータスを保持する
         if ($memo->status !== MemoStatusType::WAITING_FOR_FIX) {
             $lastMemoStatus = $memo->status;
         }
@@ -120,7 +121,7 @@ class MemoManageService
             // Update the memo's status
             $memo->status = MemoStatusType::WAITING_FOR_FIX; // 修正待ち
             $memo->chatgpt_review_status = MemoChatGptReviewStatusType::VERIFIED_BY_ADMIN; // 管理者による審査済み
-            $memo->admin_review_status = MemoAdminReviewStatusType::WAITING_FOR_FIX; // 修正依頼中
+            $memo->admin_review_status = MemoAdminReviewStatusType::FIX_REQUIRED; // 修正依頼中
             $memo->admin_reviewed_at = now()->format('Y-m-d H:i:s'); // 管理者による審査日時
             if (isset($lastMemoStatus)) {
                 $memo->status_at_review = $lastMemoStatus;
