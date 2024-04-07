@@ -12,7 +12,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\User;
 
-class NotTennisRelatedNotificationEvent
+class NotTennisRelatedAdminNotificationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
