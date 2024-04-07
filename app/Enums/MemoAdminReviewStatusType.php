@@ -8,7 +8,7 @@ use BenSampo\Enum\Enum;
 final class MemoAdminReviewStatusType extends Enum {
     const NOT_REVIEWED = 0; // 未審査
     const REVIEW_REQUIRED = 1; // 審査必要
-    const WAITING_FOR_FIX = 2; // 修正待ち（管理者による審査NG、掲載一時停止）
+    const FIX_REQUIRED = 2; // 修正依頼中
     const PASSED_ADMIN_REVIEW = 3; // 管理者による審査通過
 
 
@@ -21,8 +21,8 @@ final class MemoAdminReviewStatusType extends Enum {
         if ($value === self::REVIEW_REQUIRED) {
             return '審査必要';
         }
-        if ($value === self::WAITING_FOR_FIX) {
-            return '修正待ち';
+        if ($value === self::FIX_REQUIRED) {
+            return '修正依頼中';
         }
         if ($value === self::PASSED_ADMIN_REVIEW) {
             return '審査通過';
@@ -38,8 +38,8 @@ final class MemoAdminReviewStatusType extends Enum {
         if ($key === '審査必要') {
             return self::REVIEW_REQUIRED;
         }
-        if ($key === '修正待ち') {
-            return self::WAITING_FOR_FIX;
+        if ($key === '修正依頼中') {
+            return self::FIX_REQUIRED;
         }
         if ($key === '審査通過') {
             return self::PASSED_ADMIN_REVIEW;

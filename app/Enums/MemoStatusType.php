@@ -10,7 +10,7 @@ final class MemoStatusType extends Enum {
     const PUBLISHING = 1; // 公開中
     const SHARING = 2; // シェア
     const UN_PUBLISHING = 3; // 非公開（自分だけが閲覧可能）
-    const WAITING_FOR_FIX = 4; // 修正待ち
+    const WAITING_FOR_FIX = 4; // 修正待ち（掲載一時停止中）
 
 
     // ここから先を追加
@@ -29,7 +29,7 @@ final class MemoStatusType extends Enum {
             return '非公開';
         }
         if ($value === self::WAITING_FOR_FIX) {
-            return '修正待ち';
+            return '修正待ち（掲載一時停止中）';
         }
         return parent::getDescription($value);
     }
@@ -48,7 +48,7 @@ final class MemoStatusType extends Enum {
         if ($key === '非公開') {
             return self::UN_PUBLISHING;
         }
-        if ($key === '修正待ち') {
+        if ($key === '修正待ち（掲載一時停止中）') {
             return self::WAITING_FOR_FIX;
         }
         return parent::getValue($key);

@@ -27,7 +27,7 @@ class MemoManageRepository extends BaseMemoRepository
     public function adminMemoWaitingReviewList(): LengthAwarePaginator
     {
         return Memo::with(['category:name,id'])
-            ->where('admin_review_status', MemoAdminReviewStatusType::getValue('審査必要'))
+            ->where('admin_review_status', MemoAdminReviewStatusType::REVIEW_REQUIRED)
             ->orderBy('updated_at', 'desc')
             ->orderBy('id', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
@@ -36,7 +36,7 @@ class MemoManageRepository extends BaseMemoRepository
     public function adminMemoWaitingFixList(): LengthAwarePaginator
     {
         return Memo::with(['category:name,id'])
-            ->where('admin_review_status', MemoAdminReviewStatusType::getValue('修正待ち'))
+            ->where('admin_review_status', MemoAdminReviewStatusType::FIX_REQUIRED)
             ->orderBy('updated_at', 'desc')
             ->orderBy('id', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
