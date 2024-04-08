@@ -33,7 +33,7 @@ class Memo extends Model
         'chatgpt_reviewed_at',
         'admin_review_status',
         'admin_reviewed_at',
-        'times_attempt_to_fix_after_notified',
+        'times_attempt_to_fix',
         'approved_at',
     ];
 

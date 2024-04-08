@@ -207,7 +207,7 @@ class MemoManageRepository extends BaseMemoRepository
                 'admin_reviewed_at'     => $memo->admin_reviewed_at,
                 'status_at_review'      => $memo->status_at_review,
                 'times_notified_to_fix' => $memo->times_notified_to_fix,
-                'times_attempt_to_fix_after_notified' => $memo->times_attempt_to_fix_after_notified,
+                'times_attempt_to_fix' => $memo->times_attempt_to_fix,
                 'approved_at' => $memo->approved_at,
                 'memo_created_at' => $memo->created_at,
                 'memo_updated_at' => $memo->updated_at,

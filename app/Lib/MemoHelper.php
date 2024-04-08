@@ -37,7 +37,7 @@ class MemoHelper
         }
 
         $validated['chatgpt_reviewed_at'] = now()->format('Y-m-d H:i:s');
-        $validated['times_attempt_to_fix_after_notified'] = $memo->times_attempt_to_fix_after_notified + 1;
+        $validated['times_attempt_to_fix'] = $memo->times_attempt_to_fix + 1;
 
         return $validated;
     }
