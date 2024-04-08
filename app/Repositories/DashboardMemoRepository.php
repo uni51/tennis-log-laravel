@@ -126,12 +126,17 @@ class DashboardMemoRepository extends BaseMemoRepository
     /**
      * @param Memo $memo
      * @param array $validated
-     * @return bool
+     * @return Memo
      */
-    public function updateMemo(Memo $memo, array $validated): bool
+    public function updateMemo(Memo $memo, array $validated): Memo
     {
         $memo->fill($validated);
-        return $memo->save();
+        $memo->save();
+
+        // 現在のモデルインスタンスをデータベースの最新の状態に同期
+        $memo->refresh();
+
+        return $memo;
     }
 
     /**

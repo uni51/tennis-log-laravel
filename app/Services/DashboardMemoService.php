@@ -164,7 +164,7 @@ class DashboardMemoService
 
         try {
             DB::beginTransaction();
-            $this->repository->updateMemo($memo, $validated);
+            $memo = $this->repository->updateMemo($memo, $validated);
             $this->repository->syncTagsToMemo($memo, $validated['tags']);
             DB::commit();
             if ($isNotTennisRelated) {
@@ -195,14 +195,17 @@ class DashboardMemoService
 
         try {
             DB::beginTransaction();
-            $this->repository->updateMemo($memo, $validated);
+            $memo = $this->repository->updateMemo($memo, $validated);
             $this->repository->syncTagsToMemo($memo, $validated['tags']);
             DB::commit();
+            // サービスインスタンスの取得
+            $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
             if ($isNotTennisRelated) {
-                // サービスインスタンスの取得
-                $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
                 // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
                 $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user);
+            } else {
+                // テニスに関連するメモとChatGPTに判断された場合は、管理者に記事が修正された旨をメール送信
+                $notifyToAdminService->notifyAdminFixMemoEmail($memo, $user);
             }
             return true;
         } catch (Exception $e) {
