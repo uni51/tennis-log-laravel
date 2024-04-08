@@ -7,8 +7,8 @@ use BenSampo\Enum\Enum;
 
 final class MemoApprovedByType extends Enum {
     const NOT_APPROVED = 0; // 未承認
-    const APPROVED_BY_CHAT_GPT = 1; // ChatGPTによる承認
-    const APPROVED_BY_ADMIN = 2; // 管理者による承認
+    const BY_GPT = 1; // ChatGPTによる承認
+    const BY_ADMIN = 2; // 管理者による承認
 
 
     // ここから先を追加
@@ -17,10 +17,10 @@ final class MemoApprovedByType extends Enum {
         if ($value === self::NOT_APPROVED) {
             return '未承認';
         }
-        if ($value === self::APPROVED_BY_CHAT_GPT) {
+        if ($value === self::BY_GPT) {
             return 'ChatGPTによる承認';
         }
-        if ($value === self::APPROVED_BY_ADMIN) {
+        if ($value === self::BY_ADMIN) {
             return '管理者による承認';
         }
 
@@ -33,10 +33,10 @@ final class MemoApprovedByType extends Enum {
             return self::NOT_APPROVED;
         }
         if ($key === 'ChatGPTによる承認') {
-            return self::APPROVED_BY_CHAT_GPT;
+            return self::BY_GPT;
         }
         if ($key === '管理者による承認') {
-            return self::APPROVED_BY_ADMIN;
+            return self::BY_ADMIN;
         }
 
         return parent::getValue($key);

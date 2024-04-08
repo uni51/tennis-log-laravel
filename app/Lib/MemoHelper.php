@@ -3,6 +3,7 @@
 namespace App\Lib;
 
 use App\Enums\MemoAdminReviewStatusType;
+use App\Enums\MemoApprovedByType;
 use App\Enums\MemoChatGptReviewStatusType;
 use App\Enums\MemoStatusType;
 use App\Models\Memo;
@@ -33,6 +34,7 @@ class MemoHelper
             $validated['chatgpt_review_status'] = MemoChatGptReviewStatusType::PASSED_GPT_REVIEW;
             $validated['admin_review_status'] = MemoAdminReviewStatusType::AFTER_FIX_REQUIRED_PASSED_GPT_REVIEW;
             $validated['status'] = $memo->status_at_review ?? MemoStatusType::DRAFT;
+            $validated['approved_by'] = MemoApprovedByType::BY_GPT;
             $validated['approved_at'] = now()->format('Y-m-d H:i:s');
         }
 

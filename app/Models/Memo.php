@@ -34,6 +34,7 @@ class Memo extends Model
         'admin_review_status',
         'admin_reviewed_at',
         'times_attempt_to_fix',
+        'approved_by',
         'approved_at',
     ];
 
