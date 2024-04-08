@@ -49,7 +49,7 @@ class DashboardMemoRepository extends BaseMemoRepository
             'category_id' => $data['category_id'],
             'title' => $data['title'],
             'body' => $data['body'],
-            'status' => $data['status_id'],
+            'status' => $data['status'],
             'chatgpt_review_status' => $data['chatgpt_review_status'] ?? MemoChatGptReviewStatusType::NOT_REVIEWED,
             'chatgpt_reviewed_at' => $data['chatgpt_reviewed_at'] ?? null,
             'admin_review_status'=> $data['admin_review_status'] ?? MemoAdminReviewStatusType::NOT_REVIEWED,

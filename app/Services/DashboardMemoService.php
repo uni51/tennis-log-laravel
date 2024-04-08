@@ -73,9 +73,9 @@ class DashboardMemoService
             return $validateErrorResponse;
         }
 
-        // 「下書き」以外のステータスの場合、ChatGPTによるテニスに関連しない内容かどうかのチェック
+        // 「下書き」以外のステータスの場合、ChatGPTによるテニスに関連しない内容かどうかのチェックを行う
         $isNotTennisRelated = false;
-        if ($validated['status_id'] !== MemoStatusType::DRAFT) {
+        if ($validated['status'] !== MemoStatusType::DRAFT) {
             $isNotTennisRelated = $this->checkIsNotTennisRelated($validated);
             $validated = MemoHelper::setReviewValueByChatGpt($validated, $isNotTennisRelated);
         }
@@ -156,8 +156,8 @@ class DashboardMemoService
     private function processMemoUpdate(array $validated, Memo $memo, Authenticatable $user): bool
     {
         $isNotTennisRelated = false;
-        // 「下書き」以外のステータスの場合、ChatGPTによるテニスに関連しない内容かどうかのチェック
-        if ($validated['status_id'] !== MemoStatusType::DRAFT) {
+        // 「下書き」以外のステータスの場合、ChatGPTによるテニスに関連しない内容かどうかのチェックを行う
+        if ($validated['status'] !== MemoStatusType::DRAFT) {
             $isNotTennisRelated = $this->checkIsNotTennisRelated($validated);
             $validated = MemoHelper::setReviewValueByChatGpt($validated, $isNotTennisRelated);
         }
