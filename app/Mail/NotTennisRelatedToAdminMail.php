@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Enums\MemoStatusType;
 use App\Models\Memo;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -36,6 +37,8 @@ class NotTennisRelatedToAdminMail extends Mailable
 
     public function build()
     {
+        $statusLabel = MemoStatusType::getDescription($this->memo->status);
+
         return $this->subject('テニスに関連しないメモの投稿通知')
             ->view('emails.to_admin.not_tennis_related_notification')
             ->with([
@@ -43,6 +46,7 @@ class NotTennisRelatedToAdminMail extends Mailable
                 'user'    => $this->user,
                 'memo'    => $this->memo,
                 'domain'  => $this->domain,
+                'statusLabel' => $statusLabel,
             ]);
     }
 }

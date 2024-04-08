@@ -8,7 +8,7 @@ use BenSampo\Enum\Enum;
 final class MemoAdminReviewStatusType extends Enum {
     const NOT_REVIEWED = 0; // 未審査
     const REVIEW_REQUIRED = 1; // 審査必要
-    const FIX_REQUIRED = 2; // 修正依頼中
+    const FIX_REQUIRED = 2; // 修正依頼中（審査NG）
     const PASSED_ADMIN_REVIEW = 3; // 管理者による審査通過
 
 

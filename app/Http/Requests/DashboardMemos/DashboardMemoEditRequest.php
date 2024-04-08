@@ -31,7 +31,7 @@ class DashboardMemoEditRequest extends FormRequest
             'body' => ['required', 'min:3', new AppropriateContent()],
             'category_id' => ['required', 'int'],
             'tags' => ['nullable', 'array'],
-            'status_id' => ['required', 'int', 'between:'.MemoStatusType::DRAFT.','.MemoStatusType::UN_PUBLISHING],
+            'status_id' => ['required', 'int', 'between:'.MemoStatusType::DRAFT.','.MemoStatusType::WAITING_FOR_FIX],
         ];
     }
 

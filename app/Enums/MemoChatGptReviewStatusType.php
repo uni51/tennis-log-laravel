@@ -24,9 +24,6 @@ final class MemoChatGptReviewStatusType extends Enum {
         if ($value === self::NG_CHAT_GPT_REVIEW) {
             return '審査NG';
         }
-        if ($value === self::VERIFIED_BY_ADMIN) {
-            return '管理者審査済';
-        }
         return parent::getDescription($value);
     }
 
@@ -40,9 +37,6 @@ final class MemoChatGptReviewStatusType extends Enum {
         }
         if ($key === '審査NG') {
             return self::NG_CHAT_GPT_REVIEW;
-        }
-        if ($key === '管理者審査済') {
-            return self::VERIFIED_BY_ADMIN;
         }
         return parent::getValue($key);
     }
