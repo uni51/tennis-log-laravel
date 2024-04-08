@@ -9,7 +9,8 @@ final class MemoAdminReviewStatusType extends Enum {
     const NOT_REVIEWED = 0; // 未審査
     const REVIEW_REQUIRED = 1; // 審査必要
     const FIX_REQUIRED = 2; // 修正依頼中（審査NG）
-    const PASSED_ADMIN_REVIEW = 3; // 管理者による審査通過
+    const AFTER_FIX_REQUIRED_PASSED_GPT_REVIEW = 3; // 修正依頼後のChatGPTによる審査通過
+    const PASSED_ADMIN_REVIEW = 4; // 管理者による審査通過
 
 
     // ここから先を追加
@@ -23,6 +24,9 @@ final class MemoAdminReviewStatusType extends Enum {
         }
         if ($value === self::FIX_REQUIRED) {
             return '修正依頼中';
+        }
+        if ($value === self::AFTER_FIX_REQUIRED_PASSED_GPT_REVIEW) {
+            return '修正依頼後のChatGPTによる審査通過';
         }
         if ($value === self::PASSED_ADMIN_REVIEW) {
             return '審査通過';
@@ -40,6 +44,9 @@ final class MemoAdminReviewStatusType extends Enum {
         }
         if ($key === '修正依頼中') {
             return self::FIX_REQUIRED;
+        }
+        if ($key === '修正依頼後のChatGPTによる審査通過') {
+            return self::AFTER_FIX_REQUIRED_PASSED_GPT_REVIEW;
         }
         if ($key === '審査通過') {
             return self::PASSED_ADMIN_REVIEW;

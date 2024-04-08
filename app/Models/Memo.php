@@ -32,6 +32,9 @@ class Memo extends Model
         'chatgpt_review_status',
         'chatgpt_reviewed_at',
         'admin_review_status',
+        'admin_reviewed_at',
+        'times_attempt_to_fix_after_notified',
+        'approved_at',
     ];
 
     public function user(): BelongsTo

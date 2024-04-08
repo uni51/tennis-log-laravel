@@ -7,8 +7,8 @@ use BenSampo\Enum\Enum;
 
 final class MemoChatGptReviewStatusType extends Enum {
     const NOT_REVIEWED = 0; // 未審査
-    const PASSED_CHAT_GPT_REVIEW = 1; // ChatGPTによる審査通過
-    const NG_CHAT_GPT_REVIEW = 2; // ChatGPTによる審査NG
+    const PASSED_GPT_REVIEW = 1; // ChatGPTによる審査通過
+    const NG_GPT_REVIEW = 2; // ChatGPTによる審査NG
     const VERIFIED_BY_ADMIN = 3; // 管理者審査済
 
 
@@ -18,10 +18,10 @@ final class MemoChatGptReviewStatusType extends Enum {
         if ($value === self::NOT_REVIEWED) {
             return '未審査';
         }
-        if ($value === self::PASSED_CHAT_GPT_REVIEW) {
+        if ($value === self::PASSED_GPT_REVIEW) {
             return '審査通過';
         }
-        if ($value === self::NG_CHAT_GPT_REVIEW) {
+        if ($value === self::NG_GPT_REVIEW) {
             return '審査NG';
         }
         return parent::getDescription($value);
@@ -33,10 +33,10 @@ final class MemoChatGptReviewStatusType extends Enum {
             return self::NOT_REVIEWED;
         }
         if ($key === '審査通過') {
-            return self::PASSED_CHAT_GPT_REVIEW;
+            return self::PASSED_GPT_REVIEW;
         }
         if ($key === '審査NG') {
-            return self::NG_CHAT_GPT_REVIEW;
+            return self::NG_GPT_REVIEW;
         }
         return parent::getValue($key);
     }

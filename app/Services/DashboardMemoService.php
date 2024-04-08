@@ -130,9 +130,17 @@ class DashboardMemoService
             return $validateErrorResponse;
         }
 
-        if (!$this->processMemoUpdate($validated, $memo, $user)) {
-            throw new Exception('メモの編集に失敗しました。');
+        if ($memo->status === MemoStatusType::WAITING_FOR_FIX) {
+            if (!$this->processMemoFixUpdate($validated, $memo, $user)) {
+                throw new Exception('メモの編集に失敗しました。');
+            }
+        } else {
+            if (!$this->processMemoUpdate($validated, $memo, $user)) {
+                throw new Exception('メモの編集に失敗しました。');
+            }
         }
+
+
 
         return response()->json([
             'message' => 'メモの編集に成功しました。'
@@ -153,6 +161,37 @@ class DashboardMemoService
             $isNotTennisRelated = $this->checkIsNotTennisRelated($validated);
             $validated = MemoHelper::setReviewValueByChatGpt($validated, $isNotTennisRelated);
         }
+
+        try {
+            DB::beginTransaction();
+            $this->repository->updateMemo($memo, $validated);
+            $this->repository->syncTagsToMemo($memo, $validated['tags']);
+            DB::commit();
+            if ($isNotTennisRelated) {
+                // サービスインスタンスの取得
+                $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
+                // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
+                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user);
+            }
+            return true;
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * @param array $validated
+     * @param Memo $memo
+     * @param Authenticatable $user
+     * @return bool
+     */
+    private function processMemoFixUpdate(array $validated, Memo $memo, Authenticatable $user): bool
+    {
+        // ChatGPTによるテニスに関連しない内容かどうかのチェック
+        $isNotTennisRelated = $this->checkIsNotTennisRelated($validated);
+        $validated = MemoHelper::setFixReviewValueByChatGpt($validated, $isNotTennisRelated, $memo);
 
         try {
             DB::beginTransaction();
