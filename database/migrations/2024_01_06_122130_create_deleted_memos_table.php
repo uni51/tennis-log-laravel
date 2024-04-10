@@ -32,8 +32,8 @@ return new class extends Migration
             $table->dateTime('approved_at')->nullable()->comment('承認された日時');
             $table->dateTime('memo_created_at')->comment('メモ作成日時');
             $table->dateTime('memo_updated_at')->comment('メモ更新日時');
-            $table->timestamps();
             $table->boolean('is_force_deleted')->default(false)->comment('強制削除されたかどうか');
+            $table->timestamps();
         });
     }
 

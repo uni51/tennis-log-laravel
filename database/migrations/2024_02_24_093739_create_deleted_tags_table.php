@@ -30,8 +30,8 @@ return new class extends Migration
             // $table->unsignedTinyInteger('approved_by')->default(0)->comment('記事の承認者');
             $table->dateTime('tag_created_at')->comment('タグ作成日時');
             $table->dateTime('tag_updated_at')->comment('タグ更新日時');
-            $table->timestamps();
             $table->boolean('is_force_deleted')->default(false)->comment('強制削除されたかどうか');
+            $table->timestamps();
         });
     }
 

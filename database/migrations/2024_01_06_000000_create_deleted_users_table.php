@@ -31,8 +31,8 @@ return new class extends Migration
             $table->rememberToken();
             $table->dateTime('user_created_at')->comment('ユーザー作成日時');
             $table->dateTime('user_updated_at')->comment('ユーザー更新日時');
-            $table->timestamps();
             $table->boolean('is_force_deleted')->default(false)->comment('強制削除されたかどうか');
+            $table->timestamps();
         });
     }
 
