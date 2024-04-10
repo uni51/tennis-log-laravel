@@ -11,6 +11,7 @@ use App\Http\Requests\DashboardMemos\DashboardMemoSearchRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoShowRequest;
 use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;
+use App\Models\User;
 use App\Services\DashboardMemoService;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Exception;
@@ -127,6 +128,7 @@ class DashBoardMemoController extends Controller
      */
     public function dashboardMemoCreate(MemoPostRequest $request, DashboardMemoService $service): JsonResponse
     {
+        /** @var User $user */
         $user = Auth::user();
         $validated = $request->validated();
         return $service->dashboardMemoCreate($validated, $user);
@@ -197,6 +199,7 @@ class DashBoardMemoController extends Controller
      */
     public function dashboardMemoShow(DashboardMemoShowRequest $request, DashboardMemoService $service): MemoResource
     {
+        /** @var User $user */
         $user = Auth::user();
         $validated = $request->validated();
         return $service->dashboardMemoShow($validated['id'], $user);
@@ -210,6 +213,7 @@ class DashBoardMemoController extends Controller
      */
     public function dashboardMemoEdit(DashboardMemoEditRequest $request, DashboardMemoService $service): JsonResponse
     {
+        /** @var User $user */
         $user = Auth::user();
         $validated = $request->validated();
         return $service->dashboardMemoEdit($validated, $user);
@@ -223,6 +227,7 @@ class DashBoardMemoController extends Controller
      */
     public function dashboardMemoDestroy(DashboardMemoDestroyRequest $request, DashboardMemoService $service): JsonResponse
     {
+        /** @var User $user */
         $user = Auth::user();
         $validated = $request->validated();
         return $service->dashboardMemoDestroy($validated['id'], $user);

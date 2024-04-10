@@ -86,7 +86,6 @@ Route::group(['middleware' => 'auth:api'], function () {
         ->name('get_public_nickname_memos_category_tag');
     });
 
-
 Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
 //    Route::get('/user', function (Request $request) {
 //        return $request->user();

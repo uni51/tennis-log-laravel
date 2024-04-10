@@ -216,7 +216,7 @@ class MemoManageRepository extends BaseMemoRepository
             ]);
 
             // memo_tag テーブルから該当メモに関連するタグのレコードを取得し、deleted_memo_tag へ移動
-            $this->deleteMemoTags($memo);
+            $this->archiveAndDetachMemoTags($memo);
             // Tagテーブルから使用されていないタグを削除
             $this->deleteUnusedTagsBelongsToUser($memo->user);
             // メモ自体を削除

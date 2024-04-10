@@ -7,6 +7,7 @@ use App\Enums\MemoAdminReviewStatusType;
 use App\Enums\MemoChatGptReviewStatusType;
 use App\Models\Memo;
 use App\Models\Tag;
+use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -87,7 +88,7 @@ class DashboardMemoRepository extends BaseMemoRepository
             }
         });
     }
-    public function syncTagsToMemo(Memo $memo, array $tags): void
+    public function syncTagsToMemo(Memo $memo, array $tags, User $user): void
     {
         // タグ名からタグのIDを取得し、存在しないものは新規作成
         $tagIds = collect($tags)->map(function ($name) {
@@ -99,28 +100,12 @@ class DashboardMemoRepository extends BaseMemoRepository
             return $tag->id;
         })->all();
 
-        // syncメソッドでメモとタグのリレーションを更新
+        // syncメソッドでメモとタグのリレーション（中間テーブル）を更新
         $memo->tags()->sync($tagIds);
 
         // ここで不要になったタグを削除するロジックを追加する
         // 注意: このロジックはアプリケーションの要件に応じて調整する必要があります
-        $this->deleteUnusedTags();
-    }
-
-    public function deleteUnusedTags(): void
-    {
-        // まず、使用されていない（他のメモに紐付いていない）、現在のユーザーによって作成された
-        // かつ、Adminユーザーによって作成されていないタグを検索します。
-        $unusedTagIds = Tag::whereDoesntHave('memos') // memosリレーションを持たないタグを選択
-        ->where('created_by', Auth::id()) // 現在のユーザーによって作成された
-        ->where('created_by', '!=', TagConst::ADMIN_ID) // Adminによって作成されていない
-        ->pluck('id'); // 不要なタグのIDを取得
-
-        // 条件に一致するタグを削除します。
-        // pluck('id')により取得したIDリストを使用してdelete()を呼び出すことで、対象となるタグを一括で削除する
-        if ($unusedTagIds->isNotEmpty()) {
-            Tag::whereIn('id', $unusedTagIds)->delete();
-        }
+        $this->deleteUnusedTagsBelongsToUser($user);
     }
 
     /**
