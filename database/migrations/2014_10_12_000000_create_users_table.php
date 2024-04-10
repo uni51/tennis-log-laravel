@@ -21,9 +21,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
-            $table->unsignedTinyInteger('inappropriate_posts_count')->default(0)->comment('不適切と判断された投稿の回数');
+            $table->unsignedTinyInteger('count_inappropriate_posts')->default(0)->comment('不適切と判断された投稿の回数');
             $table->unsignedTinyInteger('total_times_notified_to_fix')->default(0)->comment('修正依頼通知回数の合計');
-            $table->unsignedTinyInteger('total_times_delete_memos_by_admin')->default(0)->comment('管理者によって記事が削除された回数');
+            $table->unsignedTinyInteger('total_times_attempt_to_fix')->default(0)->comment('通知後に修正を試みた回数');
+            $table->unsignedTinyInteger('total_times_delete_memo_by_admin')->default(0)->comment('管理者によって記事が削除された回数');
+            $table->unsignedTinyInteger('total_times_delete_tag_by_admin')->default(0)->comment('管理者によってタグが削除された回数');
             $table->unsignedTinyInteger('times_warned')->default(0)->comment('警告回数');
             $table->rememberToken();
             $table->timestamps(); // created_at, updated_at
