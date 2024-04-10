@@ -31,8 +31,11 @@ class DeletedUser extends Authenticatable
         'total_times_attempt_to_fix',
         'total_times_delete_memos_by_admin',
         'total_times_delete_tag_by_admin',
+        'times_warned',
         'remember_token',
-        'force_deleted'
+        'user_created_at',
+        'user_updated_at',
+        'is_force_deleted'
     ];
 
     /**
