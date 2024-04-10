@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('deleted_memos', function (Blueprint $table) {
             $table->id();
-            $table->boolean('force_deleted')->default(false)->comment('強制削除されたかどうか');
             $table->unsignedBigInteger('memo_id')->comment('メモID');
             $table->unsignedBigInteger('user_id')->comment('ユーザーID');
             $table->unsignedBigInteger('category_id')->comment('カテゴリーID');
@@ -34,6 +33,7 @@ return new class extends Migration
             $table->dateTime('memo_created_at')->comment('メモ作成日時');
             $table->dateTime('memo_updated_at')->comment('メモ更新日時');
             $table->timestamps();
+            $table->boolean('is_force_deleted')->default(false)->comment('強制削除されたかどうか');
         });
     }
 
