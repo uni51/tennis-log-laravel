@@ -40,7 +40,7 @@ class BaseMemoRepository
         return mb_convert_kana(strtolower($tagName), 'as', 'UTF-8');
     }
 
-    public function archiveMemo(Memo $memo): void
+    public function archiveMemo(Memo $memo, bool $isForceDeleted = false): void
     {
         DeletedMemo::create([
             'memo_id' => $memo->id,
@@ -60,38 +60,14 @@ class BaseMemoRepository
             'approved_at' => $memo->approved_at,
             'memo_created_at' => $memo->created_at,
             'memo_updated_at' => $memo->updated_at,
-            'is_force_deleted' => false,
-        ]);
-    }
-
-    public function archiveMemoByAdmin(Memo $memo): void
-    {
-        DeletedMemo::create([
-            'memo_id' => $memo->id,
-            'user_id' => $memo->user_id,
-            'category_id' => $memo->category_id,
-            'title' => $memo->title,
-            'body' => $memo->body,
-            'status' => $memo->status,
-            'chatgpt_review_status' => $memo->chatgpt_review_status,
-            'chatgpt_reviewed_at' => $memo->chatgpt_reviewed_at,
-            'admin_review_status' => $memo->admin_review_status,
-            'admin_reviewed_at' => $memo->admin_reviewed_at,
-            'status_at_review' => $memo->status_at_review,
-            'times_notified_to_fix' => $memo->times_notified_to_fix,
-            'times_attempt_to_fix' => $memo->times_attempt_to_fix,
-            'approved_by' => $memo->approved_by,
-            'approved_at' => $memo->approved_at,
-            'memo_created_at' => $memo->created_at,
-            'memo_updated_at' => $memo->updated_at,
-            'is_force_deleted' => true,
+            'is_force_deleted' => (bool)$isForceDeleted,
         ]);
     }
 
     /**
      * memo_tagの中間テーブルに関連付けられたタグをアーカイブして、関連を削除する。
      */
-    public function archiveAndDetachMemoTags(Memo $memo): void
+    public function archiveAndDetachMemoTags(Memo $memo, bool $isForceDeleted = false): void
     {
         DB::beginTransaction();
         try {
@@ -99,7 +75,7 @@ class BaseMemoRepository
             $memoTags = $memo->tags()->withPivot('created_at', 'updated_at')->get();
 
             // deleted_memo_tagへのバルクインサートデータを準備
-            $deletedTagsData = $memoTags->map(function ($tag) use ($memo) {
+            $deletedTagsData = $memoTags->map(function ($tag) use ($memo, $isForceDeleted ) {
                 return [
                     'memo_id' => $memo->id,
                     'tag_id' => $tag->id,
@@ -107,6 +83,7 @@ class BaseMemoRepository
                     'memo_tag_updated_at' => $tag->pivot->updated_at,
                     'created_at' => now()->format('Y-m-d H:i:s'),
                     'updated_at' => now()->format('Y-m-d H:i:s'),
+                    'is_force_deleted' => (bool)$isForceDeleted,
                 ];
             })->toArray();
 
@@ -126,7 +103,7 @@ class BaseMemoRepository
         }
     }
 
-    public function archiveAndDeleteUserUnusedTags(User $user): void
+    public function archiveAndDeleteUserUnusedTags(User $user, bool $isForceDeleted = false): void
     {
         // 使用されていないタグを取得
         $unusedTags = Tag::whereDoesntHave('memos')
@@ -137,13 +114,14 @@ class BaseMemoRepository
         DB::beginTransaction();
         try {
             // deleted_tags へのバルクインサートデータを準備
-            $deletedTags = array_map(function ($unusedTag) {
+            $deletedTags = array_map(function ($unusedTag) use ($isForceDeleted) {
                 return [
                     'tag_id' => $unusedTag['id'],
                     'name' => $unusedTag['name'],
                     'created_by' => $unusedTag['created_by'],
                     'tag_created_at' => Carbon::parse($unusedTag['created_at'])->format('Y-m-d H:i:s'),
                     'tag_updated_at' => Carbon::parse($unusedTag['updated_at'])->format('Y-m-d H:i:s'),
+                    'is_force_deleted' => (bool)$isForceDeleted,
                     'created_at' => now()->format('Y-m-d H:i:s'),
                     'updated_at' => now()->format('Y-m-d H:i:s'),
                 ];
@@ -164,7 +142,7 @@ class BaseMemoRepository
         }
     }
 
-    public function deleteUnusedTagsBelongsToUser(User $user): void
+    public function deleteUserUnusedTags(User $user): void
     {
         // まず、使用されていない（他のメモに紐付いていない）、現在のユーザーによって作成された
         // かつ、Adminユーザーによって作成されていないタグを検索します。

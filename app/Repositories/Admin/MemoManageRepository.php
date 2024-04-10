@@ -193,36 +193,14 @@ class MemoManageRepository extends BaseMemoRepository
         DB::beginTransaction();
         try {
             // DeletedMemoテーブルにデータを移動
-            DB::table('deleted_memos')->insert([
-                'force_deleted' => true,
-                'memo_id'       => $memo->id,
-                'user_id'       => $memo->user_id,
-                'category_id'   => $memo->category_id,
-                'title'         => $memo->title,
-                'body'          => $memo->body,
-                'status'        => $memo->status,
-                'chatgpt_review_status' => $memo->chatgpt_review_status,
-                'chatgpt_reviewed_at'   => $memo->chatgpt_reviewed_at,
-                'admin_review_status'   => $memo->admin_review_status,
-                'admin_reviewed_at'     => $memo->admin_reviewed_at,
-                'status_at_review'      => $memo->status_at_review,
-                'times_notified_to_fix' => $memo->times_notified_to_fix,
-                'times_attempt_to_fix' => $memo->times_attempt_to_fix,
-                'approved_at' => $memo->approved_at,
-                'memo_created_at' => $memo->created_at,
-                'memo_updated_at' => $memo->updated_at,
-                'created_at' => now()->format('Y-m-d H:i:s'),
-                'updated_at' => now()->format('Y-m-d H:i:s'),
-            ]);
-
-            // memo_tag テーブルから該当メモに関連するタグのレコードを取得し、deleted_memo_tag へ移動
-            $this->archiveAndDetachMemoTags($memo);
+            $this->archiveMemo($memo, true);
+            // memo_tagの中間テーブルに関連付けられたタグをアーカイブして、関連を削除する。
+            $this->archiveAndDetachMemoTags($memo, true);
             // Tagテーブルから使用されていないタグを削除
-            $this->deleteUnusedTagsBelongsToUser($memo->user);
+            $this->archiveAndDeleteUserUnusedTags($memo->user, true);
             // メモ自体を削除
             $memo->delete();
             DB::commit();
-
             return true;
         } catch (Exception $e) {
             DB::rollBack();

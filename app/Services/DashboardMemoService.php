@@ -166,10 +166,10 @@ class DashboardMemoService
             $validated = MemoHelper::setReviewValueByChatGpt($validated, $isNotTennisRelated);
         }
 
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $memo = $this->repository->updateMemo($memo, $validated);
-            $this->repository->syncTagsToMemo($memo, $validated['tags'], $user);
+            $this->repository->syncTagsToMemo($memo, $validated['tags']);
             DB::commit();
             if ($isNotTennisRelated) {
                 // サービスインスタンスの取得
@@ -200,7 +200,7 @@ class DashboardMemoService
         DB::beginTransaction();
         try {
             $memo = $this->repository->updateMemo($memo, $validated);
-            $this->repository->syncTagsToMemo($memo, $validated['tags'], $user);
+            $this->repository->syncTagsToMemo($memo, $validated['tags']);
             $user->increment('total_times_attempt_to_fix'); // 総修正を試みた回数をカウントアップ
             DB::commit();
             // サービスインスタンスの取得
@@ -239,6 +239,7 @@ class DashboardMemoService
 
         DB::beginTransaction();
         try {
+            //
             $this->repository->archiveAndDetachMemoTags($memo);
             $this->repository->archiveMemo($memo);
             $this->repository->archiveAndDeleteUserUnusedTags($user);

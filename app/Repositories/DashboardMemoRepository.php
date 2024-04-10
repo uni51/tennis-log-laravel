@@ -88,7 +88,11 @@ class DashboardMemoRepository extends BaseMemoRepository
             }
         });
     }
-    public function syncTagsToMemo(Memo $memo, array $tags, User $user): void
+
+    /**
+     * @throws Exception
+     */
+    public function syncTagsToMemo(Memo $memo, array $tags): void
     {
         // タグ名からタグのIDを取得し、存在しないものは新規作成
         $tagIds = collect($tags)->map(function ($name) {
@@ -100,12 +104,20 @@ class DashboardMemoRepository extends BaseMemoRepository
             return $tag->id;
         })->all();
 
-        // syncメソッドでメモとタグのリレーション（中間テーブル）を更新
-        $memo->tags()->sync($tagIds);
+        DB::beginTransaction();
+        try {
+            // syncメソッドでメモとタグのリレーション（中間テーブル）を更新
+            $memo->tags()->sync($tagIds);
+            // ここで不要になったタグを削除するロジックを追加する
+            // 注意: このロジックはアプリケーションの要件に応じて調整する必要があります
+            $this->archiveAndDeleteUserUnusedTags($memo->user);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            throw new Exception('タグの同期に失敗しました。');
+        }
 
-        // ここで不要になったタグを削除するロジックを追加する
-        // 注意: このロジックはアプリケーションの要件に応じて調整する必要があります
-        $this->deleteUnusedTagsBelongsToUser($user);
     }
 
     /**
