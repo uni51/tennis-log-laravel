@@ -15,8 +15,8 @@ class Tag extends Model
 
     protected $fillable = [
         'name',
-        'normalized',
         'created_by',
+        'created_by_admin'
     ];
 
     public function memos(): BelongsToMany

@@ -1,0 +1,44 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Enums;
+
+use BenSampo\Enum\Enum;
+
+final class MemoApprovedByType extends Enum {
+    const NOT_APPROVED = 0; // 未承認
+    const BY_GPT = 1; // ChatGPTによる承認
+    const BY_ADMIN = 2; // 管理者による承認
+
+
+    // ここから先を追加
+    public static function getDescription($value): string
+    {
+        if ($value === self::NOT_APPROVED) {
+            return '未承認';
+        }
+        if ($value === self::BY_GPT) {
+            return 'ChatGPTによる承認';
+        }
+        if ($value === self::BY_ADMIN) {
+            return '管理者による承認';
+        }
+
+        return parent::getDescription($value);
+    }
+
+    public static function getValue(string $key): int
+    {
+        if ($key === '未承認') {
+            return self::NOT_APPROVED;
+        }
+        if ($key === 'ChatGPTによる承認') {
+            return self::BY_GPT;
+        }
+        if ($key === '管理者による承認') {
+            return self::BY_ADMIN;
+        }
+
+        return parent::getValue($key);
+    }
+}

@@ -13,6 +13,7 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+    'name' => env('SERVICE_NAME', 'Tennisノート'),
 
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),

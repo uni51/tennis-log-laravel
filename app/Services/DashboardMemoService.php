@@ -1,6 +1,15 @@
 <?php
+
 namespace App\Services;
 
+use App\Enums\MemoStatusType;
+use App\Lib\MemoHelper;
+use App\Models\DeletedMemo;
+use App\Models\DeletedMemoTag;
+use App\Models\User;
+use App\Traits\ServiceInstanceTrait;
+use App\Enums\MemoAdminReviewStatusType;
+use App\Enums\MemoChatGptReviewStatusType;
 use App\Http\Resources\MemoResource;
 use App\Models\Memo;
 use App\Repositories\DashboardMemoRepository;
@@ -8,32 +17,37 @@ use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
 class DashboardMemoService
 {
+    use ServiceInstanceTrait;
+
     private DashboardMemoRepository $repository;
+    protected OpenAIService $openAIService;
 
     /**
      * コンストラクタ
      *
      * @param DashboardMemoRepository|null $repository
      */
-    public function __construct(DashboardMemoRepository $repository = null)
+    public function __construct(OpenAIService $openAIService, DashboardMemoRepository $repository = null)
     {
         $this->repository = $repository ?? app(DashboardMemoRepository::class);
+        $this->openAIService = $openAIService;
     }
 
     /**
      * @param int $memoId
-     * @param Authenticatable $user
+     * @param User $user
      * @param string $abilities
-     * @throws AuthorizationException
      * @return Memo
+     * @throws AuthorizationException
      */
-    private function validateUserPermission(int $memoId, Authenticatable $user, string $abilities): Memo
+    private function validateUserPermission(int $memoId, User $user, string $abilities): Memo
     {
         $memo = $this->repository->getMemoById($memoId);
         if ($user->cannot($abilities, $memo)) {
@@ -47,15 +61,41 @@ class DashboardMemoService
         return $memo;
     }
 
-
     /**
+     * @param User $user
      * @param array $validated
-     * @throws Exception
      * @return JsonResponse
+     * @throws Exception
      */
-    public function dashboardMemoCreate(array $validated): JsonResponse
+    public function dashboardMemoCreate(array $validated, User $user): JsonResponse
     {
-        $this->repository->dashboardMemoCreate($validated);
+        // サービスインスタンスの取得
+        $contentInspectionService = $this->getServiceInstance(ContentInspectionService::class);
+        // ChatGPTによる内容に不適切な表現がないかのチェック
+        $validateErrorResponse = $contentInspectionService->validateIsInappropriate($validated, $user);
+        if ($validateErrorResponse) {
+            return $validateErrorResponse;
+        }
+
+        // 「下書き」以外のステータスの場合、ChatGPTによるテニスに関連しない内容かどうかのチェックを行う
+        $isNotTennisRelated = false;
+        if ($validated['status'] !== MemoStatusType::DRAFT) {
+            $isNotTennisRelated = $this->checkIsNotTennisRelated($validated);
+            $validated = MemoHelper::setReviewValueByChatGpt($validated, $isNotTennisRelated);
+        }
+
+        $memo = $this->repository->dashboardMemoCreate($validated);
+
+        $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
+        if ($isNotTennisRelated) {
+            // サービスインスタンスの取得
+            // テニスに関連のないメモとChatGPTに判断された場合は、管理者にその旨をメール送信
+            $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user);
+        } else {
+            // サービスインスタンスの取得
+            // テニスに関連するメモとChatGPTに判断された場合は、管理者に新規投稿があったことのメール送信
+            $notifyToAdminService->notifyAdminCreateMemoEmail($memo, $user);
+        }
 
         return response()->json([
             'message' => 'メモの登録に成功しました。'
@@ -64,11 +104,11 @@ class DashboardMemoService
 
     /**
      * @param int $id
-     * @param Authenticatable $user
+     * @param User $user
      * @return MemoResource
      * @throws AuthorizationException
      */
-    public function dashboardMemoShow(int $id, Authenticatable $user): MemoResource
+    public function dashboardMemoShow(int $id, User $user): MemoResource
     {
         $memo = $this->validateUserPermission($id, $user, 'dashboardMemoShow');
 
@@ -77,18 +117,34 @@ class DashboardMemoService
 
     /**
      * @param array $validated
-     * @param Authenticatable $user
-     * @throws AuthorizationException
-     * @throws Exception
+     * @param User $user
      * @return JsonResponse
+     * @throws Exception
+     * @throws AuthorizationException
      */
-    public function dashboardMemoEdit(array $validated, Authenticatable $user): JsonResponse
+    public function dashboardMemoEdit(array $validated, User $user): JsonResponse
     {
         $memo = $this->validateUserPermission($validated['id'], $user, 'update');
 
-        if (!$this->processMemoUpdate($validated, $memo)) {
-            throw new Exception('メモの編集に失敗しました。');
+        // サービスインスタンスの取得
+        $contentInspectionService = $this->getServiceInstance(ContentInspectionService::class);
+        // ChatGPTによる内容に不適切な表現がないかのチェック
+        $validateErrorResponse = $contentInspectionService->validateIsInappropriate($validated, $user);
+        if ($validateErrorResponse) {
+            return $validateErrorResponse;
         }
+
+        if ($memo->status === MemoStatusType::WAITING_FOR_FIX) {
+            if (!$this->processMemoFixUpdate($validated, $memo, $user)) {
+                throw new Exception('メモの編集に失敗しました。');
+            }
+        } else {
+            if (!$this->processMemoUpdate($validated, $memo, $user)) {
+                throw new Exception('メモの編集に失敗しました。');
+            }
+        }
+
+
 
         return response()->json([
             'message' => 'メモの編集に成功しました。'
@@ -98,15 +154,29 @@ class DashboardMemoService
     /**
      * @param array $validated
      * @param Memo $memo
+     * @param User $user
      * @return bool
      */
-    private function processMemoUpdate(array $validated, Memo $memo): bool
+    private function processMemoUpdate(array $validated, Memo $memo, User $user): bool
     {
+        $isNotTennisRelated = false;
+        // 「下書き」以外のステータスの場合、ChatGPTによるテニスに関連しない内容かどうかのチェックを行う
+        if ($validated['status'] !== MemoStatusType::DRAFT) {
+            $isNotTennisRelated = $this->checkIsNotTennisRelated($validated);
+            $validated = MemoHelper::setReviewValueByChatGpt($validated, $isNotTennisRelated);
+        }
+
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-            $this->repository->updateMemo($memo, $validated);
+            $memo = $this->repository->updateMemo($memo, $validated);
             $this->repository->syncTagsToMemo($memo, $validated['tags']);
             DB::commit();
+            if ($isNotTennisRelated) {
+                // サービスインスタンスの取得
+                $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
+                // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
+                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user);
+            }
             return true;
         } catch (Exception $e) {
             DB::rollBack();
@@ -116,18 +186,71 @@ class DashboardMemoService
     }
 
     /**
+     * @param array $validated
+     * @param Memo $memo
+     * @param User $user
+     * @return bool
+     */
+    private function processMemoFixUpdate(array $validated, Memo $memo, User $user): bool
+    {
+        // ChatGPTによるテニスに関連しない内容かどうかのチェック
+        $isNotTennisRelated = $this->checkIsNotTennisRelated($validated);
+        $validated = MemoHelper::setFixReviewValueByChatGpt($validated, $isNotTennisRelated, $memo);
+
+        DB::beginTransaction();
+        try {
+            $memo = $this->repository->updateMemo($memo, $validated);
+            $this->repository->syncTagsToMemo($memo, $validated['tags']);
+            $user->increment('total_times_attempt_to_fix'); // 総修正を試みた回数をカウントアップ
+            DB::commit();
+            // サービスインスタンスの取得
+            $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
+            if ($isNotTennisRelated) {
+                // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
+                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user);
+            } else {
+                // テニスに関連するメモとChatGPTに判断された場合は、管理者に記事が修正された旨をメール送信
+                $notifyToAdminService->notifyAdminFixMemoEmail($memo, $user);
+            }
+            return true;
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return false;
+        }
+    }
+
+    private function checkIsNotTennisRelated(array $validated): bool
+    {
+        return $this->openAIService->isNotTennisRelated(
+            $validated['title'] . "\n" . $validated['body'] . "\n" . implode("\n", $validated['tags'])
+        );
+    }
+
+    /**
      * @param int $id
-     * @param Authenticatable $user
+     * @param User $user
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function dashboardMemoDestroy(int $id, Authenticatable $user): JsonResponse
+    public function dashboardMemoDestroy(int $id, User $user): JsonResponse
     {
         $memo = $this->validateUserPermission($id, $user, 'delete');
-        $memo->tags()->detach(); // 中間テーブルのレコードを削除
-        $memo->delete();
-        $this->repository->deleteUnusedTags();
-        return response()->json(['message' => 'Memo deleted'], 200);
+
+        DB::beginTransaction();
+        try {
+            //
+            $this->repository->archiveAndDetachMemoTags($memo);
+            $this->repository->archiveMemo($memo);
+            $this->repository->archiveAndDeleteUserUnusedTags($user);
+            $memo->delete();
+            DB::commit();
+            return response()->json(['message' => 'Memo deleted'], 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Failed to delete memo'], 500);
+        }
     }
 
     /**

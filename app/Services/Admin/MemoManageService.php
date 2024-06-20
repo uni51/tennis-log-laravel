@@ -1,15 +1,25 @@
 <?php
 namespace App\Services\Admin;
 
+use App\Enums\MemoAdminReviewStatusType;
+use App\Enums\MemoChatGptReviewStatusType;
+use App\Enums\MemoStatusType;
 use App\Http\Resources\Admin\MemoManageResource;
-use App\Http\Resources\MemoResource;
 use App\Repositories\Admin\MemoManageRepository;
+use App\Mail\MemoFixRequest;
+use App\Services\NotifyToUserService;
+use App\Traits\ServiceInstanceTrait;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class MemoManageService
 {
+    use ServiceInstanceTrait;
+
     private MemoManageRepository $repository;
 
     /**
@@ -39,6 +49,34 @@ class MemoManageService
     }
 
     /**
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function adminMemoWaitingReviewList(): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->adminMemoWaitingReviewList();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoManageResource::collection($memos);
+    }
+
+    public function adminMemoWaitingFixList(): AnonymousResourceCollection
+    {
+        try {
+            $memos = $this->repository->adminMemoWaitingFixList();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw $e;
+        }
+
+        return MemoManageResource::collection($memos);
+    }
+
+    /**
      * @param string $keyword
      * @return AnonymousResourceCollection
      * @throws Exception
@@ -52,18 +90,73 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
     /**
      * @param int $id
-     * @return MemoResource
+     * @return MemoManageResource
      */
-    public function adminMemoShow(int $id): MemoResource
+    public function adminMemoShow(int $id): MemoManageResource
     {
         $memo = $this->repository->getMemoById($id);
 
-        return new MemoResource($memo);
+        return new MemoManageResource($memo);
+    }
+
+    /**
+     * 管理者による審査の結果、メモの内容が不適切と判断された場合の、管理者によるメモの修正依頼（記事の掲載を一時停止にする）
+     *
+     * @param int $id Memo ID
+     * @return JsonResponse
+     */
+    public function adminMemoSetWaitingForFix(int $id): JsonResponse
+    {
+        $memo = $this->repository->getMemoById($id);
+        // メモのステータスが「修正待ち」以外の場合は、変更前のステータスを保持する
+        if ($memo->status !== MemoStatusType::WAITING_FOR_FIX) {
+            $lastMemoStatus = $memo->status;
+        }
+
+        $user = $memo->user;
+
+        try {
+            DB::beginTransaction();
+            // Update the memo's status
+            $memo->status = MemoStatusType::WAITING_FOR_FIX; // 修正待ち
+            $memo->admin_review_status = MemoAdminReviewStatusType::FIX_REQUIRED; // 修正依頼中
+            $memo->admin_reviewed_at = now()->format('Y-m-d H:i:s'); // 管理者による審査日時
+            if (isset($lastMemoStatus)) {
+                $memo->status_at_review = $lastMemoStatus;
+            }
+            $memo->times_notified_to_fix = $memo->times_notified_to_fix + 1; // 修正依頼通知回数をカウントアップ
+            $memo->timestamps = false; // updated_at が更新されないようにする
+            $memo->save();
+
+            $user->increment('total_times_notified_to_fix'); // 総修正依頼通知回数をカウントアップ
+
+            DB::commit();
+
+            $notifyToAdminService = $this->getServiceInstance(NotifyToUserService::class);
+            // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
+            $notifyToAdminService->notifyUserMemoFixRequestEmail($memo, $user);
+
+            return response()->json(['message' => 'メモの修正リクエストを送信しました。']);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'メモの修正リクエストに失敗しました。'], 500);
+        }
+    }
+
+    public function adminMemoDestroy(int $id): JsonResponse
+    {
+        $memo = $this->repository->getMemoById($id);
+        if ($this->repository->adminMemoDestroy($memo)) {
+            return response()->json(['message' => 'メモを強制的に削除しました。'], 200);
+        } else {
+            return response()->json(['error' => 'メモの強制削除に失敗しました。'], 500);
+        }
     }
 
     /**
@@ -80,7 +173,7 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
     /**
@@ -97,7 +190,7 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
     /**
@@ -115,7 +208,7 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
     /**
@@ -132,7 +225,7 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
 
@@ -151,7 +244,7 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
     /**
@@ -169,7 +262,7 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 
     /**
@@ -188,6 +281,6 @@ class MemoManageService
             throw $e;
         }
 
-        return MemoResource::collection($memos);
+        return MemoManageResource::collection($memos);
     }
 }

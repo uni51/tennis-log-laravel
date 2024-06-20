@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('tag_id');
             $table->dateTime('memo_tag_created_at')->comment('作成日時');
             $table->dateTime('memo_tag_updated_at')->comment('更新日時');
+            $table->boolean('is_force_deleted')->default(false)->comment('強制削除されたかどうか');
             $table->timestamps();
         });
     }

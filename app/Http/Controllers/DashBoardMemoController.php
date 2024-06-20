@@ -11,6 +11,7 @@ use App\Http\Requests\DashboardMemos\DashboardMemoSearchRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoShowRequest;
 use App\Http\Requests\MemoPostRequest;
 use App\Http\Resources\MemoResource;
+use App\Models\User;
 use App\Services\DashboardMemoService;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Exception;
@@ -127,8 +128,10 @@ class DashBoardMemoController extends Controller
      */
     public function dashboardMemoCreate(MemoPostRequest $request, DashboardMemoService $service): JsonResponse
     {
+        /** @var User $user */
+        $user = Auth::user();
         $validated = $request->validated();
-        return $service->dashboardMemoCreate($validated);
+        return $service->dashboardMemoCreate($validated, $user);
     }
 
     public function dashboardMemoUploadImage(Request $request)
@@ -166,24 +169,27 @@ class DashBoardMemoController extends Controller
         return response()->json(['imageUrl' => $modifiedUploadedFileUrl]);
     }
 
-    public function dashboardMemoUploadStorageAppPublicImage(Request $request)
-    {
-        $file = $request->file('image');
-
-        // データがない場合はエラーを返す
-        if (!$file) {
-            return response()->json(['error' => '画像データが送信されていません。'], 400);
-        }
-
-        /* 以下は、storage/app/public/images配下に画像を格納する場合の処理 */
-        // 画像ファイルの名前を生成（例: uniqueFileName.png）
-         $image_name = Str::random(10).'.'.$file->getClientOriginalExtension();
-        // 画像を保存
-         $path = $file->storeAs('images', $image_name, 'public');
-        // 保存された画像のURLを生成
-         $url = config('app.url').Storage::url($path);
-         return response()->json(['imageUrl' => $url]);
-    }
+    /**
+     * 以下は、storage/app/public/images配下に画像を格納する場合の処理
+     */
+//    public function dashboardMemoUploadStorageAppPublicImage(Request $request)
+//    {
+//        $file = $request->file('image');
+//
+//        // データがない場合はエラーを返す
+//        if (!$file) {
+//            return response()->json(['error' => '画像データが送信されていません。'], 400);
+//        }
+//
+//        /* 以下は、storage/app/public/images配下に画像を格納する場合の処理 */
+//        // 画像ファイルの名前を生成（例: uniqueFileName.png）
+//         $image_name = Str::random(10).'.'.$file->getClientOriginalExtension();
+//        // 画像を保存
+//         $path = $file->storeAs('images', $image_name, 'public');
+//        // 保存された画像のURLを生成
+//         $url = config('app.url').Storage::url($path);
+//         return response()->json(['imageUrl' => $url]);
+//    }
 
     /**
      * @param DashboardMemoShowRequest $request
@@ -193,6 +199,7 @@ class DashBoardMemoController extends Controller
      */
     public function dashboardMemoShow(DashboardMemoShowRequest $request, DashboardMemoService $service): MemoResource
     {
+        /** @var User $user */
         $user = Auth::user();
         $validated = $request->validated();
         return $service->dashboardMemoShow($validated['id'], $user);
@@ -206,6 +213,7 @@ class DashBoardMemoController extends Controller
      */
     public function dashboardMemoEdit(DashboardMemoEditRequest $request, DashboardMemoService $service): JsonResponse
     {
+        /** @var User $user */
         $user = Auth::user();
         $validated = $request->validated();
         return $service->dashboardMemoEdit($validated, $user);
@@ -219,6 +227,7 @@ class DashBoardMemoController extends Controller
      */
     public function dashboardMemoDestroy(DashboardMemoDestroyRequest $request, DashboardMemoService $service): JsonResponse
     {
+        /** @var User $user */
         $user = Auth::user();
         $validated = $request->validated();
         return $service->dashboardMemoDestroy($validated['id'], $user);

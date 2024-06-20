@@ -27,8 +27,15 @@ class User extends Authenticatable
         'name',
         'nickname',
         'email',
-        'access_token',
-        'expires_at',
+        'email_verified_at',
+        'password',
+        'count_inappropriate_posts',
+        'total_times_notified_to_fix',
+        'total_times_attempt_to_fix',
+        'total_times_delete_memos_by_admin',
+        'total_times_delete_tag_by_admin',
+        'times_warned',
+        'remember_token',
     ];
 
     /**

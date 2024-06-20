@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['memo_id', 'tag_id']);
-            $table->index(['memo_id', 'tag_id'], 'i_tag_fwd');
+            // $table->index(['memo_id', 'tag_id'], 'i_tag_fwd');
             $table->index(['tag_id', 'memo_id'], 'i_tag_rev');
         });
     }
