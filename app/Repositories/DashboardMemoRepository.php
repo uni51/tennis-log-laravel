@@ -3,8 +3,11 @@ namespace App\Repositories;
 
 use App\Consts\Pagination;
 use App\Consts\TagConst;
+use App\Enums\MemoAdminReviewStatusType;
+use App\Enums\MemoChatGptReviewStatusType;
 use App\Models\Memo;
 use App\Models\Tag;
+use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,27 +16,12 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class DashboardMemoRepository extends BaseMemoRepository
 {
-//    /**
-//     * @param int $id
-//     * @return Memo|null
-//     */
-//    public function getMemoById(int $id): ?Memo
-//    {
-//        $memo = Memo::find($id);
-//
-//        if (!$memo) {
-//            abort(404, '指定されたIDのメモが見つかりません。');
-//        }
-//
-//        return $memo;
-//    }
-
     /**
      * @param array $validated
-     * @return void
+     * @return Memo
      * @throws Exception
      */
-    public function dashboardMemoCreate(array $validated): void
+    public function dashboardMemoCreate(array $validated): Memo
     {
         try {
             DB::beginTransaction();
@@ -41,6 +29,7 @@ class DashboardMemoRepository extends BaseMemoRepository
             // 配列をコレクションに変換してからeachメソッドを使用
             $this->attachTagsToMemo($memo, $validated['tags']);
             DB::commit();
+            return $memo;
         } catch (Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage());
@@ -59,9 +48,12 @@ class DashboardMemoRepository extends BaseMemoRepository
         return Memo::create([
             'user_id' => Auth::id(),
             'category_id' => $data['category_id'],
-            'status' => $data['status_id'],
             'title' => $data['title'],
             'body' => $data['body'],
+            'status' => $data['status'],
+            'chatgpt_review_status' => $data['chatgpt_review_status'] ?? MemoChatGptReviewStatusType::NOT_REVIEWED,
+            'chatgpt_reviewed_at' => $data['chatgpt_reviewed_at'] ?? null,
+            'admin_review_status'=> $data['admin_review_status'] ?? MemoAdminReviewStatusType::NOT_REVIEWED,
         ]);
     }
 
@@ -96,6 +88,10 @@ class DashboardMemoRepository extends BaseMemoRepository
             }
         });
     }
+
+    /**
+     * @throws Exception
+     */
     public function syncTagsToMemo(Memo $memo, array $tags): void
     {
         // タグ名からタグのIDを取得し、存在しないものは新規作成
@@ -108,39 +104,36 @@ class DashboardMemoRepository extends BaseMemoRepository
             return $tag->id;
         })->all();
 
-        // syncメソッドでメモとタグのリレーションを更新
-        $memo->tags()->sync($tagIds);
-
-        // ここで不要になったタグを削除するロジックを追加する
-        // 注意: このロジックはアプリケーションの要件に応じて調整する必要があります
-        $this->deleteUnusedTags();
-    }
-
-    public function deleteUnusedTags(): void
-    {
-        // まず、使用されていない（他のメモに紐付いていない）、現在のユーザーによって作成された
-        // かつ、Adminユーザーによって作成されていないタグを検索します。
-        $unusedTagIds = Tag::whereDoesntHave('memos') // memosリレーションを持たないタグを選択
-        ->where('created_by', Auth::id()) // 現在のユーザーによって作成された
-        ->where('created_by', '!=', TagConst::ADMIN_ID) // Adminによって作成されていない
-        ->pluck('id'); // 不要なタグのIDを取得
-
-        // 条件に一致するタグを削除します。
-        // pluck('id')により取得したIDリストを使用してdelete()を呼び出すことで、対象となるタグを一括で削除する
-        if ($unusedTagIds->isNotEmpty()) {
-            Tag::whereIn('id', $unusedTagIds)->delete();
+        DB::beginTransaction();
+        try {
+            // syncメソッドでメモとタグのリレーション（中間テーブル）を更新
+            $memo->tags()->sync($tagIds);
+            // ここで不要になったタグを削除するロジックを追加する
+            // 注意: このロジックはアプリケーションの要件に応じて調整する必要があります
+            $this->archiveAndDeleteUserUnusedTags($memo->user);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            throw new Exception('タグの同期に失敗しました。');
         }
+
     }
 
     /**
      * @param Memo $memo
      * @param array $validated
-     * @return bool
+     * @return Memo
      */
-    public function updateMemo(Memo $memo, array $validated): bool
+    public function updateMemo(Memo $memo, array $validated): Memo
     {
         $memo->fill($validated);
-        return $memo->save();
+        $memo->save();
+
+        // 現在のモデルインスタンスをデータベースの最新の状態に同期
+        $memo->refresh();
+
+        return $memo;
     }
 
     /**
@@ -222,7 +215,7 @@ class DashboardMemoRepository extends BaseMemoRepository
         return Memo::with(['category:name,id'])
             ->where('user_id', $authUserId)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);
@@ -240,7 +233,7 @@ class DashboardMemoRepository extends BaseMemoRepository
             ->where('user_id', $authUserId)
             ->where('category_id', $categoryId)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);

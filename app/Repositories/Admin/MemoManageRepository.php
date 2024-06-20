@@ -2,11 +2,17 @@
 namespace App\Repositories\Admin;
 
 use App\Consts\Pagination;
-use App\Enums\MemoStatusType;
+use App\Consts\TagConst;
+use App\Enums\MemoAdminReviewStatusType;
 use App\Models\Memo;
+use App\Models\Tag;
 use App\Models\User;
 use App\Repositories\BaseMemoRepository;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MemoManageRepository extends BaseMemoRepository
 {
@@ -14,6 +20,25 @@ class MemoManageRepository extends BaseMemoRepository
     {
         return Memo::with(['category:name,id'])
             ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
+    }
+
+    public function adminMemoWaitingReviewList(): LengthAwarePaginator
+    {
+        return Memo::with(['category:name,id'])
+            ->where('admin_review_status', MemoAdminReviewStatusType::REVIEW_REQUIRED)
+            ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
+    }
+
+    public function adminMemoWaitingFixList(): LengthAwarePaginator
+    {
+        return Memo::with(['category:name,id'])
+            ->where('admin_review_status', MemoAdminReviewStatusType::FIX_REQUIRED)
+            ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
     }
 
@@ -33,7 +58,11 @@ class MemoManageRepository extends BaseMemoRepository
                 foreach ($keywords as $keyword) {
                     $q->where(function ($qq) use ($keyword) {
                         $qq->orWhere('title', 'like', '%' . $keyword . '%')
-                            ->orWhere('body', 'like', '%' . $keyword . '%');
+                            ->orWhere('body', 'like', '%' . $keyword . '%')
+                            // ニックネームでの検索を追加
+                            ->orWhereHas('user', function($q) use ($keyword) {
+                                $q->where('nickname', 'like', '%'.$keyword.'%');
+                            });
                     });
                 }
             });
@@ -41,6 +70,7 @@ class MemoManageRepository extends BaseMemoRepository
 
         return $query->with(['category:name,id'])
             ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
     }
 
@@ -64,7 +94,7 @@ class MemoManageRepository extends BaseMemoRepository
     {
         return Memo::with(['category:name,id'])
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
@@ -80,7 +110,7 @@ class MemoManageRepository extends BaseMemoRepository
         return Memo::with(['category:name,id'])
             ->where('category_id', $categoryId)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
@@ -96,6 +126,8 @@ class MemoManageRepository extends BaseMemoRepository
 
         return Memo::with(['category:name,id'])
             ->where('user_id', $user->id)
+            ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
     }
 
@@ -126,7 +158,7 @@ class MemoManageRepository extends BaseMemoRepository
         return Memo::with(['category:name,id'])
             ->where('user_id', $user->id)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
@@ -146,10 +178,36 @@ class MemoManageRepository extends BaseMemoRepository
             ->where('user_id', $user->id)
             ->where('category_id', $categoryId)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::ADMIN_DEFAULT_PER_PAGE);
+    }
+
+    /**
+     * @param Memo $memo
+     * @return bool
+     */
+    public function adminMemoDestroy(Memo $memo): bool
+    {
+        DB::beginTransaction();
+        try {
+            // DeletedMemoテーブルにデータを移動
+            $this->archiveMemo($memo, true);
+            // memo_tagの中間テーブルに関連付けられたタグをアーカイブして、関連を削除する。
+            $this->archiveAndDetachMemoTags($memo, true);
+            // Tagテーブルから使用されていないタグを削除
+            $this->archiveAndDeleteUserUnusedTags($memo->user, true);
+            // メモ自体を削除
+            $memo->delete();
+            DB::commit();
+            return true;
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+
+            return false;
+        }
     }
 }
 

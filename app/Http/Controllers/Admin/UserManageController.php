@@ -31,6 +31,9 @@ class UserManageController extends Controller
         return $service->list();
     }
 
+    /**
+     * @throws Exception
+     */
     public function disable(UserManageService $service, Request $request)
     {
         return $service->disable($request);

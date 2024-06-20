@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\AppropriateContent;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MemoPostRequest extends FormRequest
@@ -24,10 +25,10 @@ class MemoPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'       => ['required', 'min:3', 'max:100'],
-            'body'        => ['required', 'min:3', 'max:3000'],
+            'title'       => ['required', 'min:3', 'max:100', new AppropriateContent()],
+            'body'        => ['required', 'min:3', 'max:3000', new AppropriateContent()],
             'category_id' => ['required', 'int', 'between:1,8'],
-            'status_id'   => ['required', 'int', 'between:0,4'],
+            'status'   => ['required', 'int', 'between:0,4'],
             'tags'        => ['nullable', 'array'],
         ];
     }

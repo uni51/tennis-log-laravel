@@ -3,20 +3,22 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\MemoManage\AdminMemoDestroyRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByTagRequest;
+use App\Http\Requests\Admin\MemoManage\AdminMemoRequestFixRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoSearchRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoShowRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByCategoryRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByCategoryTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListRequest;
-use App\Http\Resources\MemoResource;
+use App\Http\Resources\Admin\MemoManageResource;
 use App\Services\Admin\MemoManageService;
 use Exception;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
 
 /**
  * Class MemoManageController
@@ -37,6 +39,22 @@ class MemoManageController extends Controller
     }
 
     /**
+     * @param MemoManageService $service
+     * @return AnonymousResourceCollection
+     * @throws Exception
+     */
+    public function adminMemoWaitingReviewList(MemoManageService $service): AnonymousResourceCollection
+    {
+        return $service->adminMemoWaitingReviewList();
+    }
+
+    public function adminMemoWaitingFixList(MemoManageService $service): AnonymousResourceCollection
+    {
+        return $service->adminMemoWaitingFixList();
+    }
+
+
+    /**
      * キーワードによる記事検索API
      *
      * @param AdminMemoSearchRequest $request
@@ -53,12 +71,29 @@ class MemoManageController extends Controller
     /**
      * @param AdminMemoShowRequest $request
      * @param MemoManageService $service
-     * @return MemoResource
+     * @return MemoManageResource
      */
-    public function adminMemoShow(AdminMemoShowRequest $request, MemoManageService $service): MemoResource
+    public function adminMemoShow(AdminMemoShowRequest $request, MemoManageService $service): MemoManageResource
     {
         $validated = $request->validated();
         return $service->adminMemoShow($validated['id']);
+    }
+
+    /**
+     * @param AdminMemoRequestFixRequest $request
+     * @param MemoManageService $service
+     * @return JsonResponse
+     */
+    public function adminMemoRequestFix(AdminMemoRequestFixRequest $request, MemoManageService $service): JsonResponse
+    {
+        $validated = $request->validated();
+        return $service->adminMemoSetWaitingForFix($validated['id']);
+    }
+
+    public function adminMemoDestroy(AdminMemoDestroyRequest $request, MemoManageService $service): JsonResponse
+    {
+        $validated = $request->validated();
+        return $service->adminMemoDestroy($validated['id']);
     }
 
     /**

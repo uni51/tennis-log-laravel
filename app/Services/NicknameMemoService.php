@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Http\Resources\MemoResource;
 use App\Repositories\NicknameMemoRepository;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Log;
 
@@ -48,9 +49,11 @@ class NicknameMemoService
     {
         try {
             $memo = $this->repository->publicNicknameMemoDetail($nickname, $id);
+        } catch (ModelNotFoundException $e) {
+            abort(404, '指定されたIDのメモが見つかりません。');
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            throw $e;
+            abort(500, '予期しないエラーが発生しました。時間をおいて、再度お試しください。');
         }
 
         return MemoResource::make($memo);

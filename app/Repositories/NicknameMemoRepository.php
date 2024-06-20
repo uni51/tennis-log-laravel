@@ -22,7 +22,7 @@ class NicknameMemoRepository extends BaseMemoRepository
 
         return Memo::with(['category:name,id'])
             ->where('user_id', $user->id)
-            ->where('status', MemoStatusType::getValue('公開中'))
+            ->where('status', MemoStatusType::PUBLISHING)
             ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 
@@ -37,7 +37,7 @@ class NicknameMemoRepository extends BaseMemoRepository
 
         return Memo::with(['category:name,id'])
             ->where('user_id', $user->id)
-            ->where('status', MemoStatusType::getValue('公開中'))
+            ->where('status', MemoStatusType::PUBLISHING)
             ->where('id', $id)
             ->firstOrFail();
     }
@@ -54,7 +54,7 @@ class NicknameMemoRepository extends BaseMemoRepository
         return Memo::with(['category:name,id'])
             ->where('user_id', $user->id)
             ->where('category_id', $categoryId)
-            ->where('status', MemoStatusType::getValue('公開中'))
+            ->where('status', MemoStatusType::PUBLISHING)
             ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 
@@ -70,9 +70,9 @@ class NicknameMemoRepository extends BaseMemoRepository
         return Memo::with(['category:name,id'])
             ->where('user_id', $user->id)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
-            ->where('status', MemoStatusType::getValue('公開中'))
+            ->where('status', MemoStatusType::PUBLISHING)
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
@@ -91,9 +91,9 @@ class NicknameMemoRepository extends BaseMemoRepository
             ->where('user_id', $user->id)
             ->where('category_id', $categoryId)
             ->whereHas('tags', function($q) use ($tag) {
-                $q->where('normalized', $tag);
+                $q->where('name', $tag);
             })
-            ->where('status', MemoStatusType::getValue('公開中'))
+            ->where('status', MemoStatusType::PUBLISHING)
             ->orderBy('updated_at', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
