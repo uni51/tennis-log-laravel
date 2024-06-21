@@ -7,10 +7,10 @@
 <h1>テニスに関連しないメモが投稿されました。</h1>
 <p>{!! $content !!}</p>
 <hr/>
-@if($acttionType === 'create')
-    <p>{{ "メモの種別: 新規作成" }}</p>
+@if($actionType === 'create')
+    <p>{{ "アクションの種別: 新規作成" }}</p>
 @else
-    <p>{{ "メモの種別: 更新" }}</p>
+    <p>{{ "アクションの種別: 更新" }}</p>
 @endif
 <p>メモのid: {{ $memo->id }}</p>
 <p>メモのステータス: {{ $statusLabel }}</p>

@@ -203,13 +203,14 @@ class DashboardMemoService
         try {
             $memo = $this->repository->updateMemo($memo, $validated);
             $this->repository->syncTagsToMemo($memo, $validated['tags']);
-            $user->increment('total_times_attempt_to_fix'); // 総修正を試みた回数をカウントアップ
+            $user->increment('total_times_attempt_to_fix'); // 修正を試みた総回数をカウントアップ
             DB::commit();
             // サービスインスタンスの取得
             $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
             if ($isNotTennisRelated) {
                 // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
-                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user);
+                $actionType = 'edit';
+                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user, $actionType);
             } else {
                 // テニスに関連するメモとChatGPTに判断された場合は、管理者に記事が修正された旨をメール送信
                 $notifyToAdminService->notifyAdminFixMemoEmail($memo, $user);
