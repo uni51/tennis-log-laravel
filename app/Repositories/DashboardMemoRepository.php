@@ -90,6 +90,10 @@ class DashboardMemoRepository extends BaseMemoRepository
     }
 
     /**
+     * メモに紐づくタグを同期します。
+     *
+     * @param Memo $memo タグを同期するメモ
+     * @param array $tags タグの配列
      * @throws Exception
      */
     public function syncTagsToMemo(Memo $memo, array $tags): void

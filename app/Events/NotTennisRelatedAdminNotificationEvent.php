@@ -18,16 +18,22 @@ class NotTennisRelatedAdminNotificationEvent
 
     public string $content;
     public User $user;
+    public string $actionType;
     public Memo $memo;
+
     /**
-     * Create a new event instance.
+     *  Create a new event instance.
      *
-     * @return void
+     * @param string $content
+     * @param User $user
+     * @param string $actionType
+     * @param Memo|null $memo
      */
-    public function __construct(string $content, User $user, ?Memo $memo)
+    public function __construct(string $content, User $user, string $actionType, ?Memo $memo)
     {
         $this->content = $content;
         $this->user = $user;
+        $this->actionType = $actionType;
         $this->memo = $memo;
     }
 

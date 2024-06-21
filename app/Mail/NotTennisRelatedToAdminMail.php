@@ -18,6 +18,7 @@ class NotTennisRelatedToAdminMail extends Mailable
 
     private string $content;
     private User $user;
+    private string $actionType;
     private Memo $memo;
     private string $domain;
 
@@ -27,10 +28,11 @@ class NotTennisRelatedToAdminMail extends Mailable
      *
      * @return void
      */
-    public function __construct(string $content, User $user, Memo $memo, string $domain)
+    public function __construct(string $content, User $user, string $actionType, Memo $memo, string $domain)
     {
         $this->content = $content;
         $this->user = $user;
+        $this->actionType = $actionType;
         $this->memo = $memo;
         $this->domain = $domain;
     }
@@ -42,10 +44,11 @@ class NotTennisRelatedToAdminMail extends Mailable
         return $this->subject('テニスに関連しないメモの投稿通知')
             ->view('emails.to_admin.not_tennis_related_notification')
             ->with([
-                'content' => $this->content,
-                'user'    => $this->user,
-                'memo'    => $this->memo,
-                'domain'  => $this->domain,
+                'content'     => $this->content,
+                'user'        => $this->user,
+                'actionType'  => $this->actionType,
+                'memo'        => $this->memo,
+                'domain'      => $this->domain,
                 'statusLabel' => $statusLabel,
             ]);
     }

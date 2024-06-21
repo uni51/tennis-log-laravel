@@ -10,9 +10,6 @@
 <p>{{ "メモの種別: 新規作成" }}</p>
 <p>メモのid: {{ $memo->id }}</p>
 <p>メモのステータス:
-    @if($memo->status === 0)
-        {{ "下書き" }}
-    @endif
     @if($memo->status === 1)
         {{ "公開" }}
     @endif

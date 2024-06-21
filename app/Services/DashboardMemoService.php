@@ -86,15 +86,17 @@ class DashboardMemoService
 
         $memo = $this->repository->dashboardMemoCreate($validated);
 
+        // サービスインスタンスの取得
         $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
         if ($isNotTennisRelated) {
-            // サービスインスタンスの取得
+            $actionType = 'create';
             // テニスに関連のないメモとChatGPTに判断された場合は、管理者にその旨をメール送信
-            $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user);
+            $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user, $actionType);
         } else {
-            // サービスインスタンスの取得
-            // テニスに関連するメモとChatGPTに判断された場合は、管理者に新規投稿があったことのメール送信
-            $notifyToAdminService->notifyAdminCreateMemoEmail($memo, $user);
+            // 「下書き」以外のステータスで、テニスに関連するメモとChatGPTに判断された場合は、管理者に新規投稿があったことのメール送信
+            if ($memo->status !== MemoStatusType::DRAFT) {
+                $notifyToAdminService->notifyAdminCreateMemoEmail($memo, $user);
+            }
         }
 
         return response()->json([
@@ -145,7 +147,6 @@ class DashboardMemoService
         }
 
 
-
         return response()->json([
             'message' => 'メモの編集に成功しました。'
         ], 201);
@@ -175,7 +176,8 @@ class DashboardMemoService
                 // サービスインスタンスの取得
                 $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
                 // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
-                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user);
+                $actionType = 'edit';
+                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user, $actionType);
             }
             return true;
         } catch (Exception $e) {

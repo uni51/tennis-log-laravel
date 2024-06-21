@@ -122,6 +122,7 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     // メモの新規作成
     Route::post('/dashboard/memos', [DashBoardMemoController::class, 'dashboardMemoCreate'])
         ->name('post_dashboard_memos');
+
     Route::post('/dashboard/memos/upload-image', [DashBoardMemoController::class, 'dashboardMemoUploadImage'])
         ->name('post_dashboard_memos_upload-image');
     // メモの編集
