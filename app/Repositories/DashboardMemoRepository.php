@@ -112,9 +112,8 @@ class DashboardMemoRepository extends BaseMemoRepository
         try {
             // syncメソッドでメモとタグのリレーション（中間テーブル）を更新
             $memo->tags()->sync($tagIds);
-            // ここで不要になったタグを削除するロジックを追加する
-            // 注意: このロジックはアプリケーションの要件に応じて調整する必要があります
-            $this->archiveAndDeleteUserUnusedTags($memo->user);
+            // 不要になったタグを削除する
+            $this->deleteUserUnusedTags($memo->user);
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();

@@ -146,7 +146,6 @@ class DashboardMemoService
             }
         }
 
-
         return response()->json([
             'message' => 'メモの編集に成功しました。'
         ], 201);

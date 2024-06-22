@@ -89,7 +89,7 @@ class BaseMemoRepository
 
             // バルクインサートでdeleted_memo_tagに追加
             if (!empty($deletedTagsData)) {
-                DB::table('deleted_memo_tags')->insert($deletedTagsData);
+                DB::table('deleted_memo_tag')->insert($deletedTagsData);
             }
 
             // memo_tag中間テーブルから関連を削除

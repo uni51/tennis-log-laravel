@@ -51,7 +51,7 @@ class ContentInspectionService
     protected function generateErrorResponse(User $user, string $field, string $message): JsonResponse
     {
         // 不適切と判断された投稿の回数をインクリメント
-        $user->increment('inappropriate_posts_count');
+        $user->increment('count_inappropriate_posts');
         $user->save();
 
         return response()->json([
