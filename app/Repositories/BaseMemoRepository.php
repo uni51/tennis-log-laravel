@@ -10,6 +10,7 @@ use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BaseMemoRepository
 {
@@ -60,7 +61,7 @@ class BaseMemoRepository
             'approved_at' => $memo->approved_at,
             'memo_created_at' => $memo->created_at,
             'memo_updated_at' => $memo->updated_at,
-            'is_force_deleted' => (bool)$isForceDeleted,
+            'is_force_deleted' => $isForceDeleted,
         ]);
     }
 
