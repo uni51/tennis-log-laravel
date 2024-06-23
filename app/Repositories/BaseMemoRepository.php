@@ -22,7 +22,7 @@ class BaseMemoRepository
         $memo = Memo::find($id);
 
         if (!$memo) {
-            abort(404, '指定されたIDのメモが見つかりません。');
+            abort(404, '指定されたメモが見つかりません。');
         }
 
         return $memo;

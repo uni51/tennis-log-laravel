@@ -158,6 +158,8 @@ Route::group(['middleware' => 'auth:admin'], function () {
         ->name('get_admin_memos_search');
     Route::get('/admin/memos/{id}', [MemoManageController::class, 'adminMemoShow'])
         ->name('get_admin_memos_id');
+    Route::post('/admin/memos/approve/{id}', [MemoManageController::class, 'adminMemoApprove'])
+        ->name('post_admin_memos_approve');
     Route::post('/admin/memos/request/fix/{id}', [MemoManageController::class, 'adminMemoRequestFix'])
         ->name('post_admin_memos_request_fix');
     Route::post('/admin/memos/delete/{id}', [MemoManageController::class, 'adminMemoDestroy'])
