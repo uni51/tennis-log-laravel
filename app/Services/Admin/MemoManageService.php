@@ -153,16 +153,15 @@ class MemoManageService
      */
     public function adminMemoSetWaitingForFix(int $id): JsonResponse
     {
-        $memo = $this->repository->getMemoById($id);
-        // メモのステータスが「修正待ち」以外の場合は、変更前のステータスを保持する
-        if ($memo->status !== MemoStatusType::WAITING_FOR_FIX) {
-            $lastMemoStatus = $memo->status;
-        }
-
-        $user = $memo->user;
-
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
+            $memo = $this->repository->getMemoById($id);
+            // メモのステータスが「修正待ち」以外の場合は、変更前のステータスを保持する
+            if ($memo->status !== MemoStatusType::WAITING_FOR_FIX) {
+                $lastMemoStatus = $memo->status;
+            }
+            $user = $memo->user;
+
             // Update the memo's status
             $memo->status = MemoStatusType::WAITING_FOR_FIX; // 修正待ち
             $memo->admin_review_status = MemoAdminReviewStatusType::FIX_REQUIRED; // 修正依頼中
