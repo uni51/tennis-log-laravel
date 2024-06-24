@@ -12,10 +12,14 @@
 @else
     <p>{{ "アクションの種別: 更新" }}</p>
 @endif
+
 <p>メモのid: {{ $memo->id }}</p>
+<p>メモのカテゴリー: {{ $categoryDescription }}</p>
 <p>メモのステータス: {{ $statusLabel }}</p>
+
 <p>{{ "投稿者のid: " . $user->id }}</p>
 <p>{{ "投稿者のnickname: " . $user->nickname }}</p>
+
 <p>メモのURL: <a href="{{ $domain . '/admin/memos/' . $user->nickname . '/' . $memo->id }}">
         {{ $domain . "/admin/memos/" . $user->nickname . "/" . $memo->id }}</a></p>
 </body>

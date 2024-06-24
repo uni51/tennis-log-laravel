@@ -2,7 +2,9 @@
 
 namespace App\Mail;
 
+use App\Enums\CategoryType;
 use App\Enums\MemoStatusType;
+use App\Lib\DomainHelper;
 use App\Models\Memo;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -28,18 +30,19 @@ class NotTennisRelatedToAdminMail extends Mailable
      *
      * @return void
      */
-    public function __construct(string $content, User $user, string $actionType, Memo $memo, string $domain)
+    public function __construct(string $content, User $user, string $actionType, Memo $memo)
     {
         $this->content = $content;
         $this->user = $user;
         $this->actionType = $actionType;
         $this->memo = $memo;
-        $this->domain = $domain;
     }
 
     public function build()
     {
+        $domain = DomainHelper::getDomain();
         $statusLabel = MemoStatusType::getDescription($this->memo->status);
+        $categoryDescription = CategoryType::getDescription($this->memo->category_id);
 
         return $this->subject('テニスに関連しないメモの投稿通知')
             ->view('emails.to_admin.not_tennis_related_notification')
@@ -48,8 +51,9 @@ class NotTennisRelatedToAdminMail extends Mailable
                 'user'        => $this->user,
                 'actionType'  => $this->actionType,
                 'memo'        => $this->memo,
-                'domain'      => $this->domain,
                 'statusLabel' => $statusLabel,
+                'categoryDescription' => $categoryDescription,
+                'domain'      => $domain,
             ]);
     }
 }
