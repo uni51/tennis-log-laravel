@@ -17,7 +17,10 @@ class MemoHelper
             $validated['chatgpt_review_status'] = MemoChatGptReviewStatusType::NG_GPT_REVIEW;
             $validated['admin_review_status'] = MemoAdminReviewStatusType::REVIEW_REQUIRED;
         } else {
+            /* テニスに関連のあるメモとChatGPTに判断された場合は、GPTの判断をそのまま採用 */
             $validated['chatgpt_review_status'] = MemoChatGptReviewStatusType::PASSED_GPT_REVIEW;
+            $validated['approved_by'] = MemoApprovedByType::BY_GPT;
+            $validated['approved_at'] = now()->format('Y-m-d H:i:s');
         }
         $validated['chatgpt_reviewed_at'] = now()->format('Y-m-d H:i:s');
 
