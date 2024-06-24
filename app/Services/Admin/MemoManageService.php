@@ -110,6 +110,7 @@ class MemoManageService
      *
      * @param int $id Memo ID
      * @return JsonResponse
+     * @throws Exception
      */
     public function adminMemoApprove(int $id): JsonResponse
     {

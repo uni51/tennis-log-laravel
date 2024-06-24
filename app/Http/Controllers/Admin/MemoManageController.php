@@ -80,7 +80,12 @@ class MemoManageController extends Controller
         return $service->adminMemoShow($validated['id']);
     }
 
-
+    /**
+     * @param AdminMemoApproveRequest $request
+     * @param MemoManageService $service
+     * @return JsonResponse
+     * @throws Exception
+     */
     public function adminMemoApprove(AdminMemoApproveRequest $request, MemoManageService $service): JsonResponse
     {
         $validated = $request->validated();
