@@ -193,6 +193,10 @@ class MemoManageService
     {
         $memo = $this->repository->getMemoById($id);
         if ($this->repository->adminMemoDestroy($memo)) {
+            $notifyToAdminService = $this->getServiceInstance(NotifyToUserService::class);
+            // 管理者がメモの修正必要と判断して、記事の掲載が一時停止になったことをユーザーに通知する
+            $user = $memo->user;
+            $notifyToAdminService->notifyUserMemoDeletedByAdminEmail($memo, $user);
             return response()->json(['message' => 'メモを強制的に削除しました。'], 200);
         } else {
             return response()->json(['error' => 'メモの強制削除に失敗しました。'], 500);

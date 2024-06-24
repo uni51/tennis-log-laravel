@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<title>【{{ $serviceName }}】メモの修正リクエストが届いています。</title>
+<title>【{{ $serviceName }}】管理者によるメモの削除通知</title>
 </head>
 <body>
 <p>こんにちは、{{ $user->nickname }}さん。</p>
-<p>あなたのメモに、管理者から修正依頼が届きました。</p>
+<p>残念ながらあなたのメモの内容が不適切と判断され、管理者によって削除されました。</p>
 <p>対象のメモは以下の通りです。</p>
 <hr/>
 <p>
 {!! $content !!}
 </p>
 <p>メモのid: {{ $memo->id }}</p>
+<p>メモのカテゴリー: {{ $categoryDescription }}</p>
 <p>メモのステータス:
     @if($memo->status === 0)
         {{ "下書き" }}
@@ -27,6 +28,5 @@
     @endif
 </p>
 
-<p>メモのURL: <a href="{{ $domain . '/dashboard/memos/' . $memo->id }}">{{ $domain . "/dashboard/memos/" . $memo->id }}</a></p>
 </body>
 </html>

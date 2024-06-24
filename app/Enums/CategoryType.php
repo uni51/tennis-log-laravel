@@ -20,7 +20,7 @@ final class CategoryType extends Enum
     const GEAR = 10; // ギア
     const OTHER = 99; // その他
 
-    private static $descriptions = [
+    private static array $descriptions = [
         self::FOREHAND => 'フォアハンド',
         self::DOUBLE_BACKHAND => '両手バックハンド',
         self::SINGLE_BACKHAND => '片手バックハンド',
@@ -39,7 +39,7 @@ final class CategoryType extends Enum
         return self::$descriptions[$value] ?? parent::getDescription($value);
     }
 
-    private static $values = [
+    private static array $values = [
         'フォアハンド' => self::FOREHAND,
         '両手バックハンド' => self::DOUBLE_BACKHAND,
         '片手バックハンド' => self::SINGLE_BACKHAND,
