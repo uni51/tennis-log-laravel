@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Enums\CategoryType;
 use App\Enums\MemoStatusType;
+use App\Lib\DomainHelper;
 use App\Models\Memo;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -28,16 +29,16 @@ class CreateMemoToAdminMail extends Mailable
      *
      * @return void
      */
-    public function __construct(string $content, User $user, Memo $memo, string $domain)
+    public function __construct(string $content, User $user, Memo $memo)
     {
         $this->content = $content;
         $this->user = $user;
         $this->memo = $memo;
-        $this->domain = $domain;
     }
 
     public function build()
     {
+        $domain = DomainHelper::getDomain();
         $statusLabel = MemoStatusType::getDescription($this->memo->status);
         $categoryDescription = CategoryType::getDescription($this->memo->category_id);
 
@@ -49,7 +50,7 @@ class CreateMemoToAdminMail extends Mailable
                 'memo'    => $this->memo,
                 'statusLabel' => $statusLabel,
                 'categoryDescription' => $categoryDescription,
-                'domain'  => $this->domain,
+                'domain'  => $domain,
             ]);
     }
 }
