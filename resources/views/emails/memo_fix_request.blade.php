@@ -12,20 +12,8 @@
 {!! $content !!}
 </p>
 <p>メモのid: {{ $memo->id }}</p>
-<p>メモのステータス:
-    @if($memo->status === 0)
-        {{ "下書き" }}
-    @endif
-    @if($memo->status === 1)
-        {{ "公開" }}
-    @endif
-    @if($memo->status === 2)
-        {{ "シェア" }}
-    @endif
-    @if($memo->status === 3)
-        {{ "非公開" }}
-    @endif
-</p>
+<p>メモのカテゴリー: {{ $categoryDescription }}</p>
+<p>メモのステータス: {{ $statusLabel }}</p>
 
 <p>メモのURL: <a href="{{ $domain . '/dashboard/memos/' . $memo->id }}">{{ $domain . "/dashboard/memos/" . $memo->id }}</a></p>
 </body>
