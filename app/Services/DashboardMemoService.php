@@ -241,10 +241,12 @@ class DashboardMemoService
 
         DB::beginTransaction();
         try {
-            //
-            $this->repository->archiveAndDetachMemoTags($memo);
+            // DeletedMemoテーブルにデータを移動
             $this->repository->archiveMemo($memo);
-            $this->repository->archiveAndDeleteUserUnusedTags($user);
+            // memo_tagの中間テーブルに関連付けられたタグをアーカイブして、関連を削除する。
+            $this->repository->archiveAndDetachMemoTags($memo);
+            // Tagテーブルから使用されていないタグを削除
+            // $this->repository->archiveAndDeleteUserUnusedTags($user);
             $memo->delete();
             DB::commit();
             return response()->json(['message' => 'Memo deleted'], 200);
