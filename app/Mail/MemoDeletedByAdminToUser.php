@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Enums\CategoryType;
+use App\Lib\DomainHelper;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -24,12 +25,11 @@ class MemoDeletedByAdminToUser extends Mailable
      *
      * @return void
      */
-    public function __construct(string $content, User $user, Memo $memo, string $domain)
+    public function __construct(string $content, User $user, Memo $memo)
     {
         $this->content = $content;
         $this->user = $user;
         $this->memo = $memo;
-        $this->domain = $domain;
     }
     /**
      * Build the message.
@@ -38,6 +38,7 @@ class MemoDeletedByAdminToUser extends Mailable
      */
     public function build()
     {
+        $domain = DomainHelper::getDomain();
         $serviceName = config('services.name');
         $categoryDescription = CategoryType::getDescription($this->memo->category_id);
 
@@ -47,9 +48,9 @@ class MemoDeletedByAdminToUser extends Mailable
                 'content' => $this->content,
                 'user'    => $this->user,
                 'memo'    => $this->memo,
-                'domain'  => $this->domain,
-                'serviceName' => $serviceName,
                 'categoryDescription' => $categoryDescription,
+                'domain'  => $domain,
+                'serviceName' => $serviceName,
             ]);
     }
 }
