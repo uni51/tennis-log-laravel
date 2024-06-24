@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Enums\CategoryType;
 use App\Enums\MemoStatusType;
 use App\Models\Memo;
 use App\Models\User;
@@ -38,6 +39,7 @@ class CreateMemoToAdminMail extends Mailable
     public function build()
     {
         $statusLabel = MemoStatusType::getDescription($this->memo->status);
+        $categoryDescription = CategoryType::getDescription($this->memo->category_id);
 
         return $this->subject('メモの新規投稿通知' . '(' . $statusLabel . ')')
             ->view('emails.to_admin.create_memo_notification')
@@ -45,6 +47,8 @@ class CreateMemoToAdminMail extends Mailable
                 'content' => $this->content,
                 'user'    => $this->user,
                 'memo'    => $this->memo,
+                'statusLabel' => $statusLabel,
+                'categoryDescription' => $categoryDescription,
                 'domain'  => $this->domain,
             ]);
     }
