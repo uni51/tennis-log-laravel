@@ -2,6 +2,9 @@
 
 namespace App\Mail;
 
+use App\Enums\MemoStatusType;
+use App\Enums\CategoryType;
+use App\Lib\DomainHelper;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -23,12 +26,11 @@ class MemoFixRequestToUser extends Mailable
      *
      * @return void
      */
-    public function __construct(string $content, User $user, Memo $memo, string $domain)
+    public function __construct(string $content, User $user, Memo $memo)
     {
         $this->content = $content;
         $this->user = $user;
         $this->memo = $memo;
-        $this->domain = $domain;
     }
     /**
      * Build the message.
@@ -38,6 +40,9 @@ class MemoFixRequestToUser extends Mailable
     public function build()
     {
         $serviceName = config('services.name');
+        $domain = DomainHelper::getDomain();
+        $statusLabel = MemoStatusType::getDescription($this->memo->status);
+        $categoryDescription = CategoryType::getDescription($this->memo->category_id);
 
         return $this->subject('【'. $serviceName .'】メモの修正リクエストが届いています。')
             ->view('emails.memo_fix_request')
@@ -45,7 +50,9 @@ class MemoFixRequestToUser extends Mailable
                 'content' => $this->content,
                 'user'    => $this->user,
                 'memo'    => $this->memo,
-                'domain'  => $this->domain,
+                'statusLabel' => $statusLabel,
+                'categoryDescription' => $categoryDescription,
+                'domain'  => $domain,
                 'serviceName' => $serviceName,
             ]);
     }
