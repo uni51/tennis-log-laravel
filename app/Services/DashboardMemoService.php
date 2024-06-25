@@ -86,15 +86,17 @@ class DashboardMemoService
 
         $memo = $this->repository->dashboardMemoCreate($validated);
 
+        // サービスインスタンスの取得
         $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
         if ($isNotTennisRelated) {
-            // サービスインスタンスの取得
+            $actionType = 'create';
             // テニスに関連のないメモとChatGPTに判断された場合は、管理者にその旨をメール送信
-            $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user);
+            $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user, $actionType);
         } else {
-            // サービスインスタンスの取得
-            // テニスに関連するメモとChatGPTに判断された場合は、管理者に新規投稿があったことのメール送信
-            $notifyToAdminService->notifyAdminCreateMemoEmail($memo, $user);
+            // 「下書き」以外のステータスで、テニスに関連するメモとChatGPTに判断された場合は、管理者に新規投稿があったことのメール送信
+            if ($memo->status !== MemoStatusType::DRAFT) {
+                $notifyToAdminService->notifyAdminCreateMemoEmail($memo, $user);
+            }
         }
 
         return response()->json([
@@ -144,8 +146,6 @@ class DashboardMemoService
             }
         }
 
-
-
         return response()->json([
             'message' => 'メモの編集に成功しました。'
         ], 201);
@@ -175,7 +175,8 @@ class DashboardMemoService
                 // サービスインスタンスの取得
                 $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
                 // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
-                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user);
+                $actionType = 'edit';
+                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user, $actionType);
             }
             return true;
         } catch (Exception $e) {
@@ -201,13 +202,14 @@ class DashboardMemoService
         try {
             $memo = $this->repository->updateMemo($memo, $validated);
             $this->repository->syncTagsToMemo($memo, $validated['tags']);
-            $user->increment('total_times_attempt_to_fix'); // 総修正を試みた回数をカウントアップ
+            $user->increment('total_times_attempt_to_fix'); // 修正を試みた総回数をカウントアップ
             DB::commit();
             // サービスインスタンスの取得
             $notifyToAdminService = $this->getServiceInstance(NotifyToAdminService::class);
             if ($isNotTennisRelated) {
                 // テニスに関連のないメモとChatGPTに判断された場合は、管理者にメール送信
-                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user);
+                $actionType = 'edit';
+                $notifyToAdminService->notifyAdminNotTennisRelatedEmail($memo, $user, $actionType);
             } else {
                 // テニスに関連するメモとChatGPTに判断された場合は、管理者に記事が修正された旨をメール送信
                 $notifyToAdminService->notifyAdminFixMemoEmail($memo, $user);
@@ -239,10 +241,12 @@ class DashboardMemoService
 
         DB::beginTransaction();
         try {
-            //
-            $this->repository->archiveAndDetachMemoTags($memo);
+            // DeletedMemoテーブルにデータを移動
             $this->repository->archiveMemo($memo);
-            $this->repository->archiveAndDeleteUserUnusedTags($user);
+            // memo_tagの中間テーブルに関連付けられたタグをアーカイブして、関連を削除する。
+            $this->repository->archiveAndDetachMemoTags($memo);
+            // Tagテーブルから使用されていないタグを削除
+            // $this->repository->archiveAndDeleteUserUnusedTags($user);
             $memo->delete();
             DB::commit();
             return response()->json(['message' => 'Memo deleted'], 200);

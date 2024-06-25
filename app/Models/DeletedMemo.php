@@ -28,6 +28,7 @@ class DeletedMemo extends Model
         'approved_at',
         'memo_created_at',
         'memo_updated_at',
+        'is_force_deleted',
     ];
 
     public function category() {

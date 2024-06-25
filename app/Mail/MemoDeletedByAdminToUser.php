@@ -2,7 +2,6 @@
 
 namespace App\Mail;
 
-use App\Enums\MemoStatusType;
 use App\Enums\CategoryType;
 use App\Lib\DomainHelper;
 use App\Models\User;
@@ -12,7 +11,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Memo;
 
-class MemoFixRequestToUser extends Mailable
+class MemoDeletedByAdminToUser extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -39,18 +38,16 @@ class MemoFixRequestToUser extends Mailable
      */
     public function build()
     {
-        $serviceName = config('services.name');
         $domain = DomainHelper::getDomain();
-        $statusLabel = MemoStatusType::getDescription($this->memo->status);
+        $serviceName = config('services.name');
         $categoryDescription = CategoryType::getDescription($this->memo->category_id);
 
-        return $this->subject('【'. $serviceName .'】メモの修正リクエストが届いています。')
-            ->view('emails.memo_fix_request')
+        return $this->subject('【'. $serviceName .'】管理者によるメモの削除通知')
+            ->view('emails.memo_deleted_by_admin')
             ->with([
                 'content' => $this->content,
                 'user'    => $this->user,
                 'memo'    => $this->memo,
-                'statusLabel' => $statusLabel,
                 'categoryDescription' => $categoryDescription,
                 'domain'  => $domain,
                 'serviceName' => $serviceName,

@@ -122,6 +122,7 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     // メモの新規作成
     Route::post('/dashboard/memos', [DashBoardMemoController::class, 'dashboardMemoCreate'])
         ->name('post_dashboard_memos');
+
     Route::post('/dashboard/memos/upload-image', [DashBoardMemoController::class, 'dashboardMemoUploadImage'])
         ->name('post_dashboard_memos_upload-image');
     // メモの編集
@@ -157,6 +158,8 @@ Route::group(['middleware' => 'auth:admin'], function () {
         ->name('get_admin_memos_search');
     Route::get('/admin/memos/{id}', [MemoManageController::class, 'adminMemoShow'])
         ->name('get_admin_memos_id');
+    Route::post('/admin/memos/approve/{id}', [MemoManageController::class, 'adminMemoApprove'])
+        ->name('post_admin_memos_approve');
     Route::post('/admin/memos/request/fix/{id}', [MemoManageController::class, 'adminMemoRequestFix'])
         ->name('post_admin_memos_request_fix');
     Route::post('/admin/memos/delete/{id}', [MemoManageController::class, 'adminMemoDestroy'])

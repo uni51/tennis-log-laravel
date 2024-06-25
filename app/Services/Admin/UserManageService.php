@@ -41,7 +41,7 @@ class UserManageService
                 'email' => $user->email,
                 'email_verified_at' => $user->email_verified_at,
                 'password' => $user->password,
-                'count_inappropriate_posts' => $user->inappropriate_posts_count,
+                'count_inappropriate_posts' => $user->count_inappropriate_posts,
                 'total_times_notified_to_fix'=> $user->total_times_notified_to_fix,
                 'total_times_attempt_to_fix' => $user->total_times_attempt_to_fix,
                 'total_times_delete_memos_by_admin' => $user->total_times_delete_memos_by_admin,

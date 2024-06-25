@@ -90,6 +90,10 @@ class DashboardMemoRepository extends BaseMemoRepository
     }
 
     /**
+     * メモに紐づくタグを同期します。
+     *
+     * @param Memo $memo タグを同期するメモ
+     * @param array $tags タグの配列
      * @throws Exception
      */
     public function syncTagsToMemo(Memo $memo, array $tags): void
@@ -108,9 +112,8 @@ class DashboardMemoRepository extends BaseMemoRepository
         try {
             // syncメソッドでメモとタグのリレーション（中間テーブル）を更新
             $memo->tags()->sync($tagIds);
-            // ここで不要になったタグを削除するロジックを追加する
-            // 注意: このロジックはアプリケーションの要件に応じて調整する必要があります
-            $this->archiveAndDeleteUserUnusedTags($memo->user);
+            // 不要になったタグを削除する
+            // $this->deleteUserUnusedTags($memo->user);
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();

@@ -14,6 +14,11 @@ class ContentInspectionService
         $this->openAIService = $openAIService;
     }
 
+    /**
+     * @param array $validated
+     * @param User $user
+     * @return JsonResponse|null
+     */
     public function validateIsInappropriate(array $validated, User $user): ?JsonResponse
     {
         // タイトルの不適切な表現のチェック
@@ -45,7 +50,8 @@ class ContentInspectionService
      */
     protected function generateErrorResponse(User $user, string $field, string $message): JsonResponse
     {
-        $user->increment('inappropriate_posts_count');
+        // 不適切と判断された投稿の回数をインクリメント
+        $user->increment('count_inappropriate_posts');
         $user->save();
 
         return response()->json([

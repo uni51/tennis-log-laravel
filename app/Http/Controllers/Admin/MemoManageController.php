@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByCategoryTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoListByTagRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoRequestFixRequest;
+use App\Http\Requests\Admin\MemoManage\AdminMemoApproveRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoSearchRequest;
 use App\Http\Requests\Admin\MemoManage\AdminMemoShowRequest;
 use App\Http\Requests\Admin\MemoManage\AdminNicknameMemoListByCategoryRequest;
@@ -77,6 +78,18 @@ class MemoManageController extends Controller
     {
         $validated = $request->validated();
         return $service->adminMemoShow($validated['id']);
+    }
+
+    /**
+     * @param AdminMemoApproveRequest $request
+     * @param MemoManageService $service
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function adminMemoApprove(AdminMemoApproveRequest $request, MemoManageService $service): JsonResponse
+    {
+        $validated = $request->validated();
+        return $service->adminMemoApprove($validated['id']);
     }
 
     /**
