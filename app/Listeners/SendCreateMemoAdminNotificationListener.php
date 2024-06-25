@@ -2,8 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Lib\DomainHelper;
-use App\Lib\Environment;
 use App\Lib\SendMailHelper;
 use App\Mail\CreateMemoToAdminMail;
 use Exception;
@@ -34,11 +32,9 @@ class SendCreateMemoAdminNotificationListener
         // 管理者メールアドレスを設定ファイルから取得
         $adminEmail = SendMailHelper::getAdminEmail();
 
-        $domain = DomainHelper::getDomain();
-
         try {
             // 送信先アドレスにメールを送信
-            Mail::to($adminEmail)->send(new CreateMemoToAdminMail($event->content, $event->user, $event->memo, $domain));
+            Mail::to($adminEmail)->send(new CreateMemoToAdminMail($event->content, $event->user, $event->memo));
         } catch (\Exception $e) {
             // メール送信に失敗した場合は、ログにエラーを出力
             logger()->error($e->getMessage());

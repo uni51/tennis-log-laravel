@@ -197,7 +197,9 @@ class MemoManageRepository extends BaseMemoRepository
             // memo_tagの中間テーブルに関連付けられたタグをアーカイブして、関連を削除する。
             $this->archiveAndDetachMemoTags($memo, true);
             // Tagテーブルから使用されていないタグを削除
-            $this->archiveAndDeleteUserUnusedTags($memo->user, true);
+            // $this->archiveAndDeleteUserUnusedTags($memo->user, true);
+            $user = $memo->user;
+            $user->increment('total_times_delete_memo_by_admin'); // 総削除回数をインクリメント
             // メモ自体を削除
             $memo->delete();
             DB::commit();

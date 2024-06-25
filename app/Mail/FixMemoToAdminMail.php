@@ -2,7 +2,9 @@
 
 namespace App\Mail;
 
+use App\Enums\CategoryType;
 use App\Enums\MemoStatusType;
+use App\Lib\DomainHelper;
 use App\Models\Memo;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -19,33 +21,34 @@ class FixMemoToAdminMail extends Mailable
     private string $content;
     private User $user;
     private Memo $memo;
-    private string $domain;
-
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(string $content, User $user, Memo $memo, string $domain)
+    public function __construct(string $content, User $user, Memo $memo)
     {
         $this->content = $content;
         $this->user = $user;
         $this->memo = $memo;
-        $this->domain = $domain;
     }
 
     public function build()
     {
+        $domain = DomainHelper::getDomain();
         $statusLabel = MemoStatusType::getDescription($this->memo->status);
+        $categoryDescription = CategoryType::getDescription($this->memo->category_id);
 
         return $this->subject('メモの修正投稿通知' . '(' . $statusLabel . ')')
             ->view('emails.to_admin.fix_memo_notification')
             ->with([
-                'content' => $this->content,
-                'user'    => $this->user,
-                'memo'    => $this->memo,
-                'domain'  => $this->domain,
+                'content'       => $this->content,
+                'user'          => $this->user,
+                'memo'          => $this->memo,
+                'statusLabel'   => $statusLabel,
+                'categoryDescription' => $categoryDescription,
+                'domain'        => $domain,
             ]);
     }
 }

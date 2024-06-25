@@ -28,17 +28,17 @@ class SendNotTennisRelatedAdminNotificationListener
      *
      * @param object $event
      * @return void
+     * @throws Exception
      */
     public function handle(object $event): void
     {
         // 管理者メールアドレスを設定ファイルから取得
         $adminEmail = SendMailHelper::getAdminEmail();
 
-        $domain = DomainHelper::getDomain();
-
         try {
             // 送信先アドレスにメールを送信
-            Mail::to($adminEmail)->send(new NotTennisRelatedToAdminMail($event->content, $event->user, $event->memo, $domain));
+            Mail::to($adminEmail)->send(new NotTennisRelatedToAdminMail(
+                $event->content, $event->user, $event->actionType, $event->memo));
         } catch (\Exception $e) {
             // メール送信に失敗した場合は、ログにエラーを出力
             logger()->error($e->getMessage());

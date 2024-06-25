@@ -2,16 +2,11 @@
 
 namespace App\Listeners;
 
-use App\Lib\DomainHelper;
-use App\Lib\Environment;
-use App\Lib\SendMailHelper;
-use App\Mail\FixMemoToAdminMail;
-use Exception;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Mail\MemoDeletedByAdminToUser;
 use Illuminate\Support\Facades\Mail;
+use Exception;
 
-class SendFixMemoAdminNotificationListener
+class SendMemoDeletedUserNotificationListener
 {
     /**
      * Create the event listener.
@@ -28,15 +23,15 @@ class SendFixMemoAdminNotificationListener
      *
      * @param object $event
      * @return void
+     * @throws Exception
      */
     public function handle(object $event): void
     {
-        // 管理者メールアドレスを設定ファイルから取得
-        $adminEmail = SendMailHelper::getAdminEmail();
+        $sendAddress = $event->user->email;
 
         try {
             // 送信先アドレスにメールを送信
-            Mail::to($adminEmail)->send(new FixMemoToAdminMail($event->content, $event->user, $event->memo));
+            Mail::to($sendAddress)->send(new MemoDeletedByAdminToUser($event->content, $event->user, $event->memo));
         } catch (\Exception $e) {
             // メール送信に失敗した場合は、ログにエラーを出力
             logger()->error($e->getMessage());

@@ -32,12 +32,12 @@ class NotifyToAdminService
      * @param User $user
      * @return void
      */
-    public function notifyAdminNotTennisRelatedEmail(Memo $memo, User $user): void
+    public function notifyAdminNotTennisRelatedEmail(Memo $memo, User $user, string $actionType): void
     {
         $content = $this->createContent($memo);
 
         // テニスに関連のない記事の場合は、管理者にメール送信
-        event(new NotTennisRelatedAdminNotificationEvent($content, $user, $memo));
+        event(new NotTennisRelatedAdminNotificationEvent($content, $user, $actionType, $memo));
     }
 
     /**

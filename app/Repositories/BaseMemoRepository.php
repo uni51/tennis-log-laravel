@@ -10,6 +10,7 @@ use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BaseMemoRepository
 {
@@ -22,7 +23,7 @@ class BaseMemoRepository
         $memo = Memo::find($id);
 
         if (!$memo) {
-            abort(404, '指定されたIDのメモが見つかりません。');
+            abort(404, '指定されたメモが見つかりません。');
         }
 
         return $memo;
@@ -60,7 +61,7 @@ class BaseMemoRepository
             'approved_at' => $memo->approved_at,
             'memo_created_at' => $memo->created_at,
             'memo_updated_at' => $memo->updated_at,
-            'is_force_deleted' => (bool)$isForceDeleted,
+            'is_force_deleted' => $isForceDeleted,
         ]);
     }
 
@@ -89,7 +90,7 @@ class BaseMemoRepository
 
             // バルクインサートでdeleted_memo_tagに追加
             if (!empty($deletedTagsData)) {
-                DB::table('deleted_memo_tags')->insert($deletedTagsData);
+                DB::table('deleted_memo_tag')->insert($deletedTagsData);
             }
 
             // memo_tag中間テーブルから関連を削除
