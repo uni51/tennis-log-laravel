@@ -17,7 +17,7 @@ final class CategoryType extends Enum
     const SMASH = 7; // スマッシュ
     const SINGLES = 8; // シングルス
     const DOUBLES = 9; // ダブルス
-    const GEAR = 10; // ギア
+    const GOODS = 10; // グッズ
     const OTHER = 99; // その他
 
     private static array $descriptions = [
@@ -30,7 +30,7 @@ final class CategoryType extends Enum
         self::SMASH => 'スマッシュ',
         self::SINGLES => 'シングルス',
         self::DOUBLES => 'ダブルス',
-        self::GEAR => 'ギア',
+        self::GOODS => 'グッズ',
         self::OTHER => 'その他',
     ];
 
@@ -49,7 +49,7 @@ final class CategoryType extends Enum
         'スマッシュ' => self::SMASH,
         'シングルス' => self::SINGLES,
         'ダブルス' => self::DOUBLES,
-        'ギア' => self::GEAR,
+        'グッズ' => self::GOODS,
         'その他' => self::OTHER,
     ];
 

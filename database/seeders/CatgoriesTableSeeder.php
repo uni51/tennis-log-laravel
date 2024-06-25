@@ -53,8 +53,8 @@ class CatgoriesTableSeeder extends Seeder
             'name' => CategoryType::getDescription(CategoryType::DOUBLES),
         ]);
         Category::create([
-            'id'   => CategoryType::GEAR,
-            'name' => CategoryType::getDescription(CategoryType::GEAR),
+            'id'   => CategoryType::GOODS,
+            'name' => CategoryType::getDescription(CategoryType::GOODS),
         ]);
         Category::create([
             'id'   => CategoryType::OTHER,
