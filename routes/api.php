@@ -10,6 +10,7 @@ use App\Http\Controllers\Profile\DominantHandController;
 use App\Http\Controllers\Profile\GenderController;
 use App\Http\Controllers\Profile\PlayFrequencyController;
 use App\Http\Controllers\Profile\TennisLevelController;
+use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\PublicMemoController;
 use App\Http\Controllers\NicknameMemoController;
 use App\Http\Controllers\Admin\UserManageController;
@@ -131,6 +132,9 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
 
     Route::post('/dashboard/memos/delete/{id}', [DashBoardMemoController::class, 'dashboardMemoDestroy'])
         ->name('post_dashboard_memos_delete');
+
+    Route::post('/profile/create', [ProfileController::class, 'createProfile'])
+        ->name('post_profile_create');
 
     Route::get('/user/delete', function () {
         $user = Auth::user();

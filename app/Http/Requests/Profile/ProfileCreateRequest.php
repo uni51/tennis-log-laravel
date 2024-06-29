@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Profile;
 
-use App\Rules\AppropriateContent;
+use App\Rules\Memo\AppropriateContent;
 use Illuminate\Foundation\Http\FormRequest;
 
-class MemoPostRequest extends FormRequest
+class ProfileCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +25,12 @@ class MemoPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'       => ['required', 'min:3', 'max:100', new AppropriateContent()],
-            'body'        => ['required', 'min:3', 'max:3000', new AppropriateContent()],
-            'category_id' => ['required', 'int', 'between:1,8'],
-            'status'   => ['required', 'int', 'between:0,4'],
-            'tags'        => ['nullable', 'array'],
+            'name'            => ['required', 'max:100', new AppropriateContent()],
+            'career_id'       => ['required', 'int', 'between:1,15'],
+            'gender_id'       => ['required', 'int', 'between:1,2'],
+            'dominantHand_id' => ['required', 'int', 'between:1,3'],
+            'playFrequency_id'=> ['required', 'int', 'between:1,7'],
+            'tennisLevel_id'  => ['required', 'int', 'between:1,8'],
         ];
     }
 

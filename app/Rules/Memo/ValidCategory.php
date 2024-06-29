@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Rules;
+namespace App\Rules\Memo;
 
 use App\Enums\CategoryType;
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\Log;
 
 class ValidCategory implements Rule
 {

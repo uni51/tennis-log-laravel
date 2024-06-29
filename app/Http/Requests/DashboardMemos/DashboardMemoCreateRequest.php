@@ -2,12 +2,11 @@
 
 namespace App\Http\Requests\DashboardMemos;
 
-use App\Enums\MemoStatusType;
 use App\Rules\Memo\AppropriateContent;
 use App\Rules\Memo\ValidCategory;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DashboardMemoEditRequest extends FormRequest
+class DashboardMemoCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,22 +26,24 @@ class DashboardMemoEditRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', 'int'],
-            'title' => ['required', 'min:3', new AppropriateContent()],
-            'body' => ['required', 'min:3', new AppropriateContent()],
+            'title'       => ['required', 'min:3', 'max:100', new AppropriateContent()],
+            'body'        => ['required', 'min:3', 'max:3000', new AppropriateContent()],
             'category_id' => [ 'required', 'int', new ValidCategory],
-            'tags' => ['nullable', 'array'],
-            'status' => ['required', 'int', 'between:'.MemoStatusType::DRAFT.','.MemoStatusType::WAITING_FOR_FIX],
+            'status'      => ['required', 'int', 'between:0,4'],
+            'tags'        => ['nullable', 'array'],
         ];
     }
 
     /**
-     * Prepare the data for validation.
+     * バリデーションエラーのカスタム属性の取得
      *
-     * @return void
+     * @return array
      */
-    protected function prepareForValidation(): void
+    public function attributes(): array
     {
-        $this->merge(['id' => $this->route('id')]);
+        return [
+            'title' => 'タイトル',
+            'body' => '内容',
+        ];
     }
 }
