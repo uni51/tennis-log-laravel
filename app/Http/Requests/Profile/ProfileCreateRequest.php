@@ -3,6 +3,11 @@
 namespace App\Http\Requests\Profile;
 
 use App\Rules\Memo\AppropriateContent;
+use App\Rules\Profile\ValidCareerType;
+use App\Rules\Profile\ValidDominantHandType;
+use App\Rules\Profile\ValidGender;
+use App\Rules\Profile\ValidPlayFrequencyType;
+use App\Rules\Profile\ValidTennisLevelType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProfileCreateRequest extends FormRequest
@@ -26,11 +31,11 @@ class ProfileCreateRequest extends FormRequest
     {
         return [
             'name'            => ['required', 'max:100', new AppropriateContent()],
-            'career_id'       => ['required', 'int', 'between:1,15'],
-            'gender_id'       => ['required', 'int', 'between:1,2'],
-            'dominantHand_id' => ['required', 'int', 'between:1,3'],
-            'playFrequency_id'=> ['required', 'int', 'between:1,7'],
-            'tennisLevel_id'  => ['required', 'int', 'between:1,8'],
+            'career_id'       => ['required', 'int', new ValidCareerType()],
+            'gender_id'       => ['required', 'int', new ValidGender()],
+            'dominantHand_id' => ['required', 'int', new ValidDominantHandType()],
+            'playFrequency_id'=> ['required', 'int', new ValidPlayFrequencyType()],
+            'tennisLevel_id'  => ['required', 'int', new ValidTennisLevelType()],
         ];
     }
 
