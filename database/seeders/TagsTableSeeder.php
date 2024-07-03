@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Consts\SeederConst;
 use Illuminate\Database\Seeder;
 use App\Models\Tag;
 
@@ -14,6 +15,6 @@ class TagsTableSeeder extends Seeder
      */
     public function run()
     {
-        Tag::factory(20)->create();
+        Tag::factory(SeederConst::MAKE_TAG_COUNT)->create();
     }
 }

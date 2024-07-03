@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Consts\SeederConst;
 use App\Enums\Profile\GenderType;
 use App\Enums\Profile\CareerType;
 use App\Enums\Profile\DominantHandType;
@@ -43,7 +44,7 @@ class ProfileFactory extends Factory
         });
 
         return [
-            'user_id'           => $this->faker->unique()->numberBetween(1, 21),
+            'user_id'           => $this->faker->unique()->numberBetween(1, SeederConst::MAKE_USER_COUNT + 1),
             'career_id'         => Arr::random($validCareerIds),
             'gender_id'         => Arr::random($validGenderIds),
             'dominant_hand_id'  => Arr::random($validDominateHandIds),
