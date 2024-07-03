@@ -18,9 +18,9 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->comment('ユーザーID');
             $table->unsignedTinyInteger('career_id')->comment('テニス歴');
             $table->unsignedTinyInteger('gender_id')->comment('性別');
-            $table->unsignedTinyInteger('dominantHand_id')->comment('利き手');
-            $table->unsignedTinyInteger('playFrequency_id')->comment('プレイ頻度');
-            $table->unsignedTinyInteger('tennisLevel_id')->comment('レベル');
+            $table->unsignedTinyInteger('dominant_hand_id')->comment('利き手');
+            $table->unsignedTinyInteger('play_frequency_id')->comment('プレイ頻度');
+            $table->unsignedTinyInteger('tennis_level_id')->comment('レベル');
             $table->timestamps();
         });
     }
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('profiles');
     }
 };
