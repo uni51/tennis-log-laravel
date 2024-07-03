@@ -30,12 +30,15 @@ class ProfileCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'            => ['required', 'max:100', new AppropriateContent()],
+            // 'name'            => ['required', 'max:100', new AppropriateContent()],
             'career_id'       => ['required', 'int', new ValidCareerType()],
             'gender_id'       => ['required', 'int', new ValidGender()],
             'dominantHand_id' => ['required', 'int', new ValidDominantHandType()],
             'playFrequency_id'=> ['required', 'int', new ValidPlayFrequencyType()],
             'tennisLevel_id'  => ['required', 'int', new ValidTennisLevelType()],
+            'birthYear'       => ['required', 'int'],
+            'birthMonth'      => ['required', 'int'],
+            'birthDay'        => ['required', 'int'],
         ];
     }
 
@@ -47,8 +50,11 @@ class ProfileCreateRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'title' => 'タイトル',
-            'body' => '内容',
+            'career_id'         => 'テニス歴',
+            'gender_id'         => '性別',
+            'dominantHand_id'   => '利き手',
+            'playFrequency_id'  => 'プレイ頻度',
+            'tennisLevel_id'    => 'レベル',
         ];
     }
 }
