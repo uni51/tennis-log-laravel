@@ -43,6 +43,7 @@ class ProfileFactory extends Factory
         });
 
         return [
+            'user_id'           => $this->faker->unique()->numberBetween(1, 21),
             'career_id'         => Arr::random($validCareerIds),
             'gender_id'         => Arr::random($validGenderIds),
             'dominant_hand_id'  => Arr::random($validDominateHandIds),
