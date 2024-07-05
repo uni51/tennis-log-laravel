@@ -2,20 +2,28 @@
 
 namespace App\Http\Controllers\Profile;
 
-use App\Enums\Profile\PlayFrequencyType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\ProfileCreateRequest;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Exception;
+use App\Services\ProfileService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+
 
 class ProfileController extends Controller
 {
-    public function createProfile(ProfileCreateRequest $request)
+
+    /**
+     * プロフィールの登録処理
+     *
+     * @param ProfileCreateRequest $request
+     * @param ProfileService $service
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function createProfile(ProfileCreateRequest $request, ProfileService $service): JsonResponse
     {
-        /** @var User $user */
-        $user = Auth::user();
         $validated = $request->validated();
-        Log::debug($validated);
+        return $service->createProfile($validated);
     }
 }

@@ -26,7 +26,6 @@ class DashboardMemoRepository extends BaseMemoRepository
         try {
             DB::beginTransaction();
             $memo = $this->createNewMemo($validated);
-            // 配列をコレクションに変換してからeachメソッドを使用
             $this->attachTagsToMemo($memo, $validated['tags']);
             DB::commit();
             return $memo;

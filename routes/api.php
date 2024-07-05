@@ -133,6 +133,7 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     Route::post('/dashboard/memos/delete/{id}', [DashBoardMemoController::class, 'dashboardMemoDestroy'])
         ->name('post_dashboard_memos_delete');
 
+    // プロフィールの新規作成
     Route::post('/profile/create', [ProfileController::class, 'createProfile'])
         ->name('post_profile_create');
 
