@@ -56,6 +56,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/profile/tennis_level', [TennisLevelController::class, 'tennisLevelList'])
         ->name('get_profile_tennis_level');
 
+
+
     // 公開中の記事一覧を取得するAPI
     Route::get('/public/memos', [PublicMemoController::class, 'publicMemoList'])
         ->name('get_public_memos');
@@ -136,6 +138,12 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     // プロフィールの新規作成
     Route::post('/profile/create', [ProfileController::class, 'createProfile'])
         ->name('post_profile_create');
+    Route::post('/profile/edit', [ProfileController::class, 'editProfile'])
+        ->name('post_profile_edit');
+
+    // プロフィール情報を取得するAPI
+    Route::get('/profile', [ProfileController::class, 'getProfile'])
+        ->name('get_profile');
 
     Route::get('/user/delete', function () {
         $user = Auth::user();

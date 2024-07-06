@@ -7,7 +7,6 @@ use App\Enums\MemoAdminReviewStatusType;
 use App\Enums\MemoChatGptReviewStatusType;
 use App\Models\Memo;
 use App\Models\Tag;
-use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
