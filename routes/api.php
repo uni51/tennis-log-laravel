@@ -10,6 +10,7 @@ use App\Http\Controllers\Profile\DominantHandController;
 use App\Http\Controllers\Profile\GenderController;
 use App\Http\Controllers\Profile\PlayFrequencyController;
 use App\Http\Controllers\Profile\TennisLevelController;
+use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\PublicMemoController;
 use App\Http\Controllers\NicknameMemoController;
 use App\Http\Controllers\Admin\UserManageController;
@@ -54,6 +55,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     // テニスレベル
     Route::get('/profile/tennis_level', [TennisLevelController::class, 'tennisLevelList'])
         ->name('get_profile_tennis_level');
+
+
 
     // 公開中の記事一覧を取得するAPI
     Route::get('/public/memos', [PublicMemoController::class, 'publicMemoList'])
@@ -131,6 +134,16 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
 
     Route::post('/dashboard/memos/delete/{id}', [DashBoardMemoController::class, 'dashboardMemoDestroy'])
         ->name('post_dashboard_memos_delete');
+
+    // プロフィールの新規作成
+    Route::post('/profile/create', [ProfileController::class, 'createProfile'])
+        ->name('post_profile_create');
+    Route::post('/profile/edit', [ProfileController::class, 'editProfile'])
+        ->name('post_profile_edit');
+
+    // プロフィール情報を取得するAPI
+    Route::get('/profile', [ProfileController::class, 'getProfile'])
+        ->name('get_profile');
 
     Route::get('/user/delete', function () {
         $user = Auth::user();

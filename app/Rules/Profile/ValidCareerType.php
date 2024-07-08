@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Rules;
+namespace App\Rules\Profile;
 
-use App\Enums\CategoryType;
+use App\Enums\Profile\CareerType;
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\Log;
 
-class ValidCategory implements Rule
+class ValidCareerType implements Rule
 {
     /**
      * Create a new rule instance.
@@ -27,8 +26,8 @@ class ValidCategory implements Rule
      */
     public function passes($attribute, $value): bool
     {
-        // $valueが1から10または99のいずれかの値であることを検証
-        return in_array($value, CategoryType::getValues());
+        // $valueが1〜15のいずれかの値であり、かつ0でないことを検証
+        return in_array($value, CareerType::getValues()) && $value != 0;
     }
 
     /**
@@ -38,6 +37,6 @@ class ValidCategory implements Rule
      */
     public function message(): string
     {
-        return '無効なカテゴリーです。';
+        return '無効なテニス歴です。';
     }
 }

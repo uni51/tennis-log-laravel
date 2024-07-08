@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Admin\MemoManage;
 
-use App\Rules\ValidCategory;
+use App\Rules\Memo\ValidCategory;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AdminNicknameMemoListByCategoryTagRequest extends FormRequest

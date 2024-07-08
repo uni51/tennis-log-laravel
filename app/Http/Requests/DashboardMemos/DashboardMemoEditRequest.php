@@ -3,7 +3,8 @@
 namespace App\Http\Requests\DashboardMemos;
 
 use App\Enums\MemoStatusType;
-use App\Rules\AppropriateContent;
+use App\Rules\Memo\AppropriateContent;
+use App\Rules\Memo\ValidCategory;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DashboardMemoEditRequest extends FormRequest
@@ -29,7 +30,7 @@ class DashboardMemoEditRequest extends FormRequest
             'id' => ['required', 'int'],
             'title' => ['required', 'min:3', new AppropriateContent()],
             'body' => ['required', 'min:3', new AppropriateContent()],
-            'category_id' => ['required', 'int'],
+            'category_id' => [ 'required', 'int', new ValidCategory],
             'tags' => ['nullable', 'array'],
             'status' => ['required', 'int', 'between:'.MemoStatusType::DRAFT.','.MemoStatusType::WAITING_FOR_FIX],
         ];

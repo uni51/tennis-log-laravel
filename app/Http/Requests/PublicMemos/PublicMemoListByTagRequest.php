@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\PublicMemos;
 
-use App\Rules\ValidCategory;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PublicMemoListByTagRequest extends FormRequest
