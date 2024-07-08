@@ -26,6 +26,7 @@ class MemoResource extends JsonResource
                 'tags' => $this->tags->pluck('name'),
             ],
             'status' => $this->status,
+            'favorites_count' => $this->bookmarkedBy()->count(), // お気に入りの件数を追加
             'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('Y年m月d日'),
             'updated_at' => Carbon::createFromFormat('Y-m-d H:i:s', $this->updated_at)->format('Y年m月d日'),
         ];
