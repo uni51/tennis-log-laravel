@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static where(string $string, mixed $value)
  * @method static find(int $id)
  * @method static create(array $array)
+ * @method static withCount(string $string)
  */
 class Memo extends Model
 {

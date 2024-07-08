@@ -56,8 +56,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/profile/tennis_level', [TennisLevelController::class, 'tennisLevelList'])
         ->name('get_profile_tennis_level');
 
-
-
     // 公開中の記事一覧を取得するAPI
     Route::get('/public/memos', [PublicMemoController::class, 'publicMemoList'])
         ->name('get_public_memos');
@@ -87,7 +85,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/public/{nickname}/memos/category/{category_id}/tag/{tag}',
         [NicknameMemoController::class, 'publicNicknameMemoListByCategoryAndTag'])
         ->name('get_public_nickname_memos_category_tag');
-    });
+
+    // その記事が何件お気に入りされているか取得するAPI
+    Route::get('memos/{id}/favorites/count', [MemoController::class, 'countFavorites']);
+});
 
 Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
 //    Route::get('/user', function (Request $request) {
