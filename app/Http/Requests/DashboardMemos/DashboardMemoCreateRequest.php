@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\DashboardMemos;
 
-use App\Rules\AppropriateContent;
+use App\Rules\Memo\AppropriateContent;
+use App\Rules\Memo\ValidCategory;
 use Illuminate\Foundation\Http\FormRequest;
 
-class MemoPostRequest extends FormRequest
+class DashboardMemoCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,8 +28,8 @@ class MemoPostRequest extends FormRequest
         return [
             'title'       => ['required', 'min:3', 'max:100', new AppropriateContent()],
             'body'        => ['required', 'min:3', 'max:3000', new AppropriateContent()],
-            'category_id' => ['required', 'int', 'between:1,8'],
-            'status'   => ['required', 'int', 'between:0,4'],
+            'category_id' => [ 'required', 'int', new ValidCategory],
+            'status'      => ['required', 'int', 'between:0,4'],
             'tags'        => ['nullable', 'array'],
         ];
     }

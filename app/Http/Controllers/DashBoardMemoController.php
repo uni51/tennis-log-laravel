@@ -9,18 +9,16 @@ use App\Http\Requests\DashboardMemos\DashboardMemoListByStatusRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoListByTagRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoSearchRequest;
 use App\Http\Requests\DashboardMemos\DashboardMemoShowRequest;
-use App\Http\Requests\MemoPostRequest;
+use App\Http\Requests\DashboardMemos\DashboardMemoCreateRequest;
 use App\Http\Resources\MemoResource;
 use App\Models\User;
 use App\Services\DashboardMemoService;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 /**
  * Class DashBoardMemoController
@@ -121,12 +119,12 @@ class DashBoardMemoController extends Controller
     }
 
     /**
-     * @param MemoPostRequest $request
+     * @param DashboardMemoCreateRequest $request
      * @param DashboardMemoService $service
      * @return JsonResponse
      * @throws Exception
      */
-    public function dashboardMemoCreate(MemoPostRequest $request, DashboardMemoService $service): JsonResponse
+    public function dashboardMemoCreate(DashboardMemoCreateRequest $request, DashboardMemoService $service): JsonResponse
     {
         /** @var User $user */
         $user = Auth::user();

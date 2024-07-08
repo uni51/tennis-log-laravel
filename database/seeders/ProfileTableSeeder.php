@@ -4,9 +4,8 @@ namespace Database\Seeders;
 
 use App\Consts\SeederConst;
 use Illuminate\Database\Seeder;
-use App\Models\Tag;
 
-class TagsTableSeeder extends Seeder
+class ProfileTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,6 +14,6 @@ class TagsTableSeeder extends Seeder
      */
     public function run()
     {
-        Tag::factory(SeederConst::MAKE_TAG_COUNT)->create();
+        \App\Models\Profile::factory(SeederConst::MAKE_USER_COUNT + 1)->create();
     }
 }

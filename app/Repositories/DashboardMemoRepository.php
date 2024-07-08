@@ -7,7 +7,6 @@ use App\Enums\MemoAdminReviewStatusType;
 use App\Enums\MemoChatGptReviewStatusType;
 use App\Models\Memo;
 use App\Models\Tag;
-use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +25,6 @@ class DashboardMemoRepository extends BaseMemoRepository
         try {
             DB::beginTransaction();
             $memo = $this->createNewMemo($validated);
-            // 配列をコレクションに変換してからeachメソッドを使用
             $this->attachTagsToMemo($memo, $validated['tags']);
             DB::commit();
             return $memo;

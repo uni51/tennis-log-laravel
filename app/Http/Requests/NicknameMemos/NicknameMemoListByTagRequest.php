@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\NicknameMemos;
 
-use App\Rules\ValidCategory;
 use Illuminate\Foundation\Http\FormRequest;
 
 class NicknameMemoListByTagRequest extends FormRequest

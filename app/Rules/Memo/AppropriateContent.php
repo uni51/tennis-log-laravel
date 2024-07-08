@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Rules;
+namespace App\Rules\Memo;
 
 use Illuminate\Contracts\Validation\Rule;
 
@@ -22,7 +22,7 @@ class AppropriateContent implements Rule
      * @var array
      */
     protected $inappropriateWords = [
-        'SEX',
+        '不適切な単語1',
         '不適切な単語2',
         // その他の不適切な単語やフレーズ
     ];

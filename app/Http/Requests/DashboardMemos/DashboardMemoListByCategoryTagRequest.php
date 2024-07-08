@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\DashboardMemos;
 
+use App\Rules\Memo\ValidCategory;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\ValidCategory;
 
 class DashboardMemoListByCategoryTagRequest extends FormRequest
 {

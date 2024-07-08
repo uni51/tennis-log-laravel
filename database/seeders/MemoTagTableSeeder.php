@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Consts\SeederConst;
 use Illuminate\Database\Seeder;
 use App\Models\Memo;
 use App\Models\Tag;
@@ -20,8 +21,8 @@ class MemoTagTableSeeder extends Seeder
         $memoIds = Memo::pluck('id')->all();
         $tagIds = Tag::pluck('id')->all();
 
-        // 仮に100回の挿入を試みる
-        for ($i = 0; $i < 1000; $i++) {
+        // 仮に1000回の挿入を試みる
+        for ($i = 0; $i < SeederConst::MAKE_MEMO_COUNT; $i++) {
             $memoId = $memoIds[array_rand($memoIds)];
             $tagId = $tagIds[array_rand($tagIds)];
 
