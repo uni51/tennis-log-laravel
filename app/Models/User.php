@@ -71,4 +71,13 @@ class User extends Authenticatable
     {
         return $this->hasOne(Profile::class);
     }
+
+    /**
+     * このユーザーがブックマークしたメモを取得する。
+     */
+    public function bookmarks()
+    {
+        return $this->belongsToMany(Memo::class, 'bookmark_memo', 'user_id', 'memo_id')
+            ->withTimestamps();
+    }
 }

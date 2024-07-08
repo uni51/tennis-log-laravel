@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TagsTableSeeder::class);
         $this->call(MemoTagTableSeeder::class);
         $this->call(ProfileTableSeeder::class);
+        $this->call(BookmarkMemoTableSeeder::class);
     }
 }

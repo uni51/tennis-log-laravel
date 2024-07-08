@@ -45,13 +45,28 @@ class Memo extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * このメモのカテゴリを取得
+     */
     public function category() {
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
+    /**
+     * このメモに関連するタグを取得
+     */
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'memo_tag', 'memo_id', 'tag_id')
                     ->withTimestamps();
+    }
+
+    /**
+     * このメモをブックマークしているユーザーを取得する。
+     */
+    public function bookmarkedBy()
+    {
+        return $this->belongsToMany(User::class, 'bookmark_memo', 'memo_id', 'user_id')
+            ->withTimestamps();
     }
 }
