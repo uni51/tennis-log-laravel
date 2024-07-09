@@ -16,8 +16,9 @@ class BookmarkMemoController extends Controller
             'memo_id' => 'required|exists:memos,id',
         ]);
 
+        $user_id = Auth::id();
         $bookmark = BookmarkMemo::create([
-            'user_id' => Auth::user()->id,
+            'user_id' => $user_id,
             'memo_id' => $request->memo_id,
         ]);
 
@@ -29,15 +30,26 @@ class BookmarkMemoController extends Controller
      */
     public function deleteBookmark($id)
     {
-        $bookmark = BookmarkMemo::where('user_id', Auth::user()->id)
-            ->where('memo_id', $id)
-            ->first();
+        $user_id = Auth::id();
 
-        if ($bookmark) {
-            $bookmark->delete();
+        $deleted = BookmarkMemo::where('user_id', $user_id)
+                    ->where('memo_id', $id)
+                    ->delete();
+
+        if ($deleted) {
             return response()->json(null, 204);
         }
 
         return response()->json(['message' => 'Bookmark not found'], 404);
+    }
+
+    public function checkBookmark(Request $request, $memo_id)
+    {
+        $user_id = Auth::id();
+        $isBookmarked = BookmarkMemo::where('user_id', $user_id)
+            ->where('memo_id', $memo_id)
+            ->exists();
+
+        return response()->json(['isBookmarked' => $isBookmarked]);
     }
 }

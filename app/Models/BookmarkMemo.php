@@ -9,6 +9,8 @@ class BookmarkMemo extends Model
 {
     use HasFactory;
 
+    protected $table = 'bookmark_memo';
+
     protected $fillable = [
         'user_id',
         'memo_id',

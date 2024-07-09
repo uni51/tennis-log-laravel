@@ -32,7 +32,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => 'auth:api'], function () {
+// Route::group(['middleware' => 'guest'], function () {
+Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/firebasetest/login_anonymous', [FirebaseTestController::class, 'loginAnonymous']);
 
     Route::get('/memos/categories', [MemoController::class, 'getCategoryList']);
@@ -151,6 +152,7 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     Route::post('/bookmark/create', [BookmarkMemoController::class, 'createBookmark']);
     // ブックマーク解除
     Route::post('/bookmark/delete/{id}', [BookmarkMemoController::class, 'deleteBookmark']);
+    Route::get('/bookmark/check/{memo_id}', [BookmarkMemoController::class, 'checkBookmark']);
 
     Route::get('/user/delete', function () {
         $user = Auth::user();
