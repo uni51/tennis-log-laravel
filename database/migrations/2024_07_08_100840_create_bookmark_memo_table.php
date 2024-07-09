@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
     /**
      * Run the migrations.
      */
@@ -18,7 +17,7 @@ return new class extends Migration
             $table->foreignId('memo_id')->references('id')->on('memos');
             $table->timestamps();
 
-            $table->unique(['user_id', 'memo_id']);
+            $table->primary(['user_id', 'memo_id']);
             // $table->index(['user_id', 'memo_id'], 'i_memo_fwd');
             $table->index(['memo_id', 'user_id'], 'i_memo_rev');
         });

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('tag_id')->references('id')->on('tags');
             $table->timestamps();
 
-            $table->unique(['memo_id', 'tag_id']);
+            $table->primary(['memo_id', 'tag_id']);
             // $table->index(['memo_id', 'tag_id'], 'i_tag_fwd');
             $table->index(['tag_id', 'memo_id'], 'i_tag_rev');
         });
