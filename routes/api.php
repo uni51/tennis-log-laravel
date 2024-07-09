@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookmarkMemoController;
 use App\Http\Controllers\DashBoardMemoController;
 use App\Http\Controllers\FirebaseTestController;
 use App\Http\Controllers\MemoController;
@@ -145,6 +146,11 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     // プロフィール情報を取得するAPI
     Route::get('/profile', [ProfileController::class, 'getProfile'])
         ->name('get_profile');
+
+    // ブックマーク登録
+    Route::post('/bookmark/create', [BookmarkMemoController::class, 'createBookmark']);
+    // ブックマーク解除
+    Route::post('/bookmark/delete/{id}', [BookmarkMemoController::class, 'deleteBookmark']);
 
     Route::get('/user/delete', function () {
         $user = Auth::user();

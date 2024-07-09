@@ -72,7 +72,7 @@ class BaseMemoRepository
     {
         DB::beginTransaction();
         try {
-            // タグを取得して、ピボットテーブルのcreated_atとupdated_atも含める
+            // タグを取得して、ピボット（中間）テーブルのcreated_atとupdated_atも含める
             $memoTags = $memo->tags()->withPivot('created_at', 'updated_at')->get();
 
             // deleted_memo_tagへのバルクインサートデータを準備
