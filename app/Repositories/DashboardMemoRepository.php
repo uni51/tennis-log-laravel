@@ -8,10 +8,10 @@ use App\Enums\MemoChatGptReviewStatusType;
 use App\Models\Memo;
 use App\Models\Tag;
 use Exception;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class DashboardMemoRepository extends BaseMemoRepository
 {

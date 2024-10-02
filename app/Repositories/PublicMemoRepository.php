@@ -7,8 +7,6 @@ use App\Consts\Pagination;
 use App\Enums\MemoStatusType;
 use App\Models\Memo;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Cache;
 
 class PublicMemoRepository extends BaseMemoRepository
 {
@@ -89,6 +87,7 @@ class PublicMemoRepository extends BaseMemoRepository
         return Memo::where('category_id', $categoryId)
             ->where('status', MemoStatusType::getValue('公開中'))
             ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(Pagination::DEFAULT_PER_PAGE);
     }
 

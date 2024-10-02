@@ -2,15 +2,12 @@
 namespace App\Repositories\Admin;
 
 use App\Consts\Pagination;
-use App\Consts\TagConst;
 use App\Enums\MemoAdminReviewStatusType;
 use App\Models\Memo;
-use App\Models\Tag;
 use App\Models\User;
 use App\Repositories\BaseMemoRepository;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 

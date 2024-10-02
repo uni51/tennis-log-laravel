@@ -7,8 +7,8 @@ use App\Consts\Pagination;
 use App\Enums\MemoStatusType;
 use App\Models\Memo;
 use App\Models\User;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class NicknameMemoRepository extends BaseMemoRepository
 {
