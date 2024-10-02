@@ -31,59 +31,71 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-// Route::group(['middleware' => 'guest'], function () {
+//Route::group(['middleware' => 'guest'], function () {
 Route::group(['middleware' => 'auth:sanctum'], function () {
+    // ● 移植済：メモのカテゴリー一覧取得
+    Route::get('/memos/categories', [MemoController::class, 'getCategoryList']);
+
     Route::get('/firebasetest/login_anonymous', [FirebaseTestController::class, 'loginAnonymous']);
 
-    Route::get('/memos/categories', [MemoController::class, 'getCategoryList']);
+    // ● 移植済：メモのステータス一覧取得
     Route::get('/memos/status', [MemoController::class, 'getStatusList']);
 
-    // テニス歴
+    // ● 移植済：テニス歴
     Route::get('/profile/career', [CareerController::class, 'careerList'])
         ->name('get_profile_career');
-    // 性別
+    // ● 移植済：性別
     Route::get('/profile/gender', [GenderController::class, 'genderList'])
         ->name('get_profile_gender');
-    // 年齢（範囲）
+    // ● 移植済：年齢（範囲）
     Route::get('/profile/age_range', [AgeRangeController::class, 'ageLangeList'])
         ->name('get_profile_age_range');
-    // 利き手
+    // ● 移植済：利き手
     Route::get('/profile/dominant_hand', [DominantHandController::class, 'dominantHandList'])
         ->name('get_profile_dominant_hand');
-    // プレー頻度
+    // ● 移植済：プレー頻度
     Route::get('/profile/play_frequency', [PlayFrequencyController::class, 'playFrequencyList'])
         ->name('get_profile_play_frequency');
-    // テニスレベル
+    // ● 移植済：テニスレベル
     Route::get('/profile/tennis_level', [TennisLevelController::class, 'tennisLevelList'])
         ->name('get_profile_tennis_level');
 
     // 公開中の記事一覧を取得するAPI
+    //  ● 移植済：公開中の記事一覧を取得するAPI
     Route::get('/public/memos', [PublicMemoController::class, 'publicMemoList'])
         ->name('get_public_memos');
+    //  ● 移植済：公開中の記事一覧をキーワード検索から取得するAPI
     Route::get('/public/memos/search', [PublicMemoController::class, 'publicMemoSearch'])
         ->name('get_public_memos_search');
+    // ● 移植済：公開中の記事詳細を取得するAPI
+    Route::get('/public/memos/{id}', [PublicMemoController::class, 'publicMemoShow'])
+        ->name('get_public_memos_id');
+    // ● 移植済：公開中の記事一覧をカテゴリー別に取得するAPI
     Route::get('/public/memos/category/{category_id}', [PublicMemoController::class, 'publicMemoListByCategory'])
         ->name('get_public_memos_category');
+    // ● 移植済：公開中の記事一覧をタグ別に取得するAPI
     Route::get('/public/memos/tag/{tag}', [PublicMemoController::class, 'publicMemoListByTag'])
-        ->name('get_public_memos_category');
+        ->name('get_public_memos_tag');
+    // ● 移植済：公開中の記事一覧をカテゴリーおよびタグ別に取得するAPI
     Route::get('/public/memos/category/{category_id}/tag/{tag}',
         [PublicMemoController::class, 'publicMemoListByCategoryAndTag'])
         ->name('get_public_memos_category_tag');
-    Route::get('/public/memos/{id}', [PublicMemoController::class, 'publicMemoShow'])
-        ->name('get_public_memos_id');
 
-    // 公開中のニックネーム別（ユーザー別）記事一覧を取得するAPI
+    // ● 移植済：公開中のニックネーム別（ユーザー別）記事一覧を取得するAPI
     Route::get('/public/{nickname}/memos', [NicknameMemoController::class, 'publicNicknameMemoList'])
         ->name('get_public_nickname_memos');
+    // ● 移植済：公開中のニックネーム別記事詳細を取得するAPI
     Route::get('/public/{nickname}/memos/{id}', [NicknameMemoController::class, 'publicNicknameMemoShow'])
         ->name('get_public_nickname_memos_id');
+    // ● 移植済：公開中のニックネーム別記事一覧をカテゴリー別に取得するAPI
     Route::get('/public/{nickname}/memos/category/{category_id}',
         [NicknameMemoController::class, 'publicNicknameMemoListByCategory'])
         ->name('get_public_nickname_memos_category');
+    // ● 移植済：公開中のニックネーム別記事一覧をタグ別に取得するAPI
     Route::get('/public/{nickname}/memos/tag/{tag}',
         [NicknameMemoController::class, 'publicNicknameMemoListByTag'])
         ->name('get_public_nickname_memos_tag');
+    // ● 移植済：公開中のニックネーム別記事一覧をカテゴリーおよびタグ別に取得するAPI
     Route::get('/public/{nickname}/memos/category/{category_id}/tag/{tag}',
         [NicknameMemoController::class, 'publicNicknameMemoListByCategoryAndTag'])
         ->name('get_public_nickname_memos_category_tag');
@@ -102,10 +114,10 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
         return $user ? new UserResource($user) : null;
     });
 
-    // メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
+    // ● 移植済：メモの公開・非公開を問わずに、ユーザーに紐づく記事一覧を取得するAPI
     Route::get('/dashboard/memos', [DashBoardMemoController::class, 'dashboardMemoList'])
         ->name('get_dashboard_memos');
-
+    // ● 移植済：ユーザー自身の記事の検索
     Route::get('/dashboard/memos/search', [DashBoardMemoController::class, 'dashboardMemoSearch'])
         ->name('get_dashboard_memos_search');
 
