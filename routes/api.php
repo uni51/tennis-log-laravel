@@ -120,13 +120,13 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     // ● 移植済：ユーザー自身の記事の検索
     Route::get('/dashboard/memos/search', [DashBoardMemoController::class, 'dashboardMemoSearch'])
         ->name('get_dashboard_memos_search');
-
+    // ● 移植済：ユーザー自身の記事のステータス毎の一覧取得
     Route::get('/dashboard/memos/status/{status}', [DashBoardMemoController::class, 'dashboardMemoListByStatus'])
         ->name('get_dashboard_memos_status');
-
+    // ● 移植済：ユーザー自身の記事のカテゴリー毎の一覧取得
     Route::get('/dashboard/memos/category/{category_id}', [DashBoardMemoController::class, 'dashboardMemoListByCategory'])
         ->name('get_dashboard_memos_category');
-
+    // ● 移植済：ユーザー自身の記事のタグ毎の一覧取得
     Route::get('/dashboard/memos/tag/{tag}', [DashBoardMemoController::class, 'dashboardMemoListByTag'])
         ->name('get_dashboard_memos_tag');
 
