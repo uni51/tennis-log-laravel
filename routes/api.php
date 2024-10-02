@@ -136,8 +136,7 @@ Route::group(['middleware' => 'auth:api', 'auth:firebase_cookie'], function () {
     // ● 移植済：ユーザー自身の記事の詳細取得
     Route::get('/dashboard/memos/{id}', [DashBoardMemoController::class, 'dashboardMemoShow'])
         ->name('get_dashboard_memos_id');
-
-    // メモの新規作成
+    // ● 移植済：記事の新規作成
     Route::post('/dashboard/memos', [DashBoardMemoController::class, 'dashboardMemoCreate'])
         ->name('post_dashboard_memos');
 
