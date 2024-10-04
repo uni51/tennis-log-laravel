@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Jobs\SendCreateMemoAdminMailJob;
 use App\Lib\SendMailHelper;
 use App\Mail\CreateMemoToAdminMail;
 use Exception;
@@ -29,16 +30,17 @@ class SendCreateMemoAdminNotificationListener
      */
     public function handle(object $event): void
     {
-        // 管理者メールアドレスを設定ファイルから取得
-        $adminEmail = SendMailHelper::getAdminEmail();
-
-        try {
-            // 送信先アドレスにメールを送信
-            Mail::to($adminEmail)->send(new CreateMemoToAdminMail($event->content, $event->user, $event->memo));
-        } catch (\Exception $e) {
-            // メール送信に失敗した場合は、ログにエラーを出力
-            logger()->error($e->getMessage());
-            throw new Exception('メールの送信に失敗しました。');
-        }
+//        // 管理者メールアドレスを設定ファイルから取得
+//        $adminEmail = SendMailHelper::getAdminEmail();
+//
+//        try {
+//            // 送信先アドレスにメールを送信
+//            Mail::to($adminEmail)->send(new CreateMemoToAdminMail($event->content, $event->user, $event->memo));
+//        } catch (\Exception $e) {
+//            // メール送信に失敗した場合は、ログにエラーを出力
+//            logger()->error($e->getMessage());
+//            throw new Exception('メールの送信に失敗しました。');
+//        }
+        SendCreateMemoAdminMailJob::dispatch($event->content, $event->user, $event->memo);
     }
 }
